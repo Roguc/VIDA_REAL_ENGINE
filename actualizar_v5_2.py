@@ -1,3 +1,112 @@
+from pathlib import Path
+from textwrap import dedent
+
+ROOT = Path(__file__).resolve().parent
+
+FILES = {
+    "Core/motor_central.py": r"""
+from datetime import datetime
+
+from Models.sistema_dia import SistemaDia
+from Managers.excel_manager import ExcelManager
+from Managers.recursos_manager import RecursosManager
+from Motores.motor_universidad import MotorUniversidad
+
+
+class MotorCentral:
+    def __init__(self):
+        self.sistema = SistemaDia()
+        self.excel = ExcelManager()
+        self.recursos = RecursosManager()
+        self.motor_universidad = MotorUniversidad()
+
+    def ejecutar(self):
+        ahora = datetime.now()
+
+        self.sistema.fecha = ahora.date()
+        self.sistema.fecha_texto = ahora.strftime("%d-%m-%Y")
+        self.sistema.hora_actual = ahora.strftime("%H:%M")
+
+        self.excel.cargar()
+        self.recursos.cargar()
+
+        self.sistema.contexto["excel"] = self.excel.resumen()
+        self.sistema.recursos = self.recursos.resumen()
+
+        self._analizar_contexto()
+        self.motor_universidad.analizar(self.sistema, self.excel, self.recursos)
+        self._generar_decisiones_base()
+
+        self.sistema.ordenar_decisiones()
+        return self.sistema
+
+    def _analizar_contexto(self):
+        hojas = self.sistema.contexto["excel"]["hojas"]
+
+        if "SERPAT TURNOS" in hojas:
+            self.sistema.agregar_alerta(
+                "SERPAT",
+                90,
+                "Calendario laboral detectado",
+                "Usar SERPAT TURNOS para adaptar el día."
+            )
+
+        if "PENDIENTES" in hojas:
+            self.sistema.agregar_alerta(
+                "Pendientes",
+                95,
+                "Pendientes detectados",
+                "Integrar pendientes en la priorización diaria."
+            )
+
+        if "VISION_BOARD" in hojas:
+            self.sistema.agregar_alerta(
+                "Identidad",
+                70,
+                "Vision Board detectado",
+                "Usar Vision Board para visualización diaria."
+            )
+
+        if "DESARROLLO_PERSONAL" in hojas:
+            self.sistema.agregar_alerta(
+                "Desarrollo Personal",
+                75,
+                "Desarrollo personal detectado",
+                "Integrar lectura, hábitos e identidad."
+            )
+
+    def _generar_decisiones_base(self):
+        self.sistema.agregar_decision(
+            "Sistema",
+            100,
+            "Abrir Centro de Comando y revisar prioridades.",
+            "Motor Central IA activo.",
+            "20_Registro_Diario; 21_KPI_Diario"
+        )
+        self.sistema.agregar_decision(
+            "Salud",
+            85,
+            "Registrar presión, energía, sueño, medicamento e hidratación.",
+            "Proteger capital biológico.",
+            "H02_Registro_Salud; H03_Presión_Log"
+        )
+        self.sistema.agregar_decision(
+            "Finanzas",
+            80,
+            "Registrar movimientos, revisar gastos y actualizar caja.",
+            "Mantener visibilidad financiera.",
+            "11_Ingresos; 12_Gastos; 13_Deudas; 18_Conciliacion_Bancaria_V3"
+        )
+        self.sistema.agregar_decision(
+            "Empresas",
+            75,
+            "Ejecutar una acción empresarial real con evidencia.",
+            "MGC, LNH o CaptaPropIA no deben quedar sin avance.",
+            "30_MGC_CRM; 33_Seguimientos; 76_CaptaPropIA"
+        )
+""",
+
+    "Motores/motor_universidad.py": r"""
 from datetime import datetime, date
 from pathlib import Path
 
@@ -194,3 +303,88 @@ class MotorUniversidad:
             "total_archivos": 0,
             "archivos_relevantes": [],
         }
+""",
+
+    "main.py": r"""
+from Core.motor_central import MotorCentral
+
+def main():
+    motor = MotorCentral()
+    sistema = motor.ejecutar()
+
+    print()
+    print("===================================")
+    print(" VIDA REAL ENGINE V5.2")
+    print(" MOTOR CENTRAL IA + UNIVERSIDAD")
+    print("===================================")
+    print()
+    print("Fecha:", sistema.fecha_texto)
+    print("Hora:", sistema.hora_actual)
+    print("Excel:", sistema.contexto["excel"]["archivo"])
+    print("Hojas:", sistema.contexto["excel"]["total_hojas"])
+    print("Recursos:", sistema.recursos["total_archivos"], "archivos")
+    print()
+
+    print("UNIVERSIDAD:")
+    print("Hojas detectadas:", len(sistema.universidad.get("hojas_detectadas", [])))
+    print("Evaluaciones leídas:", len(sistema.universidad.get("evaluaciones", [])))
+    print("Errores leídos:", len(sistema.universidad.get("errores", [])))
+    print("Contenidos leídos:", len(sistema.universidad.get("contenidos", [])))
+    print("Recursos Universidad:", sistema.universidad.get("recursos", {}).get("total_archivos", 0), "archivos")
+    print()
+
+    critica = sistema.universidad.get("critica")
+    if critica:
+        print("Evaluación crítica detectada:")
+        print("Ramo:", critica.get("ramo"))
+        print("Evaluación:", critica.get("evaluacion"))
+        print("Detalle:", critica.get("detalle"))
+        print()
+
+    print("DECISIONES DEL MOTOR CENTRAL:")
+    print()
+
+    for i, decision in enumerate(sistema.decisiones, start=1):
+        print(f"{i}. [{decision['area']}] Prioridad {decision['prioridad']}")
+        print("   Acción:", decision["accion"])
+        print("   Motivo:", decision["motivo"])
+        print("   Registro:", decision["registro"])
+        print()
+
+    print("ALERTAS:")
+    print()
+
+    for alerta in sistema.alertas:
+        print(f"- [{alerta['area']}] {alerta['titulo']}")
+        print(" ", alerta["detalle"])
+        print()
+
+if __name__ == "__main__":
+    main()
+""",
+}
+
+def write_file(relative_path: str, content: str):
+    path = ROOT / relative_path
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(dedent(content).strip() + "\n", encoding="utf-8")
+    print(f"OK: {relative_path}")
+
+def main():
+    print()
+    print("===================================")
+    print(" ACTUALIZADOR VIDA REAL ENGINE V5.2")
+    print(" ESPECIALISTA UNIVERSIDAD")
+    print("===================================")
+    print()
+
+    for relative_path, content in FILES.items():
+        write_file(relative_path, content)
+
+    print()
+    print("Actualización V5.2 instalada.")
+    print("Ejecuta ahora: python main.py")
+    print()
+
+if __name__ == "__main__":
+    main()

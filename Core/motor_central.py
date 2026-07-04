@@ -3,12 +3,18 @@ from datetime import datetime
 from Models.sistema_dia import SistemaDia
 from Managers.excel_manager import ExcelManager
 from Managers.recursos_manager import RecursosManager
+from Motores.motor_universidad import MotorUniversidad
+from Motores import motor_serpat, motor_fuentes, motor_finanzas, motor_salud, motor_empresas, motor_ancla, motor_continuidad, motor_recursos
+from Scripts.utilidades import limpiar_texto
+
 
 class MotorCentral:
     def __init__(self):
         self.sistema = SistemaDia()
         self.excel = ExcelManager()
         self.recursos = RecursosManager()
+        self.motor_universidad = MotorUniversidad()
+        self.errores = []
 
     def ejecutar(self):
         ahora = datetime.now()
@@ -17,16 +23,37 @@ class MotorCentral:
         self.sistema.fecha_texto = ahora.strftime("%d-%m-%Y")
         self.sistema.hora_actual = ahora.strftime("%H:%M")
 
-        self.excel.cargar()
-        self.recursos.cargar()
+        try:
+            self.excel.cargar()
+        except Exception as e:
+            self.errores.append(f"Error cargando Excel: {str(e)}")
+            return self.sistema
+
+        try:
+            self.recursos.cargar()
+        except Exception as e:
+            self.errores.append(f"Error cargando recursos: {str(e)}")
 
         self.sistema.contexto["excel"] = self.excel.resumen()
         self.sistema.recursos = self.recursos.resumen()
 
         self._analizar_contexto()
+        
+        # Ejecutar todos los motores
+        self._analizar_universidad()
+        self._analizar_serpat()
+        self._analizar_pendientes()
+        self._analizar_vision_board()
+        self._analizar_desarrollo_personal()
+        self._analizar_salud()
+        self._analizar_finanzas()
+        self._analizar_empresas()
+        self._analizar_ancla()
+        self._analizar_continuidad()
+        
         self._generar_decisiones_base()
-        self.sistema.ordenar_decisiones()
 
+        self.sistema.ordenar_decisiones()
         return self.sistema
 
     def _analizar_contexto(self):
@@ -73,13 +100,6 @@ class MotorCentral:
             "20_Registro_Diario; 21_KPI_Diario"
         )
         self.sistema.agregar_decision(
-            "Universidad",
-            95,
-            "Revisar evaluación crítica, contenidos, errores y próxima entrega.",
-            "Universidad debe pasar de bloque genérico a instrucción específica.",
-            "61_T2_Ramos; 62_T2_Evaluaciones; 64_T2_Errores"
-        )
-        self.sistema.agregar_decision(
             "Salud",
             85,
             "Registrar presión, energía, sueño, medicamento e hidratación.",
@@ -100,3 +120,182 @@ class MotorCentral:
             "MGC, LNH o CaptaPropIA no deben quedar sin avance.",
             "30_MGC_CRM; 33_Seguimientos; 76_CaptaPropIA"
         )
+
+    def _analizar_universidad(self):
+        try:
+            self.motor_universidad.analizar(self.sistema, self.excel, self.recursos)
+        except Exception as e:
+            self.errores.append(f"Error en MotorUniversidad: {str(e)}")
+
+    def _analizar_serpat(self):
+        try:
+            if self.excel.existe_hoja("SERPAT TURNOS"):
+                turno = motor_serpat.obtener_turno_fecha(self.excel.workbook, self.sistema.fecha)
+                if turno:
+                    self.sistema.serpat = turno
+                    self.sistema.tipo_dia = turno.get("tipo_dia", "")
+                    self.sistema.turno_serpat = turno.get("turno_serpat", "")
+                    
+                    self.sistema.agregar_decision(
+                        "SERPAT",
+                        92,
+                        f"Trabajar turno {turno.get('turno_serpat', '')} — Horario: {turno.get('ingreso', '?')} a {turno.get('salida', '?')}",
+                        f"Calendario laboral: {turno.get('tipo_dia', 'operativo')}",
+                        "No corresponde" if turno.get('tipo_dia') == 'Libre' else "SERPAT TURNOS"
+                    )
+        except Exception as e:
+            self.errores.append(f"Error en MotorSerpat: {str(e)}")
+
+    def _analizar_pendientes(self):
+        try:
+            if self.excel.existe_hoja("PENDIENTES"):
+                pendientes = motor_fuentes.leer_pendientes(self.excel.workbook, max_items=20)
+                self.sistema.pendientes = pendientes
+                
+                criticos = [p for p in pendientes if limpiar_texto(p.get("prioridad", "")).lower() in ["crítica", "critica", "alta"]]
+                if criticos:
+                    self.sistema.agregar_alerta(
+                        "Pendientes",
+                        96,
+                        f"Hay {len(criticos)} pendiente(s) crítico(s)/alto(s)",
+                        f"Resolver o reagendar: {criticos[0].get('tarea', 'pendiente')[:60]}"
+                    )
+                    self.sistema.agregar_decision(
+                        "Pendientes",
+                        93,
+                        f"Resolver pendiente crítico: {criticos[0].get('tarea', 'tarea')}",
+                        f"Prioridad {criticos[0].get('prioridad', 'alta')} — Área: {criticos[0].get('area', 'general')}",
+                        f"20_Registro_Diario; 90_Alertas_Correcciones"
+                    )
+        except Exception as e:
+            self.errores.append(f"Error en leer_pendientes: {str(e)}")
+
+    def _analizar_vision_board(self):
+        try:
+            if self.excel.existe_hoja("VISION_BOARD"):
+                vision = motor_fuentes.leer_vision_board(self.excel.workbook, max_items=12)
+                self.sistema.vision_board = vision
+                if vision:
+                    self.sistema.agregar_alerta(
+                        "Identidad",
+                        82,
+                        "Panel Vision 2042 disponible",
+                        f"Visualizar: {vision[0].get('categoria', 'objetivo 2042')}"
+                    )
+        except Exception as e:
+            self.errores.append(f"Error en leer_vision_board: {str(e)}")
+
+    def _analizar_desarrollo_personal(self):
+        try:
+            if self.excel.existe_hoja("DESARROLLO_PERSONAL"):
+                desarrollo = motor_fuentes.leer_desarrollo_personal(self.excel.workbook)
+                self.sistema.desarrollo_personal = desarrollo
+                
+                if desarrollo.get("ley", ""):
+                    self.sistema.identidad = {
+                        "ley_001": desarrollo.get("ley", ""),
+                        "proposito": desarrollo.get("proposito", ""),
+                        "vision": desarrollo.get("vision", ""),
+                        "mision": desarrollo.get("mision", ""),
+                    }
+                    self.sistema.agregar_alerta(
+                        "Identidad",
+                        88,
+                        "Ley 001 activa",
+                        f"'{desarrollo.get('ley', '')}'"
+                    )
+        except Exception as e:
+            self.errores.append(f"Error en leer_desarrollo_personal: {str(e)}")
+
+    def _analizar_salud(self):
+        try:
+            bloque_salud = motor_salud.construir_bloque_salud({})
+            self.sistema.salud = {
+                "titulo": bloque_salud.get("titulo", ""),
+                "objetivo": bloque_salud.get("objetivo", ""),
+                "actividad": bloque_salud.get("actividad", ""),
+                "registro": bloque_salud.get("registro", ""),
+            }
+            self.sistema.agregar_decision(
+                "Salud",
+                84,
+                bloque_salud.get("actividad", "Registrar salud"),
+                bloque_salud.get("objetivo", "Proteger capital biológico"),
+                bloque_salud.get("registro", "H02_Registro_Salud; H03_Presión_Log")
+            )
+        except Exception as e:
+            self.errores.append(f"Error en MotorSalud: {str(e)}")
+
+    def _analizar_finanzas(self):
+        try:
+            bloque_finanzas = motor_finanzas.construir_bloque_finanzas({})
+            self.sistema.finanzas = {
+                "titulo": bloque_finanzas.get("titulo", ""),
+                "objetivo": bloque_finanzas.get("objetivo", ""),
+                "actividad": bloque_finanzas.get("actividad", ""),
+                "registro": bloque_finanzas.get("registro", ""),
+            }
+            self.sistema.agregar_decision(
+                "Finanzas",
+                79,
+                bloque_finanzas.get("actividad", "Registrar movimientos"),
+                bloque_finanzas.get("objetivo", "Mantener visibilidad financiera"),
+                bloque_finanzas.get("registro", "11_Ingresos; 12_Gastos")
+            )
+        except Exception as e:
+            self.errores.append(f"Error en MotorFinanzas: {str(e)}")
+
+    def _analizar_empresas(self):
+        try:
+            bloque_empresas = motor_empresas.construir_bloque_empresas({})
+            self.sistema.empresas = {
+                "titulo": bloque_empresas.get("titulo", ""),
+                "objetivo": bloque_empresas.get("objetivo", ""),
+                "actividad": bloque_empresas.get("actividad", ""),
+                "registro": bloque_empresas.get("registro", ""),
+            }
+            self.sistema.agregar_decision(
+                "Empresas",
+                74,
+                bloque_empresas.get("actividad", "Ejecutar acción empresarial"),
+                bloque_empresas.get("objetivo", "Construir capital empresarial"),
+                bloque_empresas.get("registro", "30_MGC_CRM; 33_Seguimientos")
+            )
+        except Exception as e:
+            self.errores.append(f"Error en MotorEmpresas: {str(e)}")
+
+    def _analizar_ancla(self):
+        try:
+            bloque_ancla = motor_ancla.construir_bloque_ancla({})
+            self.sistema.ancla = {
+                "titulo": bloque_ancla.get("titulo", ""),
+                "objetivo": bloque_ancla.get("objetivo", ""),
+                "actividad": bloque_ancla.get("actividad", ""),
+                "registro": bloque_ancla.get("registro", ""),
+            }
+            self.sistema.agregar_decision(
+                "Ancla Mental",
+                86,
+                bloque_ancla.get("actividad", "Cierre de identidad"),
+                bloque_ancla.get("objetivo", "Evitar volver al Robinson anterior"),
+                bloque_ancla.get("registro", "Ancla Mental; 21_KPI_Diario")
+            )
+        except Exception as e:
+            self.errores.append(f"Error en MotorAncla: {str(e)}")
+
+    def _analizar_continuidad(self):
+        try:
+            capital = motor_continuidad.capital_del_bloque("Universidad")
+            self.sistema.continuidad = {
+                "capital_base": capital,
+                "capitales": motor_continuidad.CAPITALES_BASE.copy(),
+            }
+            self.sistema.agregar_alerta(
+                "Continuidad",
+                77,
+                "Sistema de capitales activo",
+                "Cada acción construye capital en un dominio"
+            )
+        except Exception as e:
+            self.errores.append(f"Error en MotorContinuidad: {str(e)}")
+
