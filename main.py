@@ -5,10 +5,10 @@ def main():
     sistema = motor.ejecutar()
 
     print()
-    print("=" * 60)
-    print(" VIDA REAL ENGINE V5.3-001")
-    print(" MOTOR CENTRAL IA + 11 MOTORES INTEGRADOS")
-    print("=" * 60)
+    print("=" * 70)
+    print(" VIDA REAL ENGINE V5.3-002")
+    print(" MOTOR CENTRAL IA + 11 MOTORES INTEGRADOS (CONSOLIDADOS)")
+    print("=" * 70)
     print()
     print("📅 Fecha:", sistema.fecha_texto)
     print("⏰ Hora:", sistema.hora_actual)
@@ -20,52 +20,63 @@ def main():
     if motor.errores:
         print("⚠️  ERRORES DETECTADOS:")
         for error in motor.errores:
-            print(f"   - {error}")
+            print(f"   ❌ {error}")
         print()
 
-    print("🔧 MOTORES ACTIVOS:")
-    motores_activos = [
-        "MotorUniversidad",
-        "MotorSerpat",
-        "MotorPendientes",
-        "MotorVisionBoard",
-        "MotorDesarrolloPersonal",
-        "MotorSalud",
-        "MotorFinanzas",
-        "MotorEmpresas",
-        "MotorAncla",
-        "MotorContinuidad",
-    ]
-    for m in motores_activos:
-        print(f"   ✓ {m}")
+    print("🔧 MOTORES ACTIVOS: 11")
+    print("   ✓ MotorUniversidad (evaluaciones críticas)")
+    print("   ✓ MotorSerpat (calendario laboral)")
+    print("   ✓ MotorPendientes (tareas críticas)")
+    print("   ✓ MotorVisionBoard (identidad 2042)")
+    print("   ✓ MotorDesarrolloPersonal (Ley 001)")
+    print("   ✓ MotorSalud (capital biológico)")
+    print("   ✓ MotorFinanzas (capital financiero)")
+    print("   ✓ MotorEmpresas (capital empresarial)")
+    print("   ✓ MotorAncla (identidad diaria)")
+    print("   ✓ MotorContinuidad (capitales)")
     print()
 
-    print("🎯 DECISIONES DEL MOTOR CENTRAL:")
-    print(f"   Total: {len(sistema.decisiones)} decisiones")
+    print("=" * 70)
+    print(f"🎯 DECISIONES: {len(sistema.decisiones)} (consolidadas, sin duplicados)")
+    print("=" * 70)
     print()
 
     for i, decision in enumerate(sistema.decisiones, start=1):
-        print(f"{i}. [{decision['area']}] Prioridad {decision['prioridad']:03d}")
-        print(f"   Acción: {decision['accion'][:80]}")
-        if decision['motivo']:
-            print(f"   Motivo: {decision['motivo'][:60]}")
-        if decision['registro']:
-            print(f"   Registro: {decision['registro'][:50]}")
+        area = decision.get('area', 'Sistema')
+        prioridad = decision.get('prioridad', 0)
+        accion = decision.get('accion', '')
+        motivo = decision.get('motivo', '')
+        registro = decision.get('registro', '')
+        
+        print(f"{i}. [{area}] Prioridad {prioridad:03d}")
+        print(f"   📌 Acción: {accion}")
+        if motivo:
+            print(f"   💡 Motivo: {motivo}")
+        if registro:
+            print(f"   📋 Registro: {registro}")
         print()
 
-    print("🚨 ALERTAS:")
-    print(f"   Total: {len(sistema.alertas)} alertas")
+    print("=" * 70)
+    print(f"🚨 ALERTAS: {len(sistema.alertas)}")
+    print("=" * 70)
     print()
 
     for i, alerta in enumerate(sistema.alertas, start=1):
-        print(f"{i}. [{alerta['area']}] Prioridad {alerta['prioridad']}")
-        print(f"   {alerta['titulo']}")
-        print(f"   → {alerta['detalle']}")
+        area = alerta.get('area', '?')
+        prioridad = alerta.get('prioridad', 0)
+        titulo = alerta.get('titulo', '')
+        detalle = alerta.get('detalle', '')
+        
+        print(f"{i}. [{area}] Prioridad {prioridad}")
+        print(f"   ⚡ {titulo}")
+        if detalle:
+            print(f"   → {detalle}")
         print()
 
-    print("=" * 60)
-    print(" V5.3-001 COMPLETADO EXITOSAMENTE")
-    print("=" * 60)
+    print("=" * 70)
+    print(" V5.3-002 COMPLETADO EXITOSAMENTE")
+    print(" Decisiones consolidadas | Duplicados eliminados | Salida legible")
+    print("=" * 70)
     print()
 
 if __name__ == "__main__":

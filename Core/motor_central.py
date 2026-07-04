@@ -37,9 +37,18 @@ class MotorCentral:
         self.sistema.contexto["excel"] = self.excel.resumen()
         self.sistema.recursos = self.recursos.resumen()
 
+        # Agregar decisión inicial del Sistema
+        self.sistema.agregar_decision(
+            "Sistema",
+            100,
+            "Abrir Centro de Comando y revisar prioridades.",
+            "Motor Central IA activo.",
+            "20_Registro_Diario; 21_KPI_Diario"
+        )
+
         self._analizar_contexto()
         
-        # Ejecutar todos los motores
+        # Ejecutar todos los motores (EN ORDEN DE PRIORIDAD)
         self._analizar_universidad()
         self._analizar_serpat()
         self._analizar_pendientes()
@@ -51,8 +60,8 @@ class MotorCentral:
         self._analizar_ancla()
         self._analizar_continuidad()
         
-        self._generar_decisiones_base()
-
+        # Consolidar decisiones duplicadas y ordenar
+        self._consolidar_decisiones()
         self.sistema.ordenar_decisiones()
         return self.sistema
 
@@ -91,35 +100,37 @@ class MotorCentral:
                 "Integrar lectura, hábitos e identidad."
             )
 
+    def _consolidar_decisiones(self):
+        """Elimina decisiones duplicadas, mantiene la más específica por área"""
+        areas_vistas = {}
+        decisiones_consolidadas = []
+        
+        for decision in self.sistema.decisiones:
+            area = decision.get("area", "Sistema")
+            
+            if area == "Sistema":
+                # Sistema siempre se mantiene
+                decisiones_consolidadas.append(decision)
+            elif area not in areas_vistas:
+                # Primera vez que vemos esta área
+                areas_vistas[area] = decision
+                decisiones_consolidadas.append(decision)
+            else:
+                # Comparar prioridades: mantener la más alta (más específica)
+                prev = areas_vistas[area]
+                if decision.get("prioridad", 0) > prev.get("prioridad", 0):
+                    # Nueva decisión tiene más prioridad, reemplazar
+                    idx = decisiones_consolidadas.index(prev)
+                    decisiones_consolidadas[idx] = decision
+                    areas_vistas[area] = decision
+                # Si la anterior tiene más prioridad, ignorar la nueva
+        
+        self.sistema.decisiones = decisiones_consolidadas
+
     def _generar_decisiones_base(self):
-        self.sistema.agregar_decision(
-            "Sistema",
-            100,
-            "Abrir Centro de Comando y revisar prioridades.",
-            "Motor Central IA activo.",
-            "20_Registro_Diario; 21_KPI_Diario"
-        )
-        self.sistema.agregar_decision(
-            "Salud",
-            85,
-            "Registrar presión, energía, sueño, medicamento e hidratación.",
-            "Proteger capital biológico.",
-            "H02_Registro_Salud; H03_Presión_Log"
-        )
-        self.sistema.agregar_decision(
-            "Finanzas",
-            80,
-            "Registrar movimientos, revisar gastos y actualizar caja.",
-            "Mantener visibilidad financiera.",
-            "11_Ingresos; 12_Gastos; 13_Deudas; 18_Conciliacion_Bancaria_V3"
-        )
-        self.sistema.agregar_decision(
-            "Empresas",
-            75,
-            "Ejecutar una acción empresarial real con evidencia.",
-            "MGC, LNH o CaptaPropIA no deben quedar sin avance.",
-            "30_MGC_CRM; 33_Seguimientos; 76_CaptaPropIA"
-        )
+        """DEPRECATED: Se consolidó en ejecutar() y _consolidar_decisiones()"""
+        pass
+
 
     def _analizar_universidad(self):
         try:
@@ -136,12 +147,29 @@ class MotorCentral:
                     self.sistema.tipo_dia = turno.get("tipo_dia", "")
                     self.sistema.turno_serpat = turno.get("turno_serpat", "")
                     
+                    tipo_dia = turno.get("tipo_dia", "").strip()
+                    
+                    # Manejo especial para Día Libre
+                    if "Libre" in tipo_dia:
+                        accion = "Día libre SERPAT — Usar para avance estratégico sin restricción horaria."
+                        motivo = "Calendario laboral: Día libre disponible"
+                        prioridad = 91
+                        registro = "09_PANEL_VISION; 20_Registro_Diario"
+                    else:
+                        ingreso = (turno.get("ingreso") or "?").strip()
+                        salida = (turno.get("salida") or "?").strip()
+                        horario = f"{ingreso} a {salida}" if ingreso != "?" or salida != "?" else tipo_dia
+                        accion = f"Trabajar turno {tipo_dia} — Horario: {horario}"
+                        motivo = f"Calendario laboral: {tipo_dia}"
+                        prioridad = 92
+                        registro = "SERPAT TURNOS"
+                    
                     self.sistema.agregar_decision(
                         "SERPAT",
-                        92,
-                        f"Trabajar turno {turno.get('turno_serpat', '')} — Horario: {turno.get('ingreso', '?')} a {turno.get('salida', '?')}",
-                        f"Calendario laboral: {turno.get('tipo_dia', 'operativo')}",
-                        "No corresponde" if turno.get('tipo_dia') == 'Libre' else "SERPAT TURNOS"
+                        prioridad,
+                        accion,
+                        motivo,
+                        registro
                     )
         except Exception as e:
             self.errores.append(f"Error en MotorSerpat: {str(e)}")
@@ -154,18 +182,26 @@ class MotorCentral:
                 
                 criticos = [p for p in pendientes if limpiar_texto(p.get("prioridad", "")).lower() in ["crítica", "critica", "alta"]]
                 if criticos:
+                    critico = criticos[0]
+                    # Si no tiene descripción, usar área + prioridad
+                    tarea = limpiar_texto(critico.get("tarea", ""))
+                    if not tarea or tarea == "Pendiente sin descripción":
+                        area = limpiar_texto(critico.get("area", "general"))
+                        prioridad = limpiar_texto(critico.get("prioridad", "alta"))
+                        tarea = f"{area} ({prioridad})"
+                    
                     self.sistema.agregar_alerta(
                         "Pendientes",
                         96,
                         f"Hay {len(criticos)} pendiente(s) crítico(s)/alto(s)",
-                        f"Resolver o reagendar: {criticos[0].get('tarea', 'pendiente')[:60]}"
+                        f"Resolver o reagendar: {tarea[:70]}"
                     )
                     self.sistema.agregar_decision(
                         "Pendientes",
                         93,
-                        f"Resolver pendiente crítico: {criticos[0].get('tarea', 'tarea')}",
-                        f"Prioridad {criticos[0].get('prioridad', 'alta')} — Área: {criticos[0].get('area', 'general')}",
-                        f"20_Registro_Diario; 90_Alertas_Correcciones"
+                        f"Resolver pendiente crítico: {tarea[:70]}",
+                        f"Prioridad {critico.get('prioridad', 'alta')} — Área: {critico.get('area', 'general')}",
+                        "20_Registro_Diario; 90_Alertas_Correcciones"
                     )
         except Exception as e:
             self.errores.append(f"Error en leer_pendientes: {str(e)}")
