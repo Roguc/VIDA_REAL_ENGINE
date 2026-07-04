@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIDA REAL ENGINE V5.4 - Centro de Comando</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a1428 0%, #0d1b2a 100%);
+            color: #e8f1f8;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #0f2642 0%, #1a3a52 100%);
+            padding: 30px;
+            border-bottom: 3px solid #ffc107;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        
+        h1 { color: #ffc107; margin-bottom: 10px; font-size: 28px; }
+        .header-info { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px; }
+        .info-item {
+            background: rgba(255, 193, 7, 0.1);
+            padding: 12px;
+            border-left: 3px solid #ffc107;
+            border-radius: 4px;
+        }
+        .info-item strong { color: #ffc107; display: block; font-size: 12px; text-transform: uppercase; }
+        .info-item span { font-size: 16px; color: #e8f1f8; }
+        
+        nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        nav button {
+            background: #ffc107;
+            color: #0a1428;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        nav button:hover {
+            background: #ffeb3b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 15px;
+        }
+        
+        .panel {
+            background: linear-gradient(135deg, #0f2642 0%, #1a3a52 100%);
+            border: 1px solid #2d5a7b;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .panel h2 {
+            color: #ffc107;
+            margin-bottom: 20px;
+            font-size: 22px;
+            border-bottom: 2px solid #ffc107;
+            padding-bottom: 10px;
+        }
+        
+        .panel h3 {
+            color: #64b5f6;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .decision-item {
+            background: rgba(255, 193, 7, 0.05);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+        }
+        
+        .decision-item .area {
+            color: #ffc107;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        
+        .decision-item .prioridad {
+            color: #90caf9;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .decision-item .accion {
+            margin-top: 8px;
+            color: #e8f1f8;
+            font-size: 15px;
+        }
+        
+        .decision-item .motivo {
+            margin-top: 5px;
+            color: #b0bec5;
+            font-size: 13px;
+            font-style: italic;
+        }
+        
+        .alert-item {
+            background: rgba(244, 67, 54, 0.1);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid #ff6b6b;
+            border-radius: 4px;
+        }
+        
+        .alert-item .titulo {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        
+        .alert-item .detalle {
+            margin-top: 5px;
+            color: #b0bec5;
+            font-size: 13px;
+        }
+        
+        .motor-badge {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        table th {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #ffc107;
+        }
+        
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #2d5a7b;
+        }
+        
+        table tr:hover {
+            background: rgba(255, 193, 7, 0.05);
+        }
+        
+        .back-to-top {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        
+        .back-to-top a {
+            background: #ffc107;
+            color: #0a1428;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .back-to-top a:hover {
+            background: #ffeb3b;
+            transform: translateY(-2px);
+        }
+        
+        footer {
+            background: #0f2642;
+            padding: 20px;
+            text-align: center;
+            color: #90caf9;
+            border-top: 1px solid #2d5a7b;
+            margin-top: 40px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .grid-item {
+            background: rgba(255, 193, 7, 0.05);
+            padding: 15px;
+            border-left: 3px solid #ffc107;
+            border-radius: 4px;
+        }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <header id="inicio">
+        <h1>VIDA REAL ENGINE V5.4 FINAL</h1>
+        <p>Centro de Comando Inteligente • Motor Central IA + 11 Motores Integrados</p>
+        
+        <div class="header-info">
+            <div class="info-item">
+                <strong>Fecha</strong>
+                <span>04-07-2026</span>
+            </div>
+            <div class="info-item">
+                <strong>Hora</strong>
+                <span>17:06</span>
+            </div>
+            <div class="info-item">
+                <strong>Tipo de Día</strong>
+                <span>Libre</span>
+            </div>
+            <div class="info-item">
+                <strong>Turno SERPAT</strong>
+                <span>Libre</span>
+            </div>
+        </div>
+        
+        <nav>
+            <button onclick="document.getElementById('decisiones').scrollIntoView();">Decisiones</button>
+            <button onclick="document.getElementById('alertas').scrollIntoView();">Alertas</button>
+            <button onclick="document.getElementById('motores').scrollIntoView();">Motores</button>
+            <button onclick="document.getElementById('universidad').scrollIntoView();">Universidad</button>
+            <button onclick="document.getElementById('finanzas').scrollIntoView();">Finanzas</button>
+            <button onclick="document.getElementById('salud').scrollIntoView();">Salud</button>
+            <button onclick="document.getElementById('empresas').scrollIntoView();">Empresas</button>
+            <button onclick="document.getElementById('serpat').scrollIntoView();">SERPAT</button>
+            <button onclick="document.getElementById('ancla').scrollIntoView();">Ancla</button>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <!-- DECISIONES -->
+        <div id="decisiones" class="panel">
+            <h2>Decisiones del Motor Central IA</h2>
+                <div class="decision-item">
+                    <div>
+                        <span class="area">Sistema</span>
+                        <span class="prioridad">Prioridad 100</span>
+                    </div>
+                    <div class="accion">Abrir Centro de Comando y revisar prioridades.</div>
+                    <div class="motivo">Motor Central IA activo.</div>
+                </div>
+                <div class="decision-item">
+                    <div>
+                        <span class="area">Universidad</span>
+                        <span class="prioridad">Prioridad 098</span>
+                    </div>
+                    <div class="accion">Estudiar Universidad — EV-010. Revisar contenido asociado, resolver ejercicios y registrar errores.</div>
+                    <div class="motivo">Evaluación detectada como prioridad: EV-010 | Probabilidad y Estadística | 4 | Sumativa | Prueba escrita Unidad I | 30 | 2026-06-28 00:00:00 | Fundamentos, condicional, combinaciones, Bayes | Pendiente | -5 | Vencido | Preparar / entregar / estudiar | 62_T2.</div>
+                </div>
+                <div class="decision-item">
+                    <div>
+                        <span class="area">Pendientes</span>
+                        <span class="prioridad">Prioridad 093</span>
+                    </div>
+                    <div class="accion">Resolver pendiente crítico: Universidad (Alta)</div>
+                    <div class="motivo">Prioridad Alta — Área: Universidad</div>
+                </div>
+                <div class="decision-item">
+                    <div>
+                        <span class="area">SERPAT</span>
+                        <span class="prioridad">Prioridad 091</span>
+                    </div>
+                    <div class="accion">Día libre SERPAT — Usar para avance estratégico sin restricción horaria.</div>
+                    <div class="motivo">Calendario laboral: Día libre disponible</div>
+                </div>
+                <div class="decision-item">
+                    <div>
+                        <span class="area">Ancla Mental</span>
+                        <span class="prioridad">Prioridad 086</span>
+                    </div>
+                    <div class="accion">Responder: ¿actué como constructor o como sobreviviente? ¿Qué capital aumentó hoy? ¿Qué debo corregir? ¿Cuál es la prioridad única de mañana?</div>
+                    <div class="motivo">Evitar volver al Robinson anterior y preparar la continuidad de mañana.</div>
+                </div>
+                <div class="decision-item">
+                    <div>
+                        <span class="area">Salud</span>
+                        <span class="prioridad">Prioridad 084</span>
+                    </div>
+                    <div class="accion">Registrar sueño, energía, recuperación, presión arterial, pulso, medicamento, alimentación e hidratación.</div>
+                    <div class="motivo">Construir capital biológico para sostener 15 años de crecimiento.</div>
+                </div>
+                <div class="decision-item">
+                    <div>
+                        <span class="area">Finanzas</span>
+                        <span class="prioridad">Prioridad 079</span>
+                    </div>
+                    <div class="accion">Registrar ingresos, gastos, pagos, movimientos bancarios, inversiones, saldo disponible y obligaciones pendientes.</div>
+                    <div class="motivo">Construir capital financiero mediante visibilidad, control y decisión patrimonial.</div>
+                </div>
+                <div class="decision-item">
+                    <div>
+                        <span class="area">Empresas</span>
+                        <span class="prioridad">Prioridad 074</span>
+                    </div>
+                    <div class="accion">Revisar CRM, seguimiento, mercado o proyecto activo. Ejecutar una acción concreta: contacto, análisis, respuesta, registro, hipótesis, aprendizaje o siguiente acción.</div>
+                    <div class="motivo">Construir capital empresarial con una acción concreta, registrable y acumulativa.</div>
+                </div>
+        </div>
+        
+        <!-- ALERTAS -->
+        <div id="alertas" class="panel">
+            <h2>Alertas del Sistema</h2>
+                <div class="alert-item">
+                    <div class="titulo">Calendario laboral detectado</div>
+                    <div class="detalle">SERPAT • Usar SERPAT TURNOS para adaptar el día.</div>
+                </div>
+                <div class="alert-item">
+                    <div class="titulo">Pendientes detectados</div>
+                    <div class="detalle">Pendientes • Integrar pendientes en la priorización diaria.</div>
+                </div>
+                <div class="alert-item">
+                    <div class="titulo">Vision Board detectado</div>
+                    <div class="detalle">Identidad • Usar Vision Board para visualización diaria.</div>
+                </div>
+                <div class="alert-item">
+                    <div class="titulo">Desarrollo personal detectado</div>
+                    <div class="detalle">Desarrollo Personal • Integrar lectura, hábitos e identidad.</div>
+                </div>
+                <div class="alert-item">
+                    <div class="titulo">Errores académicos detectados</div>
+                    <div class="detalle">Universidad • Hay 36 registros de errores/dudas que deben revisarse.</div>
+                </div>
+                <div class="alert-item">
+                    <div class="titulo">Recursos universitarios disponibles</div>
+                    <div class="detalle">Universidad • Hay 115 archivos en Recursos/04_UNIVERSIDAD.</div>
+                </div>
+                <div class="alert-item">
+                    <div class="titulo">Hay 2 pendiente(s) crítico(s)/alto(s)</div>
+                    <div class="detalle">Pendientes • Resolver o reagendar: Universidad (Alta)</div>
+                </div>
+                <div class="alert-item">
+                    <div class="titulo">Panel Vision 2042 disponible</div>
+                    <div class="detalle">Identidad • Visualizar: Patrimonio</div>
+                </div>
+                <div class="alert-item">
+                    <div class="titulo">Ley 001 activa</div>
+                    <div class="detalle">Identidad • 'Nunca romper la cadena. Si no puedes avanzar al 100%, avanza al 20%; si no puedes al 20%, avanza al 5%; nunca cero.'</div>
+                </div>
+                <div class="alert-item">
+                    <div class="titulo">Sistema de capitales activo</div>
+                    <div class="detalle">Continuidad • Cada acción construye capital en un dominio</div>
+                </div>
+        </div>
+        
+        <!-- MOTORES ACTIVOS -->
+        <div id="motores" class="panel">
+            <h2>Motores Activos: 11</h2><span class="motor-badge">✓ MotorUniversidad</span><span class="motor-badge">✓ MotorSerpat</span><span class="motor-badge">✓ MotorPendientes</span><span class="motor-badge">✓ MotorVisionBoard</span><span class="motor-badge">✓ MotorDesarrolloPersonal</span><span class="motor-badge">✓ MotorSalud</span><span class="motor-badge">✓ MotorFinanzas</span><span class="motor-badge">✓ MotorEmpresas</span><span class="motor-badge">✓ MotorAncla</span><span class="motor-badge">✓ MotorContinuidad</span><span class="motor-badge">✓ MotorCentral</span>
+        </div>
+        
+        <!-- UNIVERSIDAD -->
+        <div id="universidad" class="panel">
+            <h2>Universidad</h2><h3>Análisis de Evaluaciones</h3>
+                <div class="grid-item">
+                    <strong>Estudiar Universidad — EV-010. Revisar contenido asociado, resolver ejercicios y</strong>
+                    <p style="margin-top: 8px; color: #b0bec5; font-size: 13px;">Evaluación detectada como prioridad: EV-010 | Probabilidad y Estadística | 4 | Sumativa | Prueba escrita Unidad I | 30 | 2026-06-28 00:00:00 | Fundame</p>
+                </div><h3>Recursos Disponibles</h3><p>• 115 archivos en Recursos/04_UNIVERSIDAD</p><p>• 36 registros de errores/dudas</p><h3>Acción Recomendada</h3><p>Revisar evaluaciones críticas, resolver ejercicios, registrar errores.</p>
+        </div>
+        
+        <!-- FINANZAS -->
+        <div id="finanzas" class="panel">
+            <h2>Finanzas</h2><h3>Capital Financiero</h3><p>• Registrar ingresos, gastos, pagos, movimientos bancarios, inversiones, saldo disponible y obligaciones pendientes.</p><h3>Registros Sugeridos</h3><p>• 11_Ingresos</p><p>• 12_Gastos</p><p>• 13_Deudas</p><p>• 18_Conciliacion_Bancaria_V3</p><h3>Objetivo</h3><p>Construir capital financiero mediante visibilidad, control y decisión patrimonial.</p>
+        </div>
+        
+        <!-- SALUD -->
+        <div id="salud" class="panel">
+            <h2>Salud</h2><h3>Capital Biológico</h3><p>• Registrar sueño, energía, recuperación, presión arterial, pulso, medicamento, alimentación e hidratación.</p><h3>Registros Sugeridos</h3><p>• H02_Registro_Salud</p><p>• H03_Presión_Log</p><p>• H00_Dashboard_Health</p><h3>Objetivo</h3><p>Construir capital biológico para sostener 15 años de crecimiento.</p>
+        </div>
+        
+        <!-- EMPRESAS -->
+        <div id="empresas" class="panel">
+            <h2>Empresas</h2><h3>Capital Empresarial</h3><p>• Revisar CRM, seguimiento, mercado o proyecto activo. Ejecutar una acción concreta: contacto, análisis, respuesta, registro, hipótesis, aprendizaje o siguiente acción.</p><h3>Registros Sugeridos</h3><p>• 30_MGC_CRM</p><p>• 33_Seguimientos</p><p>• 70_Mercado_MGC</p><p>• 71_Mercado_LNR</p><h3>Objetivo</h3><p>Ejecutar una acción concreta, registrable y acumulativa cada día.</p>
+        </div>
+        
+        <!-- SERPAT -->
+        <div id="serpat" class="panel">
+            <h2>SERPAT - Calendario Laboral</h2><h3>Tipo de Día: Libre</h3><h3>Turno: Libre</h3><p style='color: #4caf50; font-weight: bold;'>Día libre disponible — Usar para avance estratégico sin restricción horaria.</p><h3>Observaciones</h3><p>• Revisar SERPAT TURNOS para adaptar el día.</p><p>• Registrar cambios en 09_PANEL_VISION.</p>
+        </div>
+        
+        <!-- ANCLA/CONTINUIDAD -->
+        <div id="ancla" class="panel">
+            <h2>Ancla Mental & Continuidad</h2><h3>Ley 001 (Cadena de Continuidad)</h3><p><strong>'Nunca romper la cadena. Si no puedes avanzar al 100%, avanza al 20%; si no puedes al 20%, avanza al 5%; nunca cero.'</strong></p><h3>Preguntas de Identidad</h3><p>• Responder: ¿actué como constructor o como sobreviviente? ¿Qué capital aumentó hoy? ¿Qué debo corregir? ¿Cuál es la prioridad única de mañana?</p><h3>Capitales en Construcción</h3><p>• Capital Biológico (Salud)</p><p>• Capital Financiero (Finanzas)</p><p>• Capital Empresarial (Empresas)</p><p>• Capital Educativo (Universidad)</p><p>• Capital Mental (Ancla)</p><h3>Objetivo Diario</h3><p>Evitar volver al Robinson anterior y preparar la continuidad de mañana.</p>
+        </div>
+        
+        <div class="back-to-top">
+            <a href="#inicio">Volver al inicio</a>
+        </div>
+    </div>
+    
+    <footer>
+        <p>VIDA REAL ENGINE V5.4 FINAL • Centro de Comando Inteligente</p>
+        <p>Ejecutado: 04-07-2026 17:06:07</p>
+    </footer>
+</body>
+</html>

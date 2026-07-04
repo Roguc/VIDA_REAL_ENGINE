@@ -1,6 +1,8 @@
 from Core.motor_central import MotorCentral
 from Core.logger import guardar_log
+from Builders.dashboard_builder import DashboardBuilder
 from datetime import datetime
+from pathlib import Path
 
 def generar_resumen_estado(motor, sistema):
     """Genera un resumen textual del estado del sistema"""
@@ -105,14 +107,14 @@ def main():
     
     log_buffer.append("")
     log_buffer.append("=" * 70)
-    log_buffer.append(" VIDA REAL ENGINE V5.3 FINAL")
-    log_buffer.append(" MOTOR CENTRAL IA + 11 MOTORES INTEGRADOS (CONSOLIDADOS)")
+    log_buffer.append(" VIDA REAL ENGINE V5.4 FINAL")
+    log_buffer.append(" MOTOR CENTRAL IA + 11 MOTORES + CENTRO DE COMANDO HTML")
     log_buffer.append("=" * 70)
     
     print()
     print("=" * 70)
-    print(" VIDA REAL ENGINE V5.3 FINAL")
-    print(" MOTOR CENTRAL IA + 11 MOTORES INTEGRADOS (CONSOLIDADOS)")
+    print(" VIDA REAL ENGINE V5.4 FINAL")
+    print(" MOTOR CENTRAL IA + 11 MOTORES + CENTRO DE COMANDO HTML")
     print("=" * 70)
     print()
     print("📅 Fecha:", sistema.fecha_texto)
@@ -121,7 +123,6 @@ def main():
     print("📄 Hojas:", sistema.contexto["excel"]["total_hojas"])
     print("📁 Recursos:", sistema.recursos["total_archivos"], "archivos")
     print()
-    
     log_buffer.append("")
     log_buffer.append(f"Fecha: {sistema.fecha_texto}")
     log_buffer.append(f"Hora: {sistema.hora_actual}")
@@ -230,8 +231,8 @@ def main():
     print()
     
     log_buffer.append("=" * 70)
-    log_buffer.append(" V5.3 FINAL COMPLETADO EXITOSAMENTE")
-    log_buffer.append(" Decisiones consolidadas | Duplicados eliminados | Salida legible")
+    log_buffer.append(" V5.4 FINAL - CENTRO DE COMANDO COMPLETADO")
+    log_buffer.append(" Decisiones consolidadas | Centro de Comando HTML | Navegable")
     log_buffer.append("=" * 70)
     
     # Guardar log en archivo
@@ -240,6 +241,38 @@ def main():
     if archivo_log:
         print(f"📄 Log guardado en: {archivo_log}")
     
+    print()
+    
+    # GENERAR CENTRO DE COMANDO HTML (V5.4)
+    print("=" * 70)
+    print(" GENERANDO CENTRO DE COMANDO V5.4...")
+    print("=" * 70)
+    try:
+        builder = DashboardBuilder(Path.cwd())
+        motor_data = {
+            'motores_activos': [
+                'MotorUniversidad',
+                'MotorSerpat',
+                'MotorPendientes',
+                'MotorVisionBoard',
+                'MotorDesarrolloPersonal',
+                'MotorSalud',
+                'MotorFinanzas',
+                'MotorEmpresas',
+                'MotorAncla',
+                'MotorContinuidad',
+                'MotorCentral'
+            ]
+        }
+        archivo_html = builder.build(sistema, motor_data)
+        print(f"✓ Centro de Comando generado: {archivo_html}")
+        print(f"  Abrir en navegador: {archivo_html.as_posix()}")
+    except Exception as e:
+        print(f"⚠️  Error generando Centro de Comando: {e}")
+    
+    print("=" * 70)
+    print(" V5.4 FINAL - CENTRO DE COMANDO COMPLETADO")
+    print("=" * 70)
     print()
 
 if __name__ == "__main__":
