@@ -1,0 +1,50 @@
+
+Bienvenido y bienvenida a la Unidad 1
+Fundamentos y Cálculo de Probabilidades en Problemas Propios de la Ingeniería cuyo resultado de aprendizaje es:
+
+RA1. Utilizar los conceptos axiomáticos, condicionales y bayesianos de la probabilidad para analizar problemas de probabilidad en situaciones propias de la Ingeniería.
+
+Esta primera unidad tiene una duración de 4 semanas y durante su desarrollo vamos a revisar
+
+Definición de probabilidad, Espacio de probabilidad y espacio muestral.
+Teoremas básicos de la probabilidad.
+Cálculo de Probabilidades.
+Tipos de probabilidades (condicional, total, bayesiana).
+Cálculo de probabilidades.
+Probabilidad condicional.
+Probabilidad multiplicativa.
+Combinaciones y permutaciones.
+Probabilidad de eventos independientes.
+Para esto, deberás revisar, semana a semana, los recursos de aprendizaje disponibles en el ambiente virtual de aprendizaje, estudiar y realizar las actividades formativas y sumativas planificadas, de manera autónoma y autorregulada.
+
+Además, cada semana serás invitado e invitada a participar de una sesión sincrónica por videoconferencia con tu docente, quien dinamizará la reunión para promover tus aprendizajes. En esta sesión tendrás la oportunidad de compartir con tus compañeros y compañeras.
+
+Procura participar activamente en las experiencias de aprendizaje de la asignatura y recuerda que puedes comunicarte con tu docente las veces que lo requieras mediante el “foro de consultas”.
+
+¡Mucho éxito!
+En su conjunto, estos recursos te permitirán conocer que son las probabilidades, cuáles son los tipos de probabilidades que existen, qué es el espacio de probabilidad y que es el espacio muestral, además de identificar los teoremas básicos de probabilidad. Todo ello con el fin de que puedas aplicar este conocimiento en problemas propios de la ingeniería.
+
+Durante esta semana corresponde la realización de una evaluación diagnóstica en la que deberás responder un cuestionario que busca conocer tus conocimientos previos.
+
+Esta evaluación es individual.
+
+Para realizar la evaluación diagnóstica debes ingresar en el: Cuestionario
+
+
+Horas autónomas dirigidas
+ 
+
+HAD@2x-100.jpg		
+A continuación, te presentamos algunas actividades complementarias a las ya realizadas para apoyar tu proceso de aprendizaje.
+
+Te invitamos a revisar:
+
+Capítulo 1: Introducción a la estadística y al análisis de datos, del libro Probabilidad y Estadística para Ingeniería y Ciencias- Walpole, R. E., Myers, R. H., Myers, S. L., & Ye, K. (2012).
+Capítulo 2: Probabilidad, del libro Probabilidad y Estadística para Ingeniería y Ciencias. Walpole, R. E., Myers, R. H., Myers, S. L., & Ye, K. (2012).
+Capítulo 1 del libro: La quinta disciplina: cómo impulsar el aprendizaje en la organización inteligente. Senge, P. (2006)
+Los podrás encontrar en el siguiente link: https://uautonomacl.elogim.com
+
+Se sugiere además revisar el material de la clase sincrónica.
+
+Todas las consultas al respecto puedes realizarlas a tu docente en el foro dispuesto para ello, el que permanecerá disponible durante el desarrollo de toda la asignatura.
+

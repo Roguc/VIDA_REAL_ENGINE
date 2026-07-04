@@ -1,0 +1,22 @@
+VIDA REAL ENGINE V4 — CENTRO DE COMANDO FUNCIONAL
+
+Qué agrega:
+- Fecha automática según el computador.
+- Lectura de hoja SERPAT TURNOS.
+- Lectura de VISION_BOARD.
+- Lectura de PENDIENTES.
+- Lectura de DESARROLLO_PERSONAL.
+- Botones funcionales con navegación interna.
+- Secciones: Finanzas, Universidad, Salud, Empresas, SERPAT, Ancla, Recursos, Vision Board y Pendientes.
+- Word queda como respaldo secundario.
+
+Instalación:
+1. Copia estos archivos dentro de VIDA_REAL_ENGINE.
+2. Reemplaza cuando pregunte.
+3. Ejecuta: python main.py
+4. Abre: Salidas/Dashboard/CENTRO_COMANDO_YYYY-MM-DD.html
+
+IMPORTANTE:
+- No tocar la carpeta Recursos.
+- No borrar el Excel.
+- El sistema busca automáticamente el Excel más reciente dentro de la carpeta Excel.

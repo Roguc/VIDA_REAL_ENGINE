@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Centro de Comando</title>
+<style>
+body { margin:0; font-family:Arial,sans-serif; background:#07111f; color:#eef6ff; }
+header { padding:24px; background:linear-gradient(90deg,#07111f,#102a44); border-bottom:1px solid #25486a; }
+h1 { margin:0; font-size:30px; letter-spacing:1px; }
+h2 { margin-top:0; color:#ffd166; }
+.grid { display:grid; grid-template-columns:1.05fr 2fr 1.05fr; gap:16px; padding:16px; }
+.card { background:#0c1c2e; border:1px solid #25486a; border-radius:14px; padding:16px; box-shadow:0 0 18px rgba(0,0,0,.25); }
+.kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:16px; }
+.kpi { background:#102a44; border-radius:12px; padding:12px; border:1px solid #315a7e; }
+.kpi strong { display:block; color:#ffd166; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th,td { border-bottom:1px solid #25486a; padding:8px; vertical-align:top; }
+th { color:#ffd166; text-align:left; }
+small { color:#b8c7d9; }
+button { width:100%; padding:12px; margin:6px 0; background:#ffd166; border:0; border-radius:10px; font-weight:bold; cursor:pointer; }
+.alert { color:#ffb703; }
+.footer { padding:16px; color:#9fb6cc; text-align:center; }
+</style>
+</head>
+<body>
+<header>
+<h1>VIDA REAL ENGINE 1.0 — CENTRO DE COMANDO</h1>
+<p>Buenos días, Robinson. Este es tu plan operativo del día. No improvises. Ejecuta.</p>
+<div class="kpis">
+<div class="kpi"><strong>Fecha</strong>2026-06-27</div>
+<div class="kpi"><strong>Tipo de día</strong>Turno de Noche</div>
+<div class="kpi"><strong>Universidad</strong>Probabilidad y Estadística</div>
+<div class="kpi"><strong>Empresa</strong>MGC / CaptaPropIA / LNH según seguimiento</div>
+</div>
+</header>
+
+<div class="grid">
+<section class="card">
+<h2>Identidad</h2>
+<p>Hoy actúas como Director Ejecutivo de la construcción del Robinson 2042.</p>
+<p><b>Ley 001:</b> Nunca romper la cadena.</p>
+<h2>Estado</h2>
+<p><b>Energía:</b> Pendiente</p>
+<p><b>Salud:</b> Pendiente</p>
+<p><b>Turno SERPAT:</b> 21:00–08:00</p>
+<h2>Recursos</h2>
+<p>11 carpetas detectadas.</p>
+<ul><li>01_DOCUMENTOS_PERSONALES: 0 archivo(s)</li><li>02_SALUD: 0 archivo(s)</li><li>03_FINANZAS: 0 archivo(s)</li><li>04_UNIVERSIDAD: 0 archivo(s)</li><li>05_EMPRESAS: 0 archivo(s)</li><li>06_TRABAJO_SERPAT: 0 archivo(s)</li><li>07_ANCLA_MENTAL: 0 archivo(s)</li><li>08_LECTURA_CRECIIMIENTO: 0 archivo(s)</li><li>09_PANEL_VISION: 0 archivo(s)</li><li>10_LEGAL_CONTRATOS: 0 archivo(s)</li><li>99_HISTORIAL_RESPALDOS: 0 archivo(s)</li></ul>
+</section>
+
+<section class="card">
+<h2>Cronograma del día</h2>
+<table>
+<tr><th>Hora</th><th>Actividad exacta</th><th>Registro</th><th>Capital</th></tr>
+
+        <tr>
+            <td>08:00–08:20</td>
+            <td><b>SALIDA / ENTREGA DEL TURNO</b><br><small>Entregar novedades, verificar observaciones pendientes, guardar elementos personales y salir del recinto.</small></td>
+            <td>No corresponde</td>
+            <td>Capital reputacional</td>
+        </tr>
+        
+        <tr>
+            <td>08:20–09:10</td>
+            <td><b>TRASLADO · LLEGADA A CASA · PREPARACIÓN DEL DESCANSO</b><br><small>Registrar sueño, energía, recuperación, presión arterial, pulso, medicamento, alimentación e hidratación. Si hay cansancio o alerta, reducir intensidad del día sin romper continuidad.</small></td>
+            <td>H02_Registro_Salud; H03_Presión_Log; H00_Dashboard_Health</td>
+            <td>Capital biológico</td>
+        </tr>
+        
+        <tr>
+            <td>09:10–14:30</td>
+            <td><b>SUEÑO PRINCIPAL</b><br><small>Dormir, teléfono en silencio, dormitorio oscuro y sin interrupciones.</small></td>
+            <td>H02_Registro_Salud al despertar</td>
+            <td>Capital biológico</td>
+        </tr>
+        
+        <tr>
+            <td>14:30–14:40</td>
+            <td><b>DESPERTAR · IDENTIDAD · VISUALIZACIÓN</b><br><small>Abrir los ojos. Tomar agua. Respirar. Visualizar panel de visión: oficina, holding, salud, familia, patrimonio y libertad. Repetir: hoy no improviso, sigo el sistema.</small></td>
+            <td>Ancla Mental; 21_KPI_Diario</td>
+            <td>Capital psicológico</td>
+        </tr>
+        
+        <tr>
+            <td>14:40–15:00</td>
+            <td><b>SALUD · PRESIÓN · ENERGÍA</b><br><small>Registrar sueño, energía, recuperación, presión arterial, pulso, medicamento, alimentación e hidratación. Si hay cansancio o alerta, reducir intensidad del día sin romper continuidad.</small></td>
+            <td>H02_Registro_Salud; H03_Presión_Log; H00_Dashboard_Health</td>
+            <td>Capital biológico</td>
+        </tr>
+        
+        <tr>
+            <td>15:00–15:30</td>
+            <td><b>ALIMENTACIÓN · HIDRATACIÓN</b><br><small>Almorzar, hidratarse, ordenar espacio, evitar azúcar/gasto impulsivo y evaluar energía posterior.</small></td>
+            <td>H02_Registro_Salud; 12_Gastos si hubo compra</td>
+            <td>Capital biológico</td>
+        </tr>
+        
+        <tr>
+            <td>15:30–15:50</td>
+            <td><b>APERTURA OFICIAL DEL SISTEMA</b><br><small>Abrir Excel C31. Revisar Dashboard, KPI Diario, calendario laboral, calendario académico, alertas, finanzas, universidad, empresas y salud.</small></td>
+            <td>20_Registro_Diario; 21_KPI_Diario; 90_Alertas_Correcciones</td>
+            <td>Capital organizacional</td>
+        </tr>
+        
+        <tr>
+            <td>15:50–16:05</td>
+            <td><b>ALERTA ACADÉMICA · EVALUACIONES</b><br><small>Revisar Canvas y 62_T2_Evaluaciones. Evaluación crítica registrada: EV-010 / EV-006 / EV-014 — plazo domingo 28.</small></td>
+            <td>62_T2_Evaluaciones; 66_T2_Calendario</td>
+            <td>Capital intelectual</td>
+        </tr>
+        
+        <tr>
+            <td>16:05–17:20</td>
+            <td><b>UNIVERSIDAD — Probabilidad y Estadística</b><br><small>Abrir Canvas. Revisar ramo prioritario. Confirmar contenido exacto, evaluación, material, errores abiertos y avance anterior. Resolver ejercicios o avanzar entrega. Registrar exactamente dónde quedaste.</small></td>
+            <td>61_T2_Ramos; 62_T2_Evaluaciones; 63_T2_Bloques; 64_T2_Errores; 65_T2_Dashboard; 66_T2_Calendario</td>
+            <td>Capital intelectual</td>
+        </tr>
+        
+        <tr>
+            <td>17:20–17:50</td>
+            <td><b>COMUNICACIÓN Y ARGUMENTACIÓN</b><br><small>Revisar pauta, rúbrica, tesis, argumentos, coherencia, conectores, ortografía y formato.</small></td>
+            <td>61_T2_Ramos; 62_T2_Evaluaciones; 63_T2_Bloques</td>
+            <td>Capital intelectual</td>
+        </tr>
+        
+        <tr>
+            <td>17:50–18:10</td>
+            <td><b>CÁLCULO II · CONTINUIDAD MÍNIMA</b><br><small>Abrir Cuaderno Master. Resolver mínimo 1 ejercicio si estás cansado, ideal 3. Registrar error exacto.</small></td>
+            <td>61_T2_Ramos; 63_T2_Bloques; 64_T2_Errores</td>
+            <td>Capital intelectual</td>
+        </tr>
+        
+        <tr>
+            <td>18:10–18:25</td>
+            <td><b>FÍSICA MECÁNICA · CONTINUIDAD MÍNIMA</b><br><small>Abrir guía. Resolver mínimo 1 ejercicio conceptual o numérico. Registrar duda concreta.</small></td>
+            <td>61_T2_Ramos; 63_T2_Bloques; 64_T2_Errores</td>
+            <td>Capital intelectual</td>
+        </tr>
+        
+        <tr>
+            <td>18:25–18:45</td>
+            <td><b>EMPRESAS — MGC / CaptaPropIA / LNH según seguimiento</b><br><small>Revisar CRM, seguimiento, mercado o proyecto activo. Ejecutar una acción concreta: contacto, análisis, respuesta, registro, hipótesis, aprendizaje o siguiente acción. No abrir líneas nuevas sin evidencia.</small></td>
+            <td>30_MGC_CRM; 33_Seguimientos; 70_Mercado_MGC; 71_Mercado_LNR; 76_CaptaPropIA; 82_LNH_Corporate_System</td>
+            <td>Capital empresarial</td>
+        </tr>
+        
+        <tr>
+            <td>18:45–19:00</td>
+            <td><b>FINANZAS PERSONALES</b><br><small>Registrar ingresos, gastos, pagos, movimientos bancarios, inversiones, saldo disponible y obligaciones pendientes. Identificar fuga, gasto impulsivo o decisión que aumente/disminuya capital.</small></td>
+            <td>11_Ingresos; 12_Gastos; 13_Deudas; 18_Conciliacion_Bancaria_V3; 20_Registro_Diario; 21_KPI_Diario</td>
+            <td>Capital financiero</td>
+        </tr>
+        
+        <tr>
+            <td>19:00–19:10</td>
+            <td><b>LECTURA ESTRATÉGICA</b><br><small>Leer 10 minutos: Divina Obsesión, Hábitos Atómicos, Padre Rico Padre Pobre o lectura estratégica definida. Registrar una idea aplicable.</small></td>
+            <td>Ancla Mental; Registro Diario</td>
+            <td>Capital cognitivo</td>
+        </tr>
+        
+        <tr>
+            <td>19:10–19:20</td>
+            <td><b>IMAGEN PERSONAL · PRESENCIA</b><br><small>Uniforme limpio, higiene, postura, rostro, perfume si corresponde, mochila ordenada, credencial, agua y colación.</small></td>
+            <td>21_KPI_Diario</td>
+            <td>Capital de presencia</td>
+        </tr>
+        
+        <tr>
+            <td>19:20–20:20</td>
+            <td><b>TRASLADO A SERPAT</b><br><small>Trasladarse, evitar redes, preparar mentalmente el turno, revisar prioridades y entrar con calma.</small></td>
+            <td>No corresponde</td>
+            <td>Capital reputacional</td>
+        </tr>
+        
+        <tr>
+            <td>20:20–21:00</td>
+            <td><b>PREPARACIÓN OPERACIONAL DEL TURNO</b><br><small>Revisar servicio, protocolos, equipos, llaves, radio, libro de novedades y recibir turno.</small></td>
+            <td>No corresponde</td>
+            <td>Capital reputacional</td>
+        </tr>
+        
+        <tr>
+            <td>21:00–08:00</td>
+            <td><b>SERPAT — TURNO NOCTURNO</b><br><small>Cumplir responsabilidades, mantener atención, hidratarse, consumir colación y registrar mentalmente novedades.</small></td>
+            <td>No corresponde</td>
+            <td>Capital reputacional</td>
+        </tr>
+        
+</table>
+</section>
+
+<section class="card">
+<h2>Paneles</h2>
+<button>Finanzas</button>
+<button>Universidad</button>
+<button>Salud</button>
+<button>Empresas</button>
+<button>SERPAT</button>
+<button>Ancla Mental</button>
+<button>Recursos</button>
+<button>Generar Word</button>
+<h2>Alertas</h2>
+<p class="alert">Evaluación crítica: EV-010 / EV-006 / EV-014 — plazo domingo 28</p>
+<p class="alert">Revisar pendientes acumulados antes del cierre.</p>
+</section>
+</div>
+<div class="footer">Excel = memoria · Python = cerebro · Centro de Comando = salida principal · Word/PDF = respaldo</div>
+</body>
+</html>

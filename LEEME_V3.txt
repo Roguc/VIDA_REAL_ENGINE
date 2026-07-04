@@ -1,0 +1,17 @@
+VIDA REAL ENGINE V3 — CENTRO DE COMANDO
+
+Copiar estos archivos dentro de VIDA_REAL_ENGINE, reemplazando cuando corresponda.
+
+Archivos:
+- Config/config.py
+- Motores/motor_dashboard.py
+- Motores/motor_recursos.py
+- main.py
+
+Luego ejecutar:
+python main.py
+
+Salida principal:
+Salidas/Dashboard/CENTRO_COMANDO_YYYY-MM-DD.html
+
+El Word sigue siendo respaldo secundario.

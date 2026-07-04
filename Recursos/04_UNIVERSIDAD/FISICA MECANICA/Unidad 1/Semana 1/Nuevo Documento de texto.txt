@@ -1,0 +1,23 @@
+Bienvenidos y bienvenidas a la semana 1: Unidades de medida y cantidades físicas 
+
+Esta semana se espera que reconozcas las unidades de medida son esenciales en el estudio de la física, ya que proporcionan un lenguaje común para describir y cuantificar el mundo natural. El Sistema Internacional de Unidades (SI) establece un conjunto de unidades básicas, como el metro para la longitud, el segundo para el tiempo y el kilogramo para la masa, que sirven como bloques fundamentales para construir medidas más complejas. Estas unidades permiten a los científicos y técnicos comunicar resultados y realizar experimentos de manera consistente y precisa. Al emplear un sistema unificado, se facilita la colaboración internacional y se asegura que los descubrimientos científicos sean replicables y verificables, independientemente de la ubicación geográfica. 
+
+ 
+
+Las cantidades físicas, por otro lado, son propiedades o características de un fenómeno, cuerpo o sustancia que pueden ser cuantificadas mediante medición. Estas incluyen magnitudes como el desplazamiento, la velocidad, la aceleración, la fuerza y la energía, cada una con su respectiva unidad de medida en el SI. Comprender las cantidades físicas y sus interrelaciones es crucial para el análisis y la interpretación de los fenómenos físicos. Distinguir entre magnitudes escalares, que tienen solo magnitud, y vectoriales, que incluyen dirección, es fundamental para aplicar correctamente los principios de la física al resolver problemas y desarrollar nuevas tecnologías. Esto subraya la importancia de un enfoque metódico y sistemático en el estudio de las ciencias físicas. 
+
+ 
+
+Los criterios de evaluación que se abordará en esta semana son: 
+
+ 
+
+CE 1.1 Calcula las variables de los diferentes tipos de movimiento utilizando definiciones y ecuaciones cinemáticas que los caracterizan. 
+
+CE 1.3 Resuelve ejercicios de aplicación aplicando las distintas relaciones de los movimientos. 
+
+ 
+
+Para profundizar en estos temas te invitamos a revisar los siguientes recursos: 
+
+ 

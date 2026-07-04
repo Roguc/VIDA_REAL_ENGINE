@@ -1,0 +1,7 @@
+V5
+- Barra superior
+- Navegación por secciones
+- Botón volver arriba
+- Impresión/PDF
+- Base para cronograma dinámico
+- Preparado para SERPAT_TURNOS

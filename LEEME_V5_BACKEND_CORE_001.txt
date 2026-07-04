@@ -1,0 +1,26 @@
+VIDA REAL ENGINE V5.0 — BACKEND CORE 001
+
+Instalación:
+1. Copiar el contenido de este ZIP dentro de VIDA_REAL_ENGINE.
+2. Reemplazar archivos cuando Windows pregunte.
+3. Ejecutar: python main.py
+
+Salida principal:
+Salidas/Dashboard/CENTRO_COMANDO_V5_YYYY-MM-DD.html
+
+Salida secundaria:
+Salidas/Word/VIDA_REAL_ENGINE_V5_YYYY-MM-DD.docx
+
+Qué incluye:
+- Models/sistema_dia.py
+- Managers/excel_manager.py
+- Managers/recursos_manager.py
+- Core/core.py
+- Core/decision_engine.py
+- Core/logger.py
+- Builders/dashboard_builder.py
+- Builders/word_builder.py
+- main.py actualizado
+
+Objetivo:
+Iniciar el backend integrado definitivo sin romper la V4.
