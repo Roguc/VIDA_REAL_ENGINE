@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIDA REAL ENGINE V5.4.1 FINAL</title>
+    <style>
+        :root {
+            --bg: #050b14;
+            --bg-2: #091423;
+            --panel: rgba(12, 26, 43, 0.94);
+            --panel-2: rgba(16, 34, 56, 0.95);
+            --line: rgba(78, 126, 178, 0.42);
+            --line-strong: rgba(255, 196, 46, 0.6);
+            --text: #edf4ff;
+            --muted: #9cb6d1;
+            --accent: #ffc62c;
+            --accent-2: #6aa9ff;
+            --good: #46d17a;
+            --warn: #ffb24d;
+            --danger: #ff6b7f;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body { height: 100%; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 10% 0%, rgba(255, 196, 46, 0.12), transparent 35%),
+                radial-gradient(circle at 90% 8%, rgba(106, 169, 255, 0.14), transparent 30%),
+                linear-gradient(145deg, var(--bg) 0%, #08111c 45%, #07131f 100%);
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.45));
+            opacity: 0.6;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            padding: 16px 20px 12px;
+            background: linear-gradient(180deg, rgba(5, 11, 20, 0.96), rgba(7, 18, 30, 0.92));
+            border-bottom: 1px solid rgba(255, 196, 46, 0.35);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.38);
+            backdrop-filter: blur(8px);
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .hero-title h1 {
+            margin: 0;
+            font-size: 30px;
+            line-height: 1.05;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #f6fbff;
+        }
+
+        .hero-title .eyebrow {
+            margin-top: 4px;
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+        }
+
+        .hero-title .tagline {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .header-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .metric {
+            min-height: 62px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: linear-gradient(145deg, rgba(16, 34, 56, 0.95), rgba(12, 26, 43, 0.9));
+            border: 1px solid var(--line);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+
+        .metric small {
+            display: block;
+            color: #87b2d8;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .metric strong {
+            display: block;
+            margin-top: 4px;
+            font-size: 14px;
+            color: #f3f8ff;
+        }
+
+        .metric span {
+            display: block;
+            margin-top: 2px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .command-bar {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 8px;
+            padding: 10px 20px 14px;
+            border-bottom: 1px solid rgba(255, 196, 46, 0.16);
+            background: rgba(7, 17, 27, 0.78);
+        }
+
+        .nav-btn {
+            border: 1px solid rgba(121, 170, 226, 0.45);
+            border-radius: 999px;
+            padding: 10px 12px;
+            background: linear-gradient(180deg, rgba(20, 40, 66, 0.96), rgba(11, 25, 41, 0.98));
+            color: var(--text);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            cursor: pointer;
+            transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 196, 46, 0.8);
+            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(180deg, #ffd86e, #f5b91c);
+            color: #122033;
+            border-color: #f2c63d;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 290px minmax(0, 1fr) 305px;
+            gap: 14px;
+            padding: 14px 16px 18px;
+            max-width: 1760px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-self: start;
+            position: sticky;
+            top: 146px;
+            max-height: calc(100vh - 170px);
+            overflow: auto;
+            padding-right: 2px;
+        }
+
+        .panel {
+            background: linear-gradient(145deg, rgba(17, 34, 54, 0.96), rgba(11, 24, 40, 0.92));
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            box-shadow: 0 12px 26px rgba(0, 0, 0, 0.34);
+        }
+
+        .side-card { padding: 14px; }
+
+        .side-card h3 {
+            margin: 0 0 10px;
+            color: var(--accent);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .side-card p {
+            margin: 6px 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .left-plan-item {
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .left-plan-item strong { display: block; font-size: 12px; color: #f4f8ff; }
+        .left-plan-item span { display: block; margin-top: 3px; font-size: 11px; color: var(--muted); }
+
+        .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .badge {
+            padding: 5px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 196, 46, 0.35);
+            background: rgba(255, 196, 46, 0.08);
+            color: #ffe4a1;
+            font-size: 10px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .command-box {
+            border-radius: 14px;
+            padding: 12px;
+            background: linear-gradient(180deg, rgba(17, 35, 56, 0.98), rgba(10, 21, 34, 0.96));
+            border: 1px solid rgba(255, 196, 46, 0.2);
+        }
+
+        .command-box h4 {
+            margin: 0 0 10px;
+            color: var(--accent-2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 12px;
+        }
+
+        .quick-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+
+        .quick-actions button, .quick-actions a {
+            border: 1px solid rgba(121, 170, 226, 0.44);
+            border-radius: 10px;
+            padding: 10px 10px;
+            background: rgba(15, 32, 52, 0.95);
+            color: var(--text);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .quick-actions button.primary, .quick-actions a.primary {
+            background: linear-gradient(180deg, #ffd86e, #f5b91c);
+            color: #122033;
+            border-color: #f2c63d;
+        }
+
+        .stage {
+            min-height: calc(100vh - 180px);
+            padding: 0;
+            overflow: hidden;
+            border-radius: 18px;
+        }
+
+        .screen {
+            display: none;
+            padding: 18px;
+            min-height: calc(100vh - 180px);
+            overflow: auto;
+            animation: fadeIn .2s ease;
+        }
+
+        .screen.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .screen-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 196, 46, 0.28);
+        }
+
+        .screen-header h2 {
+            margin: 0;
+            font-size: 22px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .screen-header p { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.4; }
+
+        .ghost-btn {
+            border: 1px solid rgba(255, 196, 46, 0.45);
+            background: rgba(255, 196, 46, 0.08);
+            color: #ffe39c;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            cursor: pointer;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .kpi-card {
+            padding: 12px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(17, 37, 60, 0.98), rgba(12, 24, 39, 0.94));
+            border: 1px solid rgba(121, 170, 226, 0.35);
+            border-top: 2px solid var(--accent);
+        }
+
+        .kpi-card small { display: block; color: #87b1d8; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; font-weight: 800; }
+        .kpi-card strong { display: block; margin-top: 5px; color: #f6fbff; font-size: 16px; }
+        .kpi-card span { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1.12fr 0.88fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .tile {
+            padding: 12px;
+            border-radius: 14px;
+            background: linear-gradient(180deg, rgba(12, 25, 42, 0.96), rgba(10, 20, 33, 0.96));
+            border: 1px solid rgba(121, 170, 226, 0.28);
+        }
+
+        .tile h3 {
+            margin: 0 0 8px;
+            color: #ffd86e;
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+            font-size: 12px;
+        }
+
+        .tile p { margin: 0; color: #b8cce0; font-size: 12px; line-height: 1.45; }
+
+        .mini-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .mini-item {
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            border-left: 3px solid var(--accent-2);
+        }
+
+        .mini-item strong { display: block; font-size: 12px; color: #f6fbff; }
+        .mini-item span { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; line-height: 1.35; }
+
+        .table-card {
+            margin-bottom: 12px;
+            padding: 12px;
+            border-radius: 14px;
+            background: rgba(7, 17, 28, 0.75);
+            border: 1px solid rgba(121, 170, 226, 0.3);
+        }
+
+        .table-card h3 {
+            margin: 0 0 10px;
+            color: var(--accent);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid rgba(121, 170, 226, 0.2); font-size: 12px; }
+        th { color: #ffd86e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.9px; }
+        td { color: #e7f0fb; }
+        tr:hover td { background: rgba(255, 196, 46, 0.05); }
+
+        .actions-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .action-btn {
+            border: 1px solid rgba(255, 196, 46, 0.45);
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: linear-gradient(180deg, rgba(255, 216, 110, 0.2), rgba(255, 196, 46, 0.08));
+            color: #ffe39c;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            cursor: pointer;
+        }
+
+        .alert-list { display: flex; flex-direction: column; gap: 8px; max-height: 230px; overflow: auto; }
+        .alert-item {
+            padding: 9px 10px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            border-left: 3px solid var(--good);
+            color: #f0f7ff;
+            font-size: 12px;
+        }
+        .alert-item strong { display: block; margin-bottom: 3px; }
+        .alert-item span { color: var(--muted); }
+
+        .clock-card {
+            padding: 12px;
+            border-radius: 14px;
+            background: linear-gradient(180deg, rgba(11, 25, 42, 0.96), rgba(7, 16, 27, 0.96));
+            border: 1px solid rgba(255, 196, 46, 0.25);
+        }
+
+        .clock-card .time { font-size: 25px; font-weight: 800; color: #f7fbff; }
+        .clock-card .meta { margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+
+        .footer-note {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 196, 46, 0.28);
+            background: rgba(255, 196, 46, 0.06);
+            color: #ffe5a0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 800;
+        }
+
+        .status-line {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .status-pill {
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(121, 170, 226, 0.32);
+            color: #cfe3f7;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .print-panel {
+            border: 1px dashed rgba(255, 196, 46, 0.35);
+            border-radius: 14px;
+            padding: 14px;
+            background: rgba(255,255,255,0.03);
+        }
+
+        .screen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .image-card {
+            min-height: 160px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            padding: 14px;
+            border-radius: 16px;
+            background:
+                linear-gradient(180deg, rgba(7, 12, 18, 0.05), rgba(7, 12, 18, 0.5)),
+                linear-gradient(135deg, rgba(32, 49, 76, 0.75), rgba(15, 24, 36, 0.92));
+            border: 1px solid rgba(121, 170, 226, 0.25);
+        }
+
+        .image-card .caption {
+            max-width: 75%;
+            color: #f7fbff;
+            font-size: 12px;
+            line-height: 1.45;
+            font-weight: 700;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        .screen-standalone {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 12px;
+        }
+
+        .screen-standalone .box {
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(121, 170, 226, 0.26);
+            background: rgba(11, 22, 36, 0.88);
+        }
+
+        .screen-standalone .box h3 { margin: 0 0 8px; color: var(--accent); font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px; }
+        .screen-standalone .box p { margin: 0; color: #b9cce0; font-size: 12px; line-height: 1.45; }
+
+        .schedule-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .schedule-item {
+            display: grid;
+            grid-template-columns: 112px 1fr;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(121, 170, 226, 0.18);
+        }
+
+        .schedule-time { color: #ffd86e; font-weight: 800; font-size: 12px; }
+        .schedule-meta { color: var(--muted); font-size: 11px; margin-top: 3px; }
+        .schedule-item strong { display: block; color: #f7fbff; font-size: 12px; }
+        .schedule-item span { display: block; color: #a8bfd6; font-size: 11px; margin-top: 3px; line-height: 1.35; }
+
+        .right-statement {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        @media (max-width: 1280px) {
+            .hero, .workspace, .layout-grid, .screen-standalone, .screen-grid { grid-template-columns: 1fr; }
+            .header-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .command-bar { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .stack-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .sidebar { position: static; max-height: none; }
+        }
+
+        @media (max-width: 780px) {
+            .topbar { padding: 14px 14px 10px; }
+            .hero-title h1 { font-size: 22px; }
+            .workspace { padding: 12px; }
+            .command-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px 12px 12px; }
+            .header-metrics { grid-template-columns: 1fr; }
+            .kpi-grid, .stack-grid { grid-template-columns: 1fr; }
+            .schedule-item { grid-template-columns: 1fr; }
+        }
+
+        @media print {
+            body { background: #fff; color: #000; }
+            body::before, .command-bar, .sidebar, .ghost-btn, .nav-btn, .action-btn { display: none !important; }
+            .workspace { display: block; padding: 0; max-width: none; }
+            .panel, .screen, .tile, .kpi-card, .table-card { box-shadow: none !important; }
+            .stage { min-height: auto; }
+            .screen { display: none !important; min-height: auto; }
+            .screen.active { display: block !important; }
+            .topbar { position: static; box-shadow: none; border-bottom: 1px solid #ddd; background: #fff; }
+            .hero-title h1, .screen-header h2, .kpi-card strong, .metric strong, td, th, p, span { color: #000 !important; }
+        }
+    </style>
+</head>
+<body data-fecha="04072026" data-word-path="../Word/VIDA_REAL_ENGINE_V5_04072026.docx">
+    <header class="topbar">
+        <div class="hero">
+            <div class="hero-title">
+                <h1>VIDA REAL ENGINE V5.4</h1>
+                <div class="eyebrow">Director Ejecutivo Digital</div>
+                <div class="tagline">Centro de comando oscuro, ejecutivo y navegable para operar tu día con foco, continuidad y disciplina.</div>
+            </div>
+            <div class="header-metrics">
+                <div class="metric"><small>Fecha</small><strong>04-07-2026</strong><span>Actualización del sistema</span></div>
+                <div class="metric"><small>Hora</small><strong>21:46</strong><span>Hora de inicio del tablero</span></div>
+                <div class="metric"><small>Tipo de día</small><strong>Libre</strong><span>Lectura operativa del día</span></div>
+                <div class="metric"><small>Turno SERPAT</small><strong>Libre</strong><span>Ritmo laboral activo</span></div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="command-bar" aria-label="Navegación principal">
+        <button class="nav-btn primary" data-screen="inicio">Inicio</button>
+        <button class="nav-btn" data-screen="universidad">Universidad</button>
+        <button class="nav-btn" data-screen="finanzas">Finanzas</button>
+        <button class="nav-btn" data-screen="empresas">Empresas</button>
+        <button class="nav-btn" data-screen="salud">Salud</button>
+        <button class="nav-btn" data-screen="serpat">SERPAT</button>
+        <button class="nav-btn" data-screen="ancla">Ancla</button>
+        <button class="nav-btn" data-screen="recursos">Recursos</button>
+        <button class="nav-btn" data-screen="word">Word</button>
+        <button class="nav-btn" data-screen="pdf">PDF</button>
+        <button class="nav-btn" data-screen="imprimir">Imprimir</button>
+        <button class="nav-btn primary" data-screen="inicio" data-action="back-home">Volver al inicio</button>
+    </nav>
+
+    <div class="workspace">
+        <aside class="sidebar">
+            <section class="panel side-card">
+                <h3>Plan de desarrollo</h3>
+                <div class="left-plan-item">
+                    <strong>Semana 1 - Activar</strong>
+                    <span>Montar el centro de comando, validar fuentes y dejar el sistema estable.</span>
+                </div>
+                <div class="left-plan-item">
+                    <strong>Semana 2 - Corregir</strong>
+                    <span>Ajustar lo necesario, limpiar pendientes y reforzar rutinas de control.</span>
+                </div>
+                <div class="left-plan-item">
+                    <strong>Semana 3 - Consolidar</strong>
+                    <span>Dejar el tablero operando con continuidad, orden y ejecución diaria.</span>
+                </div>
+                <div class="badge-row">
+                    <span class="badge">3 semanas clave</span>
+                    <span class="badge">Cockpit ejecutivo</span>
+                </div>
+            </section>
+
+            <section class="panel side-card">
+                <h3>Regla maestra</h3>
+                <p><strong>Ley 001:</strong> Nunca romper la cadena.</p>
+                <p>Si no puedes avanzar 100%, avanza 20%. Si no puedes 20%, avanza 5%. Pero nunca cero.</p>
+            </section>
+
+            <section class="panel side-card">
+                <h3>Identidad</h3>
+                <p><strong>Robinson</strong></p>
+                <p>Convertir cada día en capital acumulado para Robinson 2042.</p>
+                <p>Holding internacional, patrimonio sólido, salud, liderazgo, legado y libertad.</p>
+                <div class="status-line">
+                    <span class="status-pill">Ley 001 activa</span>
+                    <span class="status-pill">Continuidad protegida</span>
+                </div>
+            </section>
+
+            <section class="panel side-card">
+                <h3>Recursos</h3>
+                <p><strong>316</strong> archivos indexados</p>
+                <p><strong>153</strong> hojas Excel detectadas</p>
+                <p>Word, PDF y dashboard central listos para uso diario.</p>
+            </section>
+
+            <section class="panel side-card">
+                <h3>Estado del sistema</h3>
+                <div class="clock-card">
+                    <div class="time">21:46</div>
+                    <div class="meta">04-07-2026<br>Libre<br>SERPAT: Libre</div>
+                </div>
+                <div class="status-line">
+                    <span class="status-pill">Alertas: 10</span>
+                    <span class="status-pill">Decisiones: 8</span>
+                </div>
+            </section>
+
+            <section class="panel side-card">
+                <h3>Accesos</h3>
+                <div class="command-box">
+                    <h4>Exportación y navegación</h4>
+                    <div class="quick-actions">
+                        <button class="primary" data-screen="word">Word</button>
+                        <button class="primary" data-screen="pdf">PDF</button>
+                        <button class="primary" data-screen="imprimir">Imprimir</button>
+                        <button data-screen="inicio">Inicio</button>
+                    </div>
+                </div>
+            </section>
+        </aside>
+
+        <main class="panel stage" id="stage">
+            <section class="screen active" id="screen-inicio">
+                <div class="screen-header">
+                    <div>
+                        <h2>Buenos días, Robinson</h2>
+                        <p>Hoy eres el Director Ejecutivo del Robinson 2042. El tablero resume tu realidad, ordena el día y protege la continuidad.</p>
+                    </div>
+                    <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card"><small>Energía</small><strong>7/10</strong><span>Listo para ejecutar</span></div>
+                    <div class="kpi-card"><small>Sueño</small><strong>6h 40m</strong><span>Recuperación aceptable</span></div>
+                    <div class="kpi-card"><small>Continuidad</small><strong>17</strong><span>Bloques del día</span></div>
+                    <div class="kpi-card"><small>Identidad</small><strong>Construir una vida extraordinaria mediante disciplina, sistemas, aprendizaje continuo y creación de patrimonio.</strong><span>Nivel de enfoque</span></div>
+                    <div class="kpi-card"><small>Foco</small><strong>Alto</strong><span>Prioridad única</span></div>
+                </div>
+
+                <div class="layout-grid">
+                    <section class="tile">
+                        <h3>Propósito del día</h3>
+                        <p>Convertir cada día en capital acumulado para Robinson 2042.</p>
+                        <div class="badge-row">
+                            <span class="badge">Disciplina</span>
+                            <span class="badge">Ejecución</span>
+                            <span class="badge">Orden</span>
+                        </div>
+                    </section>
+                    <section class="tile">
+                        <h3>Identidad que construyes hoy</h3>
+                        <div class="mini-list">
+                            <div class="mini-item"><strong>Capital intelectual</strong><span>Aprender, resolver y dejar evidencia útil.</span></div>
+                            <div class="mini-item"><strong>Capital financiero</strong><span>Registrar, corregir y sostener control visible.</span></div>
+                            <div class="mini-item"><strong>Capital biológico</strong><span>Proteger sueño, salud y energía física.</span></div>
+                            <div class="mini-item"><strong>Capital relacional</strong><span>Ordenar compromisos, comunicación y contexto.</span></div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="layout-grid">
+                    <section class="tile">
+                        <h3>Visualización</h3>
+                        <div class="image-card">
+                            <div class="caption">Holdings, casa central y operación ordenada. El sistema se ve limpio, estable y preparado para crecer.</div>
+                        </div>
+                    </section>
+                    <section class="tile">
+                        <h3>Pendientes críticos</h3>
+                        <div class="mini-item"><strong>SERPAT</strong><span>Calendario laboral detectado - Usar SERPAT TURNOS para adaptar el día.</span></div><div class="mini-item"><strong>Pendientes</strong><span>Pendientes detectados - Integrar pendientes en la priorización diaria.</span></div><div class="mini-item"><strong>Identidad</strong><span>Vision Board detectado - Usar Vision Board para visualización diaria.</span></div><div class="mini-item"><strong>Desarrollo Personal</strong><span>Desarrollo personal detectado - Integrar lectura, hábitos e identidad.</span></div><div class="mini-item"><strong>Universidad</strong><span>Errores académicos detectados - Hay 36 registros de errores/dudas que deben revisarse.</span></div>
+                    </section>
+                </div>
+
+                <div class="stack-grid">
+                    <section class="tile">
+                        <h3>Alertas y recordatorios</h3>
+                        <div class="alert-list"><div class="alert-item"><strong>Calendario laboral detectado</strong><span>Usar SERPAT TURNOS para adaptar el día.</span></div><div class="alert-item"><strong>Pendientes detectados</strong><span>Integrar pendientes en la priorización diaria.</span></div><div class="alert-item"><strong>Vision Board detectado</strong><span>Usar Vision Board para visualización diaria.</span></div><div class="alert-item"><strong>Desarrollo personal detectado</strong><span>Integrar lectura, hábitos e identidad.</span></div><div class="alert-item"><strong>Errores académicos detectados</strong><span>Hay 36 registros de errores/dudas que deben revisarse.</span></div><div class="alert-item"><strong>Recursos universitarios disponibles</strong><span>Hay 115 archivos en Recursos/04_UNIVERSIDAD.</span></div></div>
+                    </section>
+                    <section class="tile">
+                        <h3>Prioridades del día</h3>
+                        <div class="mini-list">
+                            <div class="mini-item"><strong>Universidad</strong><span>Estudiar Universidad — EV-010. Revisar contenido asociado, resolver ejercicios y registrar errores.</span></div>
+                            <div class="mini-item"><strong>Finanzas</strong><span>Registrar ingresos, gastos, pagos, movimientos bancarios, inversiones, saldo disponible y obligaciones pendientes.</span></div>
+                            <div class="mini-item"><strong>Empresas</strong><span>Revisar CRM, seguimiento, mercado o proyecto activo. Ejecutar una acción concreta: contacto, análisis, respuesta, registro, hipótesis, aprendizaje o siguiente acción.</span></div>
+                            <div class="mini-item"><strong>Salud</strong><span>Registrar sueño, energía, recuperación, presión arterial, pulso, medicamento, alimentación e hidratación.</span></div>
+                        </div>
+                    </section>
+                    <section class="tile">
+                        <h3>Capital actual</h3>
+                        <div class="mini-list">
+                            <div class="mini-item"><strong>Biológico</strong><span>H02_Registro_Salud; H03_Presión_Log; H00_Dashboard_Health</span></div>
+                            <div class="mini-item"><strong>Financiero</strong><span>11_Ingresos; 12_Gastos; 13_Deudas; 18_Conciliacion_Bancaria_V3; 20_Registro_Diario; 21_KPI_Diario</span></div>
+                            <div class="mini-item"><strong>Empresarial</strong><span>30_MGC_CRM; 33_Seguimientos; 70_Mercado_MGC; 71_Mercado_LNR; 76_CaptaPropIA; 82_LNH_Corporate_System</span></div>
+                            <div class="mini-item"><strong>Reputacional</strong><span>09_PANEL_VISION; 20_Registro_Diario</span></div>
+                        </div>
+                    </section>
+                </div>
+
+                <section class="table-card">
+                    <h3>Cronograma completo del día</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Hora</th>
+                                <th>Actividad</th>
+                                <th>Objetivo</th>
+                                <th>Registro</th>
+                                <th>Capital</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>06:00 - 06:15</td><td>Despertar y medir presión</td><td>Arrancar el día con control biológico</td><td>H03_Presión_Log</td><td>Biológico</td></tr><tr><td>06:15 - 06:45</td><td>Desayuno y medicamento</td><td>Nutrir cuerpo y sostener energía</td><td>H02_Registro_Salud</td><td>Biológico</td></tr><tr><td>06:45 - 07:15</td><td>Ducha y preparación</td><td>Orden mental y físico antes de ejecutar</td><td>Ancla Mental</td><td>Mental</td></tr><tr><td>07:15 - 09:30</td><td>Universidad - estudio intenso</td><td>Estudiar Universidad — EV-010. Revisar contenido asociado, resolver ejercicios y registrar errores.</td><td>61_T2_Ramos; 62_T2_Evaluaciones; 63_T2_Bloques; 64_T2_Errores</td><td>Educativo</td></tr><tr><td>09:30 - 11:00</td><td>Empresas - acción comercial</td><td>Revisar CRM, seguimiento, mercado o proyecto activo. Ejecutar una acción concreta: contacto, análisis, respuesta, registro, hipótesis, aprendizaje o siguiente acción.</td><td>30_MGC_CRM; 33_Seguimientos; 70_Mercado_MGC; 71_Mercado_LNR; 76_CaptaPropIA; 82_LNH_Corporate_System</td><td>Empresarial</td></tr><tr><td>11:00 - 11:15</td><td>Pausa y café</td><td>Recuperar foco y energía</td><td>Autorregistro</td><td>Biológico</td></tr><tr><td>11:15 - 12:00</td><td>Finanzas - registrar y revisar</td><td>Registrar ingresos, gastos, pagos, movimientos bancarios, inversiones, saldo disponible y obligaciones pendientes.</td><td>11_Ingresos; 12_Gastos; 13_Deudas; 18_Conciliacion_Bancaria_V3; 20_Registro_Diario; 21_KPI_Diario</td><td>Financiero</td></tr><tr><td>12:00 - 12:45</td><td>Almuerzo completo</td><td>Cuidar energía y sostener el resto del día</td><td>H02_Registro_Salud</td><td>Biológico</td></tr><tr><td>12:45 - 13:45</td><td>Caminata o ejercicio</td><td>Mover el cuerpo y despejar la mente</td><td>H02_Registro_Salud</td><td>Biológico</td></tr><tr><td>13:45 - 14:00</td><td>Hidratación y pausa</td><td>Reset breve para volver al foco</td><td>H02_Registro_Salud</td><td>Biológico</td></tr><tr><td>14:00 - 16:00</td><td>Pendientes críticos y seguimiento</td><td>Cerrar lo que mueve la continuidad del día</td><td>90_Alertas_Correcciones</td><td>Sistema</td></tr><tr><td>16:00 - 16:30</td><td>Merienda</td><td>Recuperar energía sin romper el ritmo</td><td>H02_Registro_Salud</td><td>Biológico</td></tr><tr><td>16:30 - 17:30</td><td>Lectura y desarrollo personal</td><td>Subir capital intelectual y mental</td><td>08_LECTURA_CRECIIMIENTO</td><td>Intelectual</td></tr><tr><td>17:30 - 18:00</td><td>Cierre Ancla</td><td>Evaluar y corregir antes del final del día</td><td>Ancla Mental; 21_KPI_Diario</td><td>Mental</td></tr><tr><td>18:00 - 19:00</td><td>Cena</td><td>Recuperar cuerpo y terminar con estabilidad</td><td>H02_Registro_Salud</td><td>Biológico</td></tr><tr><td>19:00 - 22:00</td><td>Descanso y cierre suave</td><td>Evitar ruido y proteger energía mental</td><td>Autorregistro</td><td>Mental</td></tr><tr><td>22:00 - 22:30</td><td>Rutina de sueño</td><td>Preparar descanso y continuidad del día siguiente</td><td>H02_Registro_Salud</td><td>Biológico</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section class="tile">
+                    <h3>Cronograma ejecutivo</h3>
+                    <div class="schedule-list"><div class="schedule-item"><div><div class="schedule-time">06:00 - 06:15</div><div class="schedule-meta">Biológico</div></div><div><strong>Despertar y medir presión</strong><span>Arrancar el día con control biológico</span></div></div><div class="schedule-item"><div><div class="schedule-time">06:15 - 06:45</div><div class="schedule-meta">Biológico</div></div><div><strong>Desayuno y medicamento</strong><span>Nutrir cuerpo y sostener energía</span></div></div><div class="schedule-item"><div><div class="schedule-time">06:45 - 07:15</div><div class="schedule-meta">Mental</div></div><div><strong>Ducha y preparación</strong><span>Orden mental y físico antes de ejecutar</span></div></div><div class="schedule-item"><div><div class="schedule-time">07:15 - 09:30</div><div class="schedule-meta">Educativo</div></div><div><strong>Universidad - estudio intenso</strong><span>Estudiar Universidad — EV-010. Revisar contenido asociado, resolver ejercicios y registrar errores.</span></div></div><div class="schedule-item"><div><div class="schedule-time">09:30 - 11:00</div><div class="schedule-meta">Empresarial</div></div><div><strong>Empresas - acción comercial</strong><span>Revisar CRM, seguimiento, mercado o proyecto activo. Ejecutar una acción concreta: contacto, análisis, respuesta, registro, hipótesis, aprendizaje o siguiente acción.</span></div></div><div class="schedule-item"><div><div class="schedule-time">11:00 - 11:15</div><div class="schedule-meta">Biológico</div></div><div><strong>Pausa y café</strong><span>Recuperar foco y energía</span></div></div><div class="schedule-item"><div><div class="schedule-time">11:15 - 12:00</div><div class="schedule-meta">Financiero</div></div><div><strong>Finanzas - registrar y revisar</strong><span>Registrar ingresos, gastos, pagos, movimientos bancarios, inversiones, saldo disponible y obligaciones pendientes.</span></div></div><div class="schedule-item"><div><div class="schedule-time">12:00 - 12:45</div><div class="schedule-meta">Biológico</div></div><div><strong>Almuerzo completo</strong><span>Cuidar energía y sostener el resto del día</span></div></div><div class="schedule-item"><div><div class="schedule-time">12:45 - 13:45</div><div class="schedule-meta">Biológico</div></div><div><strong>Caminata o ejercicio</strong><span>Mover el cuerpo y despejar la mente</span></div></div><div class="schedule-item"><div><div class="schedule-time">13:45 - 14:00</div><div class="schedule-meta">Biológico</div></div><div><strong>Hidratación y pausa</strong><span>Reset breve para volver al foco</span></div></div><div class="schedule-item"><div><div class="schedule-time">14:00 - 16:00</div><div class="schedule-meta">Sistema</div></div><div><strong>Pendientes críticos y seguimiento</strong><span>Cerrar lo que mueve la continuidad del día</span></div></div><div class="schedule-item"><div><div class="schedule-time">16:00 - 16:30</div><div class="schedule-meta">Biológico</div></div><div><strong>Merienda</strong><span>Recuperar energía sin romper el ritmo</span></div></div><div class="schedule-item"><div><div class="schedule-time">16:30 - 17:30</div><div class="schedule-meta">Intelectual</div></div><div><strong>Lectura y desarrollo personal</strong><span>Subir capital intelectual y mental</span></div></div><div class="schedule-item"><div><div class="schedule-time">17:30 - 18:00</div><div class="schedule-meta">Mental</div></div><div><strong>Cierre Ancla</strong><span>Evaluar y corregir antes del final del día</span></div></div><div class="schedule-item"><div><div class="schedule-time">18:00 - 19:00</div><div class="schedule-meta">Biológico</div></div><div><strong>Cena</strong><span>Recuperar cuerpo y terminar con estabilidad</span></div></div><div class="schedule-item"><div><div class="schedule-time">19:00 - 22:00</div><div class="schedule-meta">Mental</div></div><div><strong>Descanso y cierre suave</strong><span>Evitar ruido y proteger energía mental</span></div></div><div class="schedule-item"><div><div class="schedule-time">22:00 - 22:30</div><div class="schedule-meta">Biológico</div></div><div><strong>Rutina de sueño</strong><span>Preparar descanso y continuidad del día siguiente</span></div></div></div>
+                </section>
+            </section>
+
+            <section class="screen" id="screen-universidad">
+                <div class="screen-header">
+                    <div>
+                        <h2>Universidad</h2>
+                        <p>Vista académica ejecutiva para organizar ramos, evaluaciones, errores y recursos de estudio.</p>
+                    </div>
+                    <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
+                </div>
+                <div class="kpi-grid">
+                    <div class="kpi-card"><small>Estado</small><strong>Activo</strong><span>Ramos priorizados</span></div>
+                    <div class="kpi-card"><small>Acción IA</small><strong>Estudio</strong><span>Estudiar Universidad — EV-010. Revisar contenido asociado, resolver ejercicios y registrar errores.</span></div>
+                    <div class="kpi-card"><small>Registro</small><strong>Académico</strong><span>61_T2_Ramos; 62_T2_Evaluaciones; 63_T2_Bloques; 64_T2_Errores</span></div>
+                    <div class="kpi-card"><small>Objetivo</small><strong>Avanzar</strong><span>Sin perder continuidad</span></div>
+                    <div class="kpi-card"><small>Meta</small><strong>Claridad</strong><span>Menos ruido, más entrega</span></div>
+                </div>
+                <div class="screen-standalone">
+                    <div class="box">
+                        <h3>Prioridad universitaria</h3>
+                        <p>Evaluación detectada como prioridad: EV-010 | Probabilidad y Estadística | 4 | Sumativa | Prueba escrita Unidad I | 30 | 2026-06-28 00:00:00 | Fundamentos, condicional, combinaciones, Bayes | Pendiente | -5 | Vencido | Preparar / entregar / estudiar | 62_T2.</p>
+                    </div>
+                    <div class="box">
+                        <h3>Bloque activo</h3>
+                        <p>Lectura, ejercicios, dudas, evaluación y registro disciplinado del avance académico.</p>
+                    </div>
+                </div>
+                <div class="table-card">
+                    <h3>Seguimiento académico</h3>
+                    <table>
+                        <thead><tr><th>Ramo</th><th>Estado</th><th>Próxima acción</th><th>Registro</th></tr></thead>
+                        <tbody>
+                            <tr><td>Calculo II</td><td>En curso</td><td>Resolver guía y consolidar unidad</td><td>04_UNIVERSIDAD</td></tr>
+                            <tr><td>Fisica Mecanica</td><td>En revisión</td><td>Repasar lo crítico y corregir errores</td><td>04_UNIVERSIDAD</td></tr>
+                            <tr><td>Probabilidad y Estadística</td><td>Pendiente</td><td>Ejercicios y control de avance</td><td>04_UNIVERSIDAD</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="screen" id="screen-finanzas">
+                <div class="screen-header">
+                    <div>
+                        <h2>Finanzas</h2>
+                        <p>Centro de control para ingresos, gastos, caja, conciliación y decisiones de rentabilidad.</p>
+                    </div>
+                    <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
+                </div>
+                <div class="kpi-grid">
+                    <div class="kpi-card"><small>Capital financiero</small><strong>Vivo</strong><span>Registro del día</span></div>
+                    <div class="kpi-card"><small>Acción IA</small><strong>Registrar ingresos, gastos, pagos, movimientos bancarios, inversiones, saldo disponible y obligaciones pendientes.</strong><span>Prioridad máxima</span></div>
+                    <div class="kpi-card"><small>Registro</small><strong>11_Ingresos; 12_Gastos; 13_Deudas; 18_Conciliacion_Bancaria_V3; 20_Registro_Diario; 21_KPI_Diario</strong><span>Fuentes contables</span></div>
+                    <div class="kpi-card"><small>Control</small><strong>Conciliación</strong><span>Visibilidad total</span></div>
+                    <div class="kpi-card"><small>Riesgo</small><strong>Monitoreado</strong><span>Evitar fuga de caja</span></div>
+                </div>
+                <div class="stack-grid">
+                    <section class="tile"><h3>Cash</h3><p>Liquidez y caja al día.</p></section>
+                    <section class="tile"><h3>Ingresos</h3><p>Construir capital financiero mediante visibilidad, control y decisión patrimonial.</p></section>
+                    <section class="tile"><h3>Gastos</h3><p>Clasificación y recorte de ruido financiero.</p></section>
+                </div>
+                <div class="table-card">
+                    <h3>Control financiero</h3>
+                    <table>
+                        <thead><tr><th>Bloque</th><th>Estado</th><th>Objetivo</th><th>Registro</th></tr></thead>
+                        <tbody>
+                            <tr><td>Ingresos</td><td>Activo</td><td>Consolidar entradas</td><td>11_Ingresos</td></tr>
+                            <tr><td>Gastos</td><td>Activo</td><td>Reducir fugas</td><td>12_Gastos</td></tr>
+                            <tr><td>Conciliación</td><td>Programado</td><td>Verificar caja</td><td>18_Conciliacion_Bancaria_V3</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="screen" id="screen-empresas">
+                <div class="screen-header">
+                    <div>
+                        <h2>Empresas</h2>
+                        <p>Vista para continuidad comercial, CRM, holdings y capital empresarial.</p>
+                    </div>
+                    <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
+                </div>
+                <div class="kpi-grid">
+                    <div class="kpi-card"><small>Acción IA</small><strong>Revisar CRM, seguimiento, mercado o proyecto activo. Ejecutar una acción concreta: contacto, análisis, respuesta, registro, hipótesis, aprendizaje o siguiente acción.</strong><span>Bloque empresarial</span></div>
+                    <div class="kpi-card"><small>Registro</small><strong>30_MGC_CRM; 33_Seguimientos; 70_Mercado_MGC; 71_Mercado_LNR; 76_CaptaPropIA; 82_LNH_Corporate_System</strong><span>CRM y seguimiento</span></div>
+                    <div class="kpi-card"><small>Estado</small><strong>Operativo</strong><span>Holding y mercado</span></div>
+                    <div class="kpi-card"><small>Objetivo</small><strong>Continuidad</strong><span>Negocio sin ruido</span></div>
+                    <div class="kpi-card"><small>Visión</small><strong>Holding</strong><span>Escala y orden</span></div>
+                </div>
+                <div class="layout-grid">
+                    <section class="tile"><h3>MGC</h3><p>CRM, oportunidades, seguimiento y pipeline.</p></section>
+                    <section class="tile"><h3>Holding</h3><p>Latitud Norte Real Estate y Latutud Norte Holding operando con disciplina.</p></section>
+                </div>
+                <div class="table-card">
+                    <h3>Control empresarial</h3>
+                    <table>
+                        <thead><tr><th>Unidad</th><th>Estado</th><th>Objetivo</th><th>Registro</th></tr></thead>
+                        <tbody>
+                            <tr><td>MGC</td><td>Activo</td><td>Dar seguimiento</td><td>30_MGC_CRM</td></tr>
+                            <tr><td>Latitud Norte</td><td>Activo</td><td>Consolidar estructura</td><td>05_EMPRESAS</td></tr>
+                            <tr><td>CaptaPropIA</td><td>En desarrollo</td><td>Captar oportunidades</td><td>05_EMPRESAS</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="screen" id="screen-salud">
+                <div class="screen-header">
+                    <div>
+                        <h2>Salud</h2>
+                        <p>Capital biológico, sueño, medicación, energía y control del cuerpo como base de ejecución.</p>
+                    </div>
+                    <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
+                </div>
+                <div class="kpi-grid">
+                    <div class="kpi-card"><small>Acción IA</small><strong>Registrar sueño, energía, recuperación, presión arterial, pulso, medicamento, alimentación e hidratación.</strong><span>Prioridad biológica</span></div>
+                    <div class="kpi-card"><small>Registro</small><strong>H02_Registro_Salud; H03_Presión_Log; H00_Dashboard_Health</strong><span>Control diario</span></div>
+                    <div class="kpi-card"><small>Sueño</small><strong>6h 40m</strong><span>Recuperación aceptable</span></div>
+                    <div class="kpi-card"><small>Energía</small><strong>7/10</strong><span>Arranque listo</span></div>
+                    <div class="kpi-card"><small>Estado</small><strong>Vigilado</strong><span>Presión y medicación</span></div>
+                </div>
+                <div class="layout-grid">
+                    <section class="tile"><h3>Presión</h3><p>Registrar al comenzar el día y seguir el control indicado.</p></section>
+                    <section class="tile"><h3>Medicación</h3><p>Tomar y registrar lo que corresponda sin saltarse el horario.</p></section>
+                </div>
+                <div class="table-card">
+                    <h3>Seguimiento de salud</h3>
+                    <table>
+                        <thead><tr><th>Elemento</th><th>Estado</th><th>Objetivo</th><th>Registro</th></tr></thead>
+                        <tbody>
+                            <tr><td>Presión</td><td>Pendiente</td><td>Medir y registrar</td><td>H03_Presión_Log</td></tr>
+                            <tr><td>Medicamento</td><td>Programado</td><td>No olvidar toma</td><td>H02_Registro_Salud</td></tr>
+                            <tr><td>Ejercicio</td><td>Planificado</td><td>Caminar o activar cuerpo</td><td>H02_Registro_Salud</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="screen" id="screen-serpat">
+                <div class="screen-header">
+                    <div>
+                        <h2>SERPAT</h2>
+                        <p>Turno, calendario laboral y control de continuidad en el trabajo.</p>
+                    </div>
+                    <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
+                </div>
+                <div class="kpi-grid">
+                    <div class="kpi-card"><small>Tipo de día</small><strong>Libre</strong><span>Clasificación operativa</span></div>
+                    <div class="kpi-card"><small>Turno</small><strong>Libre</strong><span>Bloque laboral</span></div>
+                    <div class="kpi-card"><small>Acción IA</small><strong>Día libre SERPAT — Usar para avance estratégico sin restricción horaria.</strong><span>Orden laboral</span></div>
+                    <div class="kpi-card"><small>Registro</small><strong>09_PANEL_VISION; 20_Registro_Diario</strong><span>Contexto de trabajo</span></div>
+                    <div class="kpi-card"><small>Estado</small><strong>Activo</strong><span>Preparación y cierre</span></div>
+                </div>
+                <div class="screen-standalone">
+                    <div class="box"><h3>Preparación</h3><p>Checklist, salida y llegada con foco en continuidad y disciplina.</p></div>
+                    <div class="box"><h3>Continuidad</h3><p>El día se coordina con universidad, salud y finanzas para no romper la cadena.</p></div>
+                </div>
+            </section>
+
+            <section class="screen" id="screen-ancla">
+                <div class="screen-header">
+                    <div>
+                        <h2>Ancla Mental</h2>
+                        <p>La capa de identidad, criterio y continuidad diaria.</p>
+                    </div>
+                    <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
+                </div>
+                <div class="kpi-grid">
+                    <div class="kpi-card"><small>Ley 001</small><strong>Activa</strong><span>Nunca romper la cadena</span></div>
+                    <div class="kpi-card"><small>Identidad</small><strong>Construir una vida extraordinaria mediante disciplina, sistemas, aprendizaje continuo y creación de patrimonio.</strong><span>Construir, corregir, avanzar</span></div>
+                    <div class="kpi-card"><small>Continuidad</small><strong>Protegida</strong><span>Sin cero</span></div>
+                    <div class="kpi-card"><small>Acción IA</small><strong>Revisar identidad y reflexionar</strong><span>Autoevaluación</span></div>
+                    <div class="kpi-card"><small>Registro</small><strong>Ancla Mental; 21_KPI_Diario</strong><span>Cierre de día</span></div>
+                </div>
+                <div class="layout-grid">
+                    <section class="tile"><h3>Propósito</h3><p>Convertir cada día en capital acumulado para Robinson 2042.</p></section>
+                    <section class="tile"><h3>Misión</h3><p>Construir una vida extraordinaria mediante disciplina, sistemas, aprendizaje continuo y creación de patrimonio.</p></section>
+                </div>
+            </section>
+
+            <section class="screen" id="screen-recursos">
+                <div class="screen-header">
+                    <div>
+                        <h2>Recursos</h2>
+                        <p>Archivo operativo, documentos, Excel, Word, PDF e información del sistema.</p>
+                    </div>
+                    <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
+                </div>
+                <div class="kpi-grid">
+                    <div class="kpi-card"><small>Archivos</small><strong>316</strong><span>Indexados</span></div>
+                    <div class="kpi-card"><small>Excel</small><strong>SISTEMA_ROBINSON_C31_CORREGIDO_BASE_DATOS_V3.xlsx</strong><span>Libro activo</span></div>
+                    <div class="kpi-card"><small>Hojas</small><strong>153</strong><span>Detectadas</span></div>
+                    <div class="kpi-card"><small>Word</small><strong>Disponible</strong><span>Salida diaria</span></div>
+                    <div class="kpi-card"><small>PDF</small><strong>Disponible</strong><span>Vía impresión</span></div>
+                </div>
+                <div class="table-card">
+                    <h3>Fuentes y carpetas</h3>
+                    <table>
+                        <thead><tr><th>Fuente</th><th>Estado</th><th>Uso</th></tr></thead>
+                        <tbody>
+                            <tr><td>04_UNIVERSIDAD</td><td>Activa</td><td>Estudio y evaluación</td></tr>
+                            <tr><td>03_FINANZAS</td><td>Activa</td><td>Control financiero</td></tr>
+                            <tr><td>05_EMPRESAS</td><td>Activa</td><td>CRM y continuidad</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="screen" id="screen-word">
+                <div class="screen-header">
+                    <div>
+                        <h2>Word</h2>
+                        <p>Enlace diario para abrir el documento Word si existe.</p>
+                    </div>
+                    <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
+                </div>
+                <div class="screen-grid">
+                    <div class="tile">
+                        <h3>Documento diario</h3>
+                        <p>Ruta prevista: ../Word/VIDA_REAL_ENGINE_V5_04072026.docx</p>
+                        <div class="actions-row" style="margin-top: 10px;">
+                            <button class="action-btn" data-action="open-word">Abrir Word diario</button>
+                        </div>
+                    </div>
+                    <div class="tile">
+                        <h3>Estado</h3>
+                        <p>Si el archivo existe, el navegador intentará abrirlo en una pestaña nueva.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="screen" id="screen-pdf">
+                <div class="screen-header">
+                    <div>
+                        <h2>PDF</h2>
+                        <p>La exportación se realiza mediante la impresión del navegador.</p>
+                    </div>
+                    <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
+                </div>
+                <div class="print-panel">
+                    <div class="actions-row">
+                        <button class="action-btn" data-action="print-pdf">Imprimir / Guardar como PDF</button>
+                        <button class="action-btn" data-action="print-view">Abrir vista de impresión</button>
+                    </div>
+                    <div class="footer-note">Usa la opción "Guardar como PDF" del diálogo de impresión del navegador.</div>
+                </div>
+            </section>
+
+            <section class="screen" id="screen-imprimir">
+                <div class="screen-header">
+                    <div>
+                        <h2>Imprimir</h2>
+                        <p>Impresión del panel activo con salida limpia para papel o PDF.</p>
+                    </div>
+                    <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
+                </div>
+                <div class="print-panel">
+                    <div class="actions-row">
+                        <button class="action-btn" data-action="print-now">window.print()</button>
+                    </div>
+                    <div class="footer-note">La impresión respeta el panel activo visible en pantalla.</div>
+                </div>
+            </section>
+        </main>
+
+        <aside class="sidebar right-statement">
+            <section class="panel side-card">
+                <h3>Resultado final</h3>
+                <div class="mini-list">
+                    <div class="mini-item"><strong>Analiza tu realidad completa</strong><span>Captura fecha, hora, turno, alertas y estado operativo.</span></div>
+                    <div class="mini-item"><strong>Piensa y decide por ti</strong><span>Convierte decisiones en prioridades visibles del día.</span></div>
+                    <div class="mini-item"><strong>Entrega plan por horas</strong><span>Cada bloque del cronograma ya queda expuesto en el tablero.</span></div>
+                    <div class="mini-item"><strong>Te recuerda lo importante</strong><span>El foco de salud, universidad, finanzas y empresa queda presente.</span></div>
+                    <div class="mini-item"><strong>Te protege con Ley 001</strong><span>Nunca romper la cadena.</span></div>
+                </div>
+            </section>
+
+            <section class="panel side-card">
+                <h3>Salidas automáticas</h3>
+                <div class="mini-list">
+                    <div class="mini-item"><strong>Word</strong><span>../Word/VIDA_REAL_ENGINE_V5_04072026.docx</span></div>
+                    <div class="mini-item"><strong>PDF</strong><span>Salida desde impresión del navegador</span></div>
+                    <div class="mini-item"><strong>Dashboard</strong><span>C:/Users/Robinson/OneDrive/Escritorio/VIDA_REAL_ENGINE/Salidas/Dashboard/CENTRO_COMANDO_V5.4.1_04072026.html</span></div>
+                    <div class="mini-item"><strong>Excel</strong><span>SISTEMA_ROBINSON_C31_CORREGIDO_BASE_DATOS_V3.xlsx</span></div>
+                </div>
+            </section>
+
+            <section class="panel side-card">
+                <h3>Fuentes de información</h3>
+                <div class="mini-list">
+                    <div class="mini-item"><strong>Excel CRONOGRAMA</strong><span>Todos los datos</span></div>
+                    <div class="mini-item"><strong>Ancla Mental</strong><span>Capitales y reflejo diario</span></div>
+                    <div class="mini-item"><strong>Universidad</strong><span>Evaluaciones y recursos</span></div>
+                    <div class="mini-item"><strong>Finanzas y empresas</strong><span>Control, continuidad y CRM</span></div>
+                </div>
+            </section>
+
+            <section class="panel side-card">
+                <h3>Misión del sistema</h3>
+                <p>Impedir que vuelvas a ser el Robinson del pasado y construir cada día al Robinson de 2042.</p>
+                <div class="footer-note">Continuidad &gt; Intensidad</div>
+            </section>
+        </aside>
+    </div>
+
+    <script>
+        const stage = document.getElementById('stage');
+        const screens = Array.from(document.querySelectorAll('.screen'));
+        const navButtons = Array.from(document.querySelectorAll('[data-screen]'));
+
+        function setActiveScreen(name) {
+            screens.forEach((screen) => screen.classList.toggle('active', screen.id === 'screen-' + name));
+            if (stage) {
+                stage.scrollTop = 0;
+            }
+        }
+
+        function openWord() {
+            const path = document.body.dataset.wordPath || '';
+            if (path) {
+                window.open(path, '_blank');
+            }
+        }
+
+        function printNow() {
+            window.print();
+        }
+
+        navButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const target = button.dataset.screen;
+                if (target) {
+                    setActiveScreen(target);
+                }
+            });
+        });
+
+        document.querySelectorAll('[data-action="open-word"]').forEach((button) => button.addEventListener('click', openWord));
+        document.querySelectorAll('[data-action="print-pdf"]').forEach((button) => button.addEventListener('click', printNow));
+        document.querySelectorAll('[data-action="print-view"]').forEach((button) => button.addEventListener('click', printNow));
+        document.querySelectorAll('[data-action="print-now"]').forEach((button) => button.addEventListener('click', printNow));
+
+        setActiveScreen('inicio');
+    </script>
+</body>
+</html>

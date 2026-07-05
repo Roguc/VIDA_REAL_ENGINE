@@ -4,8 +4,8 @@
  MOTOR CENTRAL IA + 11 MOTORES + CENTRO DE COMANDO HTML
 ======================================================================
 
-Fecha: 04-07-2026
-Hora: 17:06
+Fecha: 05-07-2026
+Hora: 00:46
 Excel: SISTEMA_ROBINSON_C31_CORREGIDO_BASE_DATOS_V3.xlsx
 Hojas: 153
 Recursos: 316 archivos
@@ -31,10 +31,10 @@ DECISIONES: 8 (consolidadas, sin duplicados)
    Motivo: Prioridad Alta — Área: Universidad
    Registro: 20_Registro_Diario; 90_Alertas_Correcciones
 
-4. [SERPAT] Prioridad 091
-   Acción: Día libre SERPAT — Usar para avance estratégico sin restricción horaria.
-   Motivo: Calendario laboral: Día libre disponible
-   Registro: 09_PANEL_VISION; 20_Registro_Diario
+4. [SERPAT] Prioridad 092
+   Acción: Trabajar turno Turno de Mañana — Horario: 08:00 a 16:30
+   Motivo: Calendario laboral: Turno de Mañana
+   Registro: SERPAT TURNOS
 
 5. [Ancla Mental] Prioridad 086
    Acción: Responder: ¿actué como constructor o como sobreviviente? ¿Qué capital aumentó hoy? ¿Qué debo corregir? ¿Cuál es la prioridad única de mañana?
@@ -106,10 +106,10 @@ RESUMEN FINAL DEL ESTADO DEL SISTEMA
 ======================================================================
 
 📊 ESTADO GENERAL:
-   • Fecha: 04-07-2026
-   • Hora: 17:06
-   • Tipo de día: Libre
-   • Turno SERPAT: Libre
+   • Fecha: 05-07-2026
+   • Hora: 00:46
+   • Tipo de día: Turno de Mañana
+   • Turno SERPAT: 08:00–16:30
 
 📁 RECURSOS DISPONIBLES:
    • Excel: SISTEMA_ROBINSON_C31_CORREGIDO_BASE_DATOS_V3.xlsx
@@ -141,7 +141,7 @@ RESUMEN FINAL DEL ESTADO DEL SISTEMA
 📈 DISTRIBUCIÓN DE PRIORIDADES:
    • Máxima: 100
    • Mínima: 74
-   • Promedio: 88.1
+   • Promedio: 88.2
 
 🚨 ALERTAS GENERADAS: 10
    • Continuidad: 1 alerta(s)

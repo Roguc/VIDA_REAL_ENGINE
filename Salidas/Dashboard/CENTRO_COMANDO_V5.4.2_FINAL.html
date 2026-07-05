@@ -1,79 +1,11 @@
-from __future__ import annotations
-
-from pathlib import Path
-
-from Models.sistema_dia import SistemaDia
-
-
-def e(value):
-    if value is None:
-        return ""
-    text = str(value)
-    return (
-        text.replace("&", "&amp;")
-        .replace("<", "&lt;")
-        .replace(">", "&gt;")
-        .replace('"', "&quot;")
-    )
-
-
-class DashboardBuilder:
-    def __init__(self, root_dir: Path):
-        self.root_dir = Path(root_dir)
-        self.out_dir = self.root_dir / "Salidas" / "Dashboard"
-        self.out_dir.mkdir(parents=True, exist_ok=True)
-
-    def build(self, sistema: SistemaDia, motor_data: dict | None = None) -> Path:
-        motor_data = motor_data or {}
-        sistema.cronograma = self._generar_cronograma_especifico(sistema, motor_data)
-
-        fecha_str = sistema.fecha_texto or ""
-        hora_str = sistema.hora_actual or ""
-        tipo_dia = sistema.tipo_dia or "Día operativo"
-        turno_serpat = sistema.turno_serpat or "N/A"
-        fecha_iso = getattr(sistema, "fecha_iso", fecha_str.replace("-", ""))
-
-        area_universidad = self._decision(sistema, "Universidad")
-        area_finanzas = self._decision(sistema, "Finanzas")
-        area_empresas = self._decision(sistema, "Empresas")
-        area_salud = self._decision(sistema, "Salud")
-        area_serpat = self._decision(sistema, "SERPAT")
-        area_ancla = self._decision(sistema, "Ancla")
-        if not area_ancla:
-            area_ancla = self._decision(sistema, "Ancla Mental")
-
-        identidad = sistema.identidad or {}
-        recursos = sistema.recursos or {}
-        contexto_excel = sistema.contexto.get("excel", {}) if isinstance(sistema.contexto, dict) else {}
-        total_archivos = recursos.get("total_archivos", 0)
-        total_hojas = contexto_excel.get("total_hojas", 0)
-        vision_items = getattr(sistema, "vision_board", []) or []
-
-        cronograma_html = self._cronograma_bloques_html(sistema.cronograma)
-        cronograma_tabla = self._cronograma_tabla_html(sistema.cronograma)
-        alertas_html = self._alertas_mini(sistema.alertas)
-        pendientes_html = self._pendientes_html(sistema)
-        vision_card_inicio = self._vision_inicio_card()
-        vision_quote = self._vision_quote_strip()
-        capital_map_html = self._capital_map_html()
-        vision_decisions_html = self._vision_decisions_html(sistema)
-        vision_today_html = self._vision_today_html(sistema)
-        vision_progress_html = self._vision_progress_html(sistema)
-        vision_detectado_html = self._vision_detectado_html(vision_items)
-        vision_hero_html = self._vision_hero_html()
-
-        word_path = f"../Word/VIDA_REAL_ENGINE_V5_{fecha_iso}.docx"
-        vision_pdf_raw = "../../Recursos/09_PANEL_VISION/CARTEL DE ATRACCION VISUAL (1).pdf"
-        dashboard_path = self.out_dir / f"CENTRO_COMANDO_V5.4.2_{fecha_str.replace('-', '')}.html"
-
-        html = f"""<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIDA REAL ENGINE V5.4.2 FINAL</title>
     <style>
-        :root {{
+        :root {
             --bg: #050b14;
             --bg-2: #091423;
             --panel: rgba(12, 26, 43, 0.94);
@@ -87,13 +19,13 @@ class DashboardBuilder:
             --good: #46d17a;
             --warn: #ffb24d;
             --danger: #ff6b7f;
-        }}
+        }
 
-        * {{ box-sizing: border-box; }}
+        * { box-sizing: border-box; }
 
-        html, body {{ height: 100%; }}
+        html, body { height: 100%; }
 
-        body {{
+        body {
             margin: 0;
             font-family: "Segoe UI", Arial, sans-serif;
             color: var(--text);
@@ -102,9 +34,9 @@ class DashboardBuilder:
                 radial-gradient(circle at 10% 0%, rgba(255, 196, 46, 0.12), transparent 35%),
                 radial-gradient(circle at 90% 8%, rgba(106, 169, 255, 0.14), transparent 30%),
                 linear-gradient(145deg, var(--bg) 0%, #08111c 45%, #07131f 100%);
-        }}
+        }
 
-        body::before {{
+        body::before {
             content: "";
             position: fixed;
             inset: 0;
@@ -115,9 +47,9 @@ class DashboardBuilder:
             background-size: 42px 42px;
             mask-image: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.45));
             opacity: 0.6;
-        }}
+        }
 
-        .topbar {{
+        .topbar {
             position: sticky;
             top: 0;
             z-index: 40;
@@ -126,78 +58,78 @@ class DashboardBuilder:
             border-bottom: 1px solid rgba(255, 196, 46, 0.35);
             box-shadow: 0 14px 28px rgba(0, 0, 0, 0.38);
             backdrop-filter: blur(8px);
-        }}
+        }
 
-        .hero {{
+        .hero {
             display: grid;
             grid-template-columns: 1.4fr 1fr;
             gap: 14px;
             align-items: center;
-        }}
+        }
 
-        .hero-title h1 {{
+        .hero-title h1 {
             margin: 0;
             font-size: 20px;
             line-height: 1.05;
             letter-spacing: 1px;
             text-transform: uppercase;
             color: #f6fbff;
-        }}
+        }
 
-        .hero-title .eyebrow {{
+        .hero-title .eyebrow {
             margin-top: 2px;
             color: var(--accent);
             font-size: 11px;
             font-weight: 800;
             letter-spacing: 1.6px;
             text-transform: uppercase;
-        }}
+        }
 
-        .hero-title .tagline {{
+        .hero-title .tagline {
             margin-top: 4px;
             color: var(--muted);
             font-size: 10px;
-        }}
+        }
 
-        .header-metrics {{
+        .header-metrics {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 8px;
-        }}
+        }
 
-        .metric {{
+        .metric {
             min-height: 50px;
             padding: 8px 10px;
             border-radius: 12px;
             background: linear-gradient(145deg, rgba(16, 34, 56, 0.95), rgba(12, 26, 43, 0.9));
             border: 1px solid var(--line);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-        }}
+        }
 
-        .metric small {{
+        .metric small {
             display: block;
             color: #87b2d8;
             font-size: 9px;
             font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
-        }}
+        }
 
-        .metric strong {{
+        .metric strong {
             display: block;
             margin-top: 2px;
             font-size: 12px;
             color: #f3f8ff;
-        }}
+        }
 
-        .metric span {{
+        .metric span {
             display: block;
             margin-top: 1px;
             color: var(--muted);
             font-size: 10px;
-        }}
+        }
 
-        .command-bar {{
+        .command-bar {
             position: sticky;
             top: 80px;
             z-index: 39;
@@ -208,9 +140,9 @@ class DashboardBuilder:
             border-bottom: 1px solid rgba(255, 196, 46, 0.16);
             background: rgba(7, 17, 27, 0.92);
             backdrop-filter: blur(10px);
-        }}
+        }
 
-        .nav-btn {{
+        .nav-btn {
             border: 1px solid rgba(121, 170, 226, 0.45);
             border-radius: 999px;
             padding: 10px 12px;
@@ -222,21 +154,21 @@ class DashboardBuilder:
             letter-spacing: 0.8px;
             cursor: pointer;
             transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
-        }}
+        }
 
-        .nav-btn:hover {{
+        .nav-btn:hover {
             transform: translateY(-1px);
             border-color: rgba(255, 196, 46, 0.8);
             box-shadow: 0 10px 18px rgba(0, 0, 0, 0.3);
-        }}
+        }
 
-        .nav-btn.primary {{
+        .nav-btn.primary {
             background: linear-gradient(180deg, #ffd86e, #f5b91c);
             color: #122033;
             border-color: #f2c63d;
-        }}
+        }
 
-        .workspace {{
+        .workspace {
             display: grid;
             grid-template-columns: 290px minmax(0, 1fr) 305px;
             gap: 14px;
@@ -245,9 +177,9 @@ class DashboardBuilder:
             margin: 0 auto;
             height: calc(100vh - 148px);
             overflow: hidden;
-        }}
+        }
 
-        .sidebar {{
+        .sidebar {
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -256,45 +188,45 @@ class DashboardBuilder:
             max-height: 100%;
             overflow: auto;
             padding-right: 2px;
-        }}
+        }
 
-        .panel {{
+        .panel {
             background: linear-gradient(145deg, rgba(17, 34, 54, 0.96), rgba(11, 24, 40, 0.92));
             border: 1px solid var(--line);
             border-radius: 16px;
             box-shadow: 0 12px 26px rgba(0, 0, 0, 0.34);
-        }}
+        }
 
-        .side-card {{ padding: 14px; }}
+        .side-card { padding: 14px; }
 
-        .side-card h3 {{
+        .side-card h3 {
             margin: 0 0 10px;
             color: var(--accent);
             font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 1px;
-        }}
+        }
 
-        .side-card p {{
+        .side-card p {
             margin: 6px 0;
             color: var(--muted);
             font-size: 12px;
             line-height: 1.45;
-        }}
+        }
 
-        .left-plan-item {{
+        .left-plan-item {
             padding: 8px 10px;
             margin-bottom: 8px;
             border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.05);
             background: rgba(255,255,255,0.03);
-        }}
+        }
 
-        .left-plan-item strong {{ display: block; font-size: 12px; color: #f4f8ff; }}
-        .left-plan-item span {{ display: block; margin-top: 3px; font-size: 11px; color: var(--muted); }}
+        .left-plan-item strong { display: block; font-size: 12px; color: #f4f8ff; }
+        .left-plan-item span { display: block; margin-top: 3px; font-size: 11px; color: var(--muted); }
 
-        .badge-row {{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }}
-        .badge {{
+        .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .badge {
             padding: 5px 8px;
             border-radius: 999px;
             border: 1px solid rgba(255, 196, 46, 0.35);
@@ -303,26 +235,26 @@ class DashboardBuilder:
             font-size: 10px;
             letter-spacing: 0.8px;
             text-transform: uppercase;
-        }}
+        }
 
-        .command-box {{
+        .command-box {
             border-radius: 14px;
             padding: 12px;
             background: linear-gradient(180deg, rgba(17, 35, 56, 0.98), rgba(10, 21, 34, 0.96));
             border: 1px solid rgba(255, 196, 46, 0.2);
-        }}
+        }
 
-        .command-box h4 {{
+        .command-box h4 {
             margin: 0 0 10px;
             color: var(--accent-2);
             text-transform: uppercase;
             letter-spacing: 1px;
             font-size: 12px;
-        }}
+        }
 
-        .quick-actions {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }}
+        .quick-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 
-        .quick-actions button, .quick-actions a {{
+        .quick-actions button, .quick-actions a {
             border: 1px solid rgba(121, 170, 226, 0.44);
             border-radius: 10px;
             padding: 10px 10px;
@@ -335,39 +267,39 @@ class DashboardBuilder:
             text-align: center;
             cursor: pointer;
             text-decoration: none;
-        }}
+        }
 
-        .quick-actions button.primary, .quick-actions a.primary {{
+        .quick-actions button.primary, .quick-actions a.primary {
             background: linear-gradient(180deg, #ffd86e, #f5b91c);
             color: #122033;
             border-color: #f2c63d;
-        }}
+        }
 
-        .stage {{
+        .stage {
             min-height: 100%;
             height: 100%;
             padding: 0;
             overflow: hidden;
             border-radius: 18px;
-        }}
+        }
 
-        .screen {{
+        .screen {
             display: none;
             padding: 18px;
             min-height: 100%;
             height: 100%;
             overflow: auto;
             animation: fadeIn .2s ease;
-        }}
+        }
 
-        .screen.active {{ display: block; }}
+        .screen.active { display: block; }
 
-        @keyframes fadeIn {{
-            from {{ opacity: 0; transform: translateY(8px); }}
-            to {{ opacity: 1; transform: translateY(0); }}
-        }}
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        .screen-header {{
+        .screen-header {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
@@ -375,19 +307,19 @@ class DashboardBuilder:
             margin-bottom: 14px;
             padding-bottom: 12px;
             border-bottom: 1px solid rgba(255, 196, 46, 0.28);
-        }}
+        }
 
-        .screen-header h2 {{
+        .screen-header h2 {
             margin: 0;
             font-size: 22px;
             color: var(--accent);
             text-transform: uppercase;
             letter-spacing: 1px;
-        }}
+        }
 
-        .screen-header p {{ margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.4; }}
+        .screen-header p { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.4; }
 
-        .ghost-btn {{
+        .ghost-btn {
             border: 1px solid rgba(255, 196, 46, 0.45);
             background: rgba(255, 196, 46, 0.08);
             color: #ffe39c;
@@ -398,95 +330,95 @@ class DashboardBuilder:
             text-transform: uppercase;
             letter-spacing: 0.8px;
             cursor: pointer;
-        }}
+        }
 
-        .kpi-grid {{
+        .kpi-grid {
             display: grid;
             grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 10px;
             margin-bottom: 12px;
-        }}
+        }
 
-        .kpi-card {{
+        .kpi-card {
             padding: 12px;
             border-radius: 14px;
             background: linear-gradient(145deg, rgba(17, 37, 60, 0.98), rgba(12, 24, 39, 0.94));
             border: 1px solid rgba(121, 170, 226, 0.35);
             border-top: 2px solid var(--accent);
-        }}
+        }
 
-        .kpi-card small {{ display: block; color: #87b1d8; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; font-weight: 800; }}
-        .kpi-card strong {{ display: block; margin-top: 5px; color: #f6fbff; font-size: 16px; }}
-        .kpi-card span {{ display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }}
+        .kpi-card small { display: block; color: #87b1d8; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; font-weight: 800; }
+        .kpi-card strong { display: block; margin-top: 5px; color: #f6fbff; font-size: 16px; }
+        .kpi-card span { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
 
-        .layout-grid {{
+        .layout-grid {
             display: grid;
             grid-template-columns: 1.12fr 0.88fr;
             gap: 12px;
             margin-bottom: 12px;
-        }}
+        }
 
-        .stack-grid {{
+        .stack-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 10px;
             margin-bottom: 12px;
-        }}
+        }
 
-        .tile {{
+        .tile {
             padding: 12px;
             border-radius: 14px;
             background: linear-gradient(180deg, rgba(12, 25, 42, 0.96), rgba(10, 20, 33, 0.96));
             border: 1px solid rgba(121, 170, 226, 0.28);
-        }}
+        }
 
-        .tile h3 {{
+        .tile h3 {
             margin: 0 0 8px;
             color: #ffd86e;
             text-transform: uppercase;
             letter-spacing: 0.9px;
             font-size: 12px;
-        }}
+        }
 
-        .tile p {{ margin: 0; color: #b8cce0; font-size: 12px; line-height: 1.45; }}
+        .tile p { margin: 0; color: #b8cce0; font-size: 12px; line-height: 1.45; }
 
-        .mini-list {{ display: flex; flex-direction: column; gap: 8px; }}
+        .mini-list { display: flex; flex-direction: column; gap: 8px; }
 
-        .mini-item {{
+        .mini-item {
             padding: 10px 12px;
             border-radius: 12px;
             background: rgba(255,255,255,0.03);
             border-left: 3px solid var(--accent-2);
-        }}
+        }
 
-        .mini-item strong {{ display: block; font-size: 12px; color: #f6fbff; }}
-        .mini-item span {{ display: block; margin-top: 3px; color: var(--muted); font-size: 11px; line-height: 1.35; }}
+        .mini-item strong { display: block; font-size: 12px; color: #f6fbff; }
+        .mini-item span { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; line-height: 1.35; }
 
-        .table-card {{
+        .table-card {
             margin-bottom: 12px;
             padding: 12px;
             border-radius: 14px;
             background: rgba(7, 17, 28, 0.75);
             border: 1px solid rgba(121, 170, 226, 0.3);
-        }}
+        }
 
-        .table-card h3 {{
+        .table-card h3 {
             margin: 0 0 10px;
             color: var(--accent);
             font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 0.9px;
-        }}
+        }
 
-        table {{ width: 100%; border-collapse: collapse; }}
-        th, td {{ text-align: left; padding: 9px 8px; border-bottom: 1px solid rgba(121, 170, 226, 0.2); font-size: 12px; }}
-        th {{ color: #ffd86e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.9px; }}
-        td {{ color: #e7f0fb; }}
-        tr:hover td {{ background: rgba(255, 196, 46, 0.05); }}
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid rgba(121, 170, 226, 0.2); font-size: 12px; }
+        th { color: #ffd86e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.9px; }
+        td { color: #e7f0fb; }
+        tr:hover td { background: rgba(255, 196, 46, 0.05); }
 
-        .actions-row {{ display: flex; flex-wrap: wrap; gap: 8px; }}
+        .actions-row { display: flex; flex-wrap: wrap; gap: 8px; }
 
-        .action-btn {{
+        .action-btn {
             border: 1px solid rgba(255, 196, 46, 0.45);
             border-radius: 10px;
             padding: 10px 12px;
@@ -497,31 +429,31 @@ class DashboardBuilder:
             text-transform: uppercase;
             letter-spacing: 0.6px;
             cursor: pointer;
-        }}
+        }
 
-        .alert-list {{ display: flex; flex-direction: column; gap: 8px; max-height: 230px; overflow: auto; }}
-        .alert-item {{
+        .alert-list { display: flex; flex-direction: column; gap: 8px; max-height: 230px; overflow: auto; }
+        .alert-item {
             padding: 9px 10px;
             border-radius: 10px;
             background: rgba(255,255,255,0.04);
             border-left: 3px solid var(--good);
             color: #f0f7ff;
             font-size: 12px;
-        }}
-        .alert-item strong {{ display: block; margin-bottom: 3px; }}
-        .alert-item span {{ color: var(--muted); }}
+        }
+        .alert-item strong { display: block; margin-bottom: 3px; }
+        .alert-item span { color: var(--muted); }
 
-        .clock-card {{
+        .clock-card {
             padding: 12px;
             border-radius: 14px;
             background: linear-gradient(180deg, rgba(11, 25, 42, 0.96), rgba(7, 16, 27, 0.96));
             border: 1px solid rgba(255, 196, 46, 0.25);
-        }}
+        }
 
-        .clock-card .time {{ font-size: 25px; font-weight: 800; color: #f7fbff; }}
-        .clock-card .meta {{ margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.45; }}
+        .clock-card .time { font-size: 25px; font-weight: 800; color: #f7fbff; }
+        .clock-card .meta { margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.45; }
 
-        .footer-note {{
+        .footer-note {
             margin-top: 12px;
             padding: 12px;
             border-radius: 14px;
@@ -532,16 +464,16 @@ class DashboardBuilder:
             text-transform: uppercase;
             letter-spacing: 0.8px;
             font-weight: 800;
-        }}
+        }
 
-        .status-line {{
+        .status-line {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             margin-top: 10px;
-        }}
+        }
 
-        .status-pill {{
+        .status-pill {
             padding: 5px 9px;
             border-radius: 999px;
             background: rgba(255,255,255,0.05);
@@ -550,18 +482,18 @@ class DashboardBuilder:
             font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 0.8px;
-        }}
+        }
 
-        .print-panel {{
+        .print-panel {
             border: 1px dashed rgba(255, 196, 46, 0.35);
             border-radius: 14px;
             padding: 14px;
             background: rgba(255,255,255,0.03);
-        }}
+        }
 
-        .screen-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }}
+        .screen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        .image-card {{
+        .image-card {
             min-height: 160px;
             display: flex;
             align-items: flex-end;
@@ -572,36 +504,36 @@ class DashboardBuilder:
                 linear-gradient(180deg, rgba(7, 12, 18, 0.05), rgba(7, 12, 18, 0.5)),
                 linear-gradient(135deg, rgba(32, 49, 76, 0.75), rgba(15, 24, 36, 0.92));
             border: 1px solid rgba(121, 170, 226, 0.25);
-        }}
+        }
 
-        .image-card .caption {{
+        .image-card .caption {
             max-width: 75%;
             color: #f7fbff;
             font-size: 12px;
             line-height: 1.45;
             font-weight: 700;
             text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-        }}
+        }
 
-        .screen-standalone {{
+        .screen-standalone {
             display: grid;
             grid-template-columns: 1.1fr 0.9fr;
             gap: 12px;
-        }}
+        }
 
-        .screen-standalone .box {{
+        .screen-standalone .box {
             padding: 12px;
             border-radius: 14px;
             border: 1px solid rgba(121, 170, 226, 0.26);
             background: rgba(11, 22, 36, 0.88);
-        }}
+        }
 
-        .screen-standalone .box h3 {{ margin: 0 0 8px; color: var(--accent); font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px; }}
-        .screen-standalone .box p {{ margin: 0; color: #b9cce0; font-size: 12px; line-height: 1.45; }}
+        .screen-standalone .box h3 { margin: 0 0 8px; color: var(--accent); font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px; }
+        .screen-standalone .box p { margin: 0; color: #b9cce0; font-size: 12px; line-height: 1.45; }
 
-        .schedule-list {{ display: flex; flex-direction: column; gap: 8px; }}
+        .schedule-list { display: flex; flex-direction: column; gap: 8px; }
 
-        .schedule-item {{
+        .schedule-item {
             display: grid;
             grid-template-columns: 112px 1fr;
             gap: 10px;
@@ -609,28 +541,28 @@ class DashboardBuilder:
             border-radius: 12px;
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(121, 170, 226, 0.18);
-        }}
+        }
 
-        .schedule-time {{ color: #ffd86e; font-weight: 800; font-size: 12px; }}
-        .schedule-meta {{ color: var(--muted); font-size: 11px; margin-top: 3px; }}
-        .schedule-item strong {{ display: block; color: #f7fbff; font-size: 12px; }}
-        .schedule-item span {{ display: block; color: #a8bfd6; font-size: 11px; margin-top: 3px; line-height: 1.35; }}
+        .schedule-time { color: #ffd86e; font-weight: 800; font-size: 12px; }
+        .schedule-meta { color: var(--muted); font-size: 11px; margin-top: 3px; }
+        .schedule-item strong { display: block; color: #f7fbff; font-size: 12px; }
+        .schedule-item span { display: block; color: #a8bfd6; font-size: 11px; margin-top: 3px; line-height: 1.35; }
 
-        .right-statement {{
+        .right-statement {
             display: flex;
             flex-direction: column;
             gap: 12px;
-        }}
+        }
 
-        .vision-card {{
+        .vision-card {
             position: relative;
             overflow: hidden;
             background:
                 linear-gradient(135deg, rgba(255, 196, 46, 0.12), rgba(106, 169, 255, 0.06)),
                 linear-gradient(180deg, rgba(18, 35, 58, 0.98), rgba(8, 20, 33, 0.96));
-        }}
+        }
 
-        .vision-card::after {{
+        .vision-card::after {
             content: "2042";
             position: absolute;
             right: 14px;
@@ -639,142 +571,118 @@ class DashboardBuilder:
             font-weight: 900;
             color: rgba(255, 255, 255, 0.06);
             letter-spacing: 2px;
-        }}
+        }
 
-        .vision-card p {{ position: relative; z-index: 1; }}
+        .vision-card p { position: relative; z-index: 1; }
 
-        .vision-pillars {{
+        .vision-pillars {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 10px;
-        }}
+        }
 
-        .capital-grid {{
+        .capital-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 10px;
             margin-bottom: 12px;
-        }}
+        }
 
-        .capital-card {{
+        .capital-card {
             padding: 12px;
             border-radius: 14px;
             background: linear-gradient(145deg, rgba(17, 37, 60, 0.98), rgba(12, 24, 39, 0.94));
             border: 1px solid rgba(255, 196, 46, 0.18);
             border-top: 2px solid rgba(106, 169, 255, 0.8);
-        }}
+        }
 
-        .capital-card h4 {{ margin: 0 0 6px; color: #ffd86e; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; }}
-        .capital-card p {{ margin: 0; color: #b9cde1; font-size: 11px; line-height: 1.45; }}
+        .capital-card h4 { margin: 0 0 6px; color: #ffd86e; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; }
+        .capital-card p { margin: 0; color: #b9cde1; font-size: 11px; line-height: 1.45; }
 
-        .vision-hero {{
-            padding: 8px;
-            border-radius: 14px;
-            border: 1px solid rgba(121, 170, 226, 0.28);
-            background: linear-gradient(180deg, rgba(18, 37, 58, 0.98), rgba(7, 15, 25, 0.98));
-        }}
-
-        .vision-board-poster {{
-            display: grid;
-            gap: 2px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(4, 9, 16, 0.96);
-        }}
-
-        .vision-row {{
-            position: relative;
-            min-height: 138px;
-            padding: 14px 16px;
-            display: grid;
-            align-content: start;
+        .vision-hero {
+            display: flex;
+            flex-direction: column;
             gap: 10px;
+            padding: 14px;
+            min-height: 420px;
+            border-radius: 14px;
             overflow: hidden;
-        }}
-
-        .vision-row h4 {{
-            margin: 0;
-            color: #f7fbff;
-            text-shadow: 0 4px 14px rgba(0, 0, 0, 0.48);
-            line-height: 1.05;
-            font-weight: 900;
-            letter-spacing: 0.4px;
-        }}
-
-        .vision-row-top {{
-            min-height: 300px;
+            border: 1px solid rgba(121, 170, 226, 0.24);
             background:
-                radial-gradient(circle at 50% 67%, rgba(255, 197, 95, 0.82), rgba(255, 184, 63, 0.12) 8%, transparent 12%),
-                linear-gradient(180deg, rgba(127, 173, 196, 0.62) 0%, rgba(127, 173, 196, 0.4) 34%, rgba(243, 168, 88, 0.92) 58%, rgba(76, 110, 50, 0.96) 78%, rgba(52, 92, 39, 0.98) 100%);
-        }}
+                radial-gradient(circle at top, rgba(118, 182, 255, 0.22), transparent 36%),
+                linear-gradient(180deg, rgba(60, 113, 165, 0.14), rgba(7, 15, 25, 0.2) 22%),
+                linear-gradient(180deg, rgba(18, 37, 58, 0.98), rgba(7, 15, 25, 0.98));
+        }
 
-        .vision-row-top h4 {{ font-size: 70px; max-width: 760px; }}
+        .vision-hero h3 { margin: 0; font-size: 24px; letter-spacing: 1px; text-transform: uppercase; color: #f7fbff; }
+        .vision-hero p { margin: 0; color: #d9e8f8; font-size: 12px; line-height: 1.5; }
 
-        .vision-row-house {{
-            min-height: 184px;
-            background: linear-gradient(180deg, rgba(24, 41, 27, 0.78), rgba(13, 22, 16, 0.93));
-        }}
+        .vision-scene {
+            position: relative;
+            min-height: 190px;
+            border-radius: 14px;
+            overflow: hidden;
+            background:
+                linear-gradient(180deg, rgba(131, 196, 255, 0.9), rgba(156, 214, 255, 0.7) 32%, rgba(52, 106, 58, 0.18) 33%, rgba(63, 131, 69, 0.85) 60%, rgba(40, 85, 46, 0.96) 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
 
-        .vision-row-cars {{
-            min-height: 168px;
-            background: linear-gradient(180deg, rgba(60, 117, 156, 0.84), rgba(35, 76, 108, 0.95));
-        }}
+        .vision-scene::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 50% 0%, rgba(255,255,255,0.32), transparent 28%),
+                linear-gradient(180deg, rgba(17, 30, 18, 0.2), transparent 24%);
+        }
 
-        .vision-row-travel {{
-            min-height: 168px;
-            background: linear-gradient(180deg, rgba(65, 136, 194, 0.88), rgba(39, 85, 120, 0.96));
-        }}
+        .vision-scene::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background:
+                radial-gradient(circle at 8% 0%, rgba(16, 44, 19, 0.94), transparent 18%),
+                radial-gradient(circle at 26% 0%, rgba(16, 44, 19, 0.94), transparent 19%),
+                radial-gradient(circle at 46% 0%, rgba(16, 44, 19, 0.94), transparent 21%),
+                radial-gradient(circle at 68% 0%, rgba(16, 44, 19, 0.94), transparent 18%),
+                radial-gradient(circle at 88% 0%, rgba(16, 44, 19, 0.94), transparent 17%);
+            opacity: 0.95;
+        }
 
-        .vision-row-business {{
-            min-height: 188px;
-            background: linear-gradient(180deg, rgba(70, 145, 205, 0.86), rgba(43, 90, 129, 0.96));
-        }}
+        .vision-scene-title {
+            position: absolute;
+            top: 18px;
+            left: 20px;
+            right: 20px;
+            text-align: center;
+            z-index: 2;
+            color: #f8fbff;
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 16px rgba(0,0,0,0.45);
+            text-transform: uppercase;
+        }
 
-        .vision-row-house h4,
-        .vision-row-cars h4,
-        .vision-row-travel h4,
-        .vision-row-business h4 {{ font-size: 54px; max-width: 1120px; }}
+        .vision-scene-quote {
+            position: absolute;
+            left: 22px;
+            right: 22px;
+            bottom: 18px;
+            z-index: 2;
+            text-align: center;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 800;
+            text-shadow: 0 3px 10px rgba(0,0,0,0.55);
+        }
 
-        .vision-gallery {{
-            margin-top: auto;
-            display: grid;
-            gap: 2px;
-        }}
+        .quote-list { display: flex; flex-direction: column; gap: 8px; }
 
-        .vision-gallery.cols-2 {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
-        .vision-gallery.cols-3 {{ grid-template-columns: repeat(3, minmax(0, 1fr)); }}
-        .vision-gallery.cols-4 {{ grid-template-columns: repeat(4, minmax(0, 1fr)); }}
-
-        .vision-photo {{
-            min-height: 96px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background-size: cover;
-            background-position: center;
-            box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.08);
-        }}
-
-        .vision-photo.house-1 {{ background-image: linear-gradient(145deg, rgba(94, 138, 183, 0.82), rgba(77, 56, 34, 0.74)); }}
-        .vision-photo.house-2 {{ background-image: linear-gradient(145deg, rgba(139, 116, 83, 0.85), rgba(60, 79, 98, 0.76)); }}
-        .vision-photo.house-3 {{ background-image: linear-gradient(145deg, rgba(166, 156, 139, 0.86), rgba(103, 117, 110, 0.78)); }}
-
-        .vision-photo.car-1 {{ background-image: linear-gradient(145deg, rgba(37, 49, 67, 0.88), rgba(78, 88, 101, 0.78)); }}
-        .vision-photo.car-2 {{ background-image: linear-gradient(145deg, rgba(42, 58, 78, 0.88), rgba(95, 117, 137, 0.76)); }}
-        .vision-photo.car-3 {{ background-image: linear-gradient(145deg, rgba(176, 184, 190, 0.9), rgba(112, 119, 125, 0.8)); }}
-        .vision-photo.car-4 {{ background-image: linear-gradient(145deg, rgba(56, 65, 75, 0.9), rgba(123, 105, 75, 0.8)); }}
-
-        .vision-photo.travel-1 {{ background-image: linear-gradient(145deg, rgba(154, 176, 199, 0.9), rgba(82, 101, 121, 0.8)); }}
-        .vision-photo.travel-2 {{ background-image: linear-gradient(145deg, rgba(88, 170, 212, 0.9), rgba(57, 107, 142, 0.82)); }}
-        .vision-photo.travel-3 {{ background-image: linear-gradient(145deg, rgba(122, 176, 224, 0.88), rgba(80, 131, 179, 0.82)); }}
-
-        .vision-photo.biz-1 {{ background-image: linear-gradient(145deg, rgba(83, 143, 185, 0.9), rgba(64, 96, 132, 0.82)); }}
-        .vision-photo.biz-2 {{ background-image: linear-gradient(145deg, rgba(165, 147, 118, 0.9), rgba(91, 86, 75, 0.82)); }}
-        .vision-photo.biz-3 {{ background-image: linear-gradient(145deg, rgba(188, 160, 122, 0.9), rgba(102, 89, 72, 0.84)); }}
-
-        .quote-list {{ display: flex; flex-direction: column; gap: 8px; }}
-
-        .quote-item {{
+        .quote-item {
             padding: 10px 12px;
             border-radius: 12px;
             background: rgba(255,255,255,0.05);
@@ -782,35 +690,35 @@ class DashboardBuilder:
             color: #f7fbff;
             font-size: 12px;
             line-height: 1.45;
-        }}
+        }
 
-        .progress-stack {{ display: flex; flex-direction: column; gap: 10px; }}
+        .progress-stack { display: flex; flex-direction: column; gap: 10px; }
 
-        .progress-row {{
+        .progress-row {
             display: grid;
             grid-template-columns: 132px 1fr 48px;
             gap: 10px;
             align-items: center;
-        }}
+        }
 
-        .progress-row label {{ color: #d9e8f8; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; }}
-        .progress-row span {{ color: #ffd86e; font-size: 11px; font-weight: 800; text-align: right; }}
+        .progress-row label { color: #d9e8f8; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; }
+        .progress-row span { color: #ffd86e; font-size: 11px; font-weight: 800; text-align: right; }
 
-        .progress-bar {{
+        .progress-bar {
             height: 10px;
             border-radius: 999px;
             background: rgba(255,255,255,0.08);
             overflow: hidden;
             border: 1px solid rgba(121, 170, 226, 0.18);
-        }}
+        }
 
-        .progress-fill {{
+        .progress-fill {
             height: 100%;
             border-radius: 999px;
             background: linear-gradient(90deg, #f5b91c, #6aa9ff);
-        }}
+        }
 
-        .vision-cta {{
+        .vision-cta {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -825,15 +733,15 @@ class DashboardBuilder:
             text-transform: uppercase;
             letter-spacing: 0.7px;
             cursor: pointer;
-        }}
+        }
 
-        .vision-poster-grid {{
+        .vision-poster-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 10px;
-        }}
+        }
 
-        .vision-poster-block {{
+        .vision-poster-block {
             min-height: 92px;
             border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.08);
@@ -845,57 +753,52 @@ class DashboardBuilder:
             font-size: 11px;
             font-weight: 700;
             line-height: 1.35;
-        }}
+        }
 
-        .vision-poster-block.luxury {{ background: linear-gradient(145deg, rgba(235, 237, 243, 0.95), rgba(142, 150, 169, 0.55)); color: #172434; }}
-        .vision-poster-block.cars {{ background: linear-gradient(145deg, rgba(30, 33, 42, 0.95), rgba(94, 124, 178, 0.45)); }}
-        .vision-poster-block.travel {{ background: linear-gradient(145deg, rgba(82, 168, 235, 0.92), rgba(23, 76, 122, 0.85)); }}
-        .vision-poster-block.business {{ background: linear-gradient(145deg, rgba(36, 63, 99, 0.98), rgba(102, 154, 230, 0.42)); }}
-        .vision-poster-block.abundance {{ background: linear-gradient(145deg, rgba(101, 71, 32, 0.92), rgba(213, 164, 84, 0.72)); color: #1d1d14; }}
+        .vision-poster-block.luxury { background: linear-gradient(145deg, rgba(235, 237, 243, 0.95), rgba(142, 150, 169, 0.55)); color: #172434; }
+        .vision-poster-block.cars { background: linear-gradient(145deg, rgba(30, 33, 42, 0.95), rgba(94, 124, 178, 0.45)); }
+        .vision-poster-block.travel { background: linear-gradient(145deg, rgba(82, 168, 235, 0.92), rgba(23, 76, 122, 0.85)); }
+        .vision-poster-block.business { background: linear-gradient(145deg, rgba(36, 63, 99, 0.98), rgba(102, 154, 230, 0.42)); }
+        .vision-poster-block.abundance { background: linear-gradient(145deg, rgba(101, 71, 32, 0.92), rgba(213, 164, 84, 0.72)); color: #1d1d14; }
 
-        @media (max-width: 1280px) {{
-            .hero, .workspace, .layout-grid, .screen-standalone, .screen-grid {{ grid-template-columns: 1fr; }}
-            .header-metrics {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
-            .command-bar {{ grid-template-columns: repeat(3, minmax(0, 1fr)); }}
-            .kpi-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
-            .stack-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
-            .capital-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
-            .vision-gallery.cols-4 {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
-            .workspace {{ height: auto; overflow: visible; }}
-            .sidebar {{ position: static; max-height: none; height: auto; }}
-            body {{ overflow: auto; }}
-        }}
+        @media (max-width: 1280px) {
+            .hero, .workspace, .layout-grid, .screen-standalone, .screen-grid { grid-template-columns: 1fr; }
+            .header-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .command-bar { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .stack-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .capital-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .vision-poster-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .workspace { height: auto; overflow: visible; }
+            .sidebar { position: static; max-height: none; height: auto; }
+            body { overflow: auto; }
+        }
 
-        @media (max-width: 780px) {{
-            .topbar {{ padding: 14px 14px 10px; }}
-            .hero-title h1 {{ font-size: 22px; }}
-            .workspace {{ padding: 12px; }}
-            .command-bar {{ grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px 12px 12px; }}
-            .header-metrics {{ grid-template-columns: 1fr; }}
-            .kpi-grid, .stack-grid, .capital-grid, .vision-pillars, .vision-gallery {{ grid-template-columns: 1fr; }}
-            .schedule-item {{ grid-template-columns: 1fr; }}
-            .progress-row {{ grid-template-columns: 1fr; }}
-            .vision-row-top h4 {{ font-size: 38px; }}
-            .vision-row-house h4,
-            .vision-row-cars h4,
-            .vision-row-travel h4,
-            .vision-row-business h4 {{ font-size: 28px; }}
-        }}
+        @media (max-width: 780px) {
+            .topbar { padding: 14px 14px 10px; }
+            .hero-title h1 { font-size: 22px; }
+            .workspace { padding: 12px; }
+            .command-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px 12px 12px; }
+            .header-metrics { grid-template-columns: 1fr; }
+            .kpi-grid, .stack-grid, .capital-grid, .vision-pillars, .vision-poster-grid { grid-template-columns: 1fr; }
+            .schedule-item { grid-template-columns: 1fr; }
+            .progress-row { grid-template-columns: 1fr; }
+        }
 
-        @media print {{
-            body {{ background: #fff; color: #000; overflow: visible; }}
-            body::before, .command-bar, .sidebar, .ghost-btn, .nav-btn, .action-btn {{ display: none !important; }}
-            .workspace {{ display: block; padding: 0; max-width: none; height: auto; overflow: visible; }}
-            .panel, .screen, .tile, .kpi-card, .table-card {{ box-shadow: none !important; }}
-            .stage {{ min-height: auto; height: auto; }}
-            .screen {{ display: none !important; min-height: auto; height: auto; overflow: visible; }}
-            .screen.active {{ display: block !important; }}
-            .topbar {{ position: static; box-shadow: none; border-bottom: 1px solid #ddd; background: #fff; }}
-            .hero-title h1, .screen-header h2, .kpi-card strong, .metric strong, td, th, p, span {{ color: #000 !important; }}
-        }}
+        @media print {
+            body { background: #fff; color: #000; overflow: visible; }
+            body::before, .command-bar, .sidebar, .ghost-btn, .nav-btn, .action-btn { display: none !important; }
+            .workspace { display: block; padding: 0; max-width: none; height: auto; overflow: visible; }
+            .panel, .screen, .tile, .kpi-card, .table-card { box-shadow: none !important; }
+            .stage { min-height: auto; height: auto; }
+            .screen { display: none !important; min-height: auto; height: auto; overflow: visible; }
+            .screen.active { display: block !important; }
+            .topbar { position: static; box-shadow: none; border-bottom: 1px solid #ddd; background: #fff; }
+            .hero-title h1, .screen-header h2, .kpi-card strong, .metric strong, td, th, p, span { color: #000 !important; }
+        }
     </style>
 </head>
-<body data-fecha="{e(fecha_iso)}" data-word-path="{e(word_path)}">
+<body data-fecha="05072026" data-word-path="../Word/VIDA_REAL_ENGINE_V5_05072026.docx">
     <header class="topbar">
         <div class="hero">
             <div class="hero-title">
@@ -904,10 +807,10 @@ class DashboardBuilder:
                 <div class="tagline">Centro de comando oscuro, ejecutivo y navegable para operar tu día con foco, continuidad y disciplina.</div>
             </div>
             <div class="header-metrics">
-                <div class="metric"><small>Fecha</small><strong>{e(fecha_str)}</strong><span>Actualización del sistema</span></div>
-                <div class="metric"><small>Hora</small><strong>{e(hora_str)}</strong><span>Hora de inicio del tablero</span></div>
-                <div class="metric"><small>Tipo de día</small><strong>{e(tipo_dia)}</strong><span>Lectura operativa del día</span></div>
-                <div class="metric"><small>Turno SERPAT</small><strong>{e(turno_serpat)}</strong><span>Ritmo laboral activo</span></div>
+                <div class="metric"><small>Fecha</small><strong>05-07-2026</strong><span>Actualización del sistema</span></div>
+                <div class="metric"><small>Hora</small><strong>00:04</strong><span>Hora de inicio del tablero</span></div>
+                <div class="metric"><small>Tipo de día</small><strong>Turno de Mañana</strong><span>Lectura operativa del día</span></div>
+                <div class="metric"><small>Turno SERPAT</small><strong>08:00–16:30</strong><span>Ritmo laboral activo</span></div>
             </div>
         </div>
     </header>
@@ -959,8 +862,8 @@ class DashboardBuilder:
             <section class="panel side-card">
                 <h3>Identidad</h3>
                 <p><strong>Robinson</strong></p>
-                <p>{e(identidad.get('proposito') or 'Constructor de futuro con disciplina, propósito y visión de largo plazo.')}</p>
-                <p>{e(identidad.get('vision') or 'Convertir la realidad diaria en una plataforma de crecimiento sostenido.')}</p>
+                <p>Convertir cada día en capital acumulado para Robinson 2042.</p>
+                <p>Holding internacional, patrimonio sólido, salud, liderazgo, legado y libertad.</p>
                 <div class="status-line">
                     <span class="status-pill">Ley 001 activa</span>
                     <span class="status-pill">Continuidad protegida</span>
@@ -969,20 +872,20 @@ class DashboardBuilder:
 
             <section class="panel side-card">
                 <h3>Recursos</h3>
-                <p><strong>{e(total_archivos)}</strong> archivos indexados</p>
-                <p><strong>{e(total_hojas)}</strong> hojas Excel detectadas</p>
+                <p><strong>316</strong> archivos indexados</p>
+                <p><strong>153</strong> hojas Excel detectadas</p>
                 <p>Word, PDF y dashboard central listos para uso diario.</p>
             </section>
 
             <section class="panel side-card">
                 <h3>Estado del sistema</h3>
                 <div class="clock-card">
-                    <div class="time">{e(hora_str)}</div>
-                    <div class="meta">{e(fecha_str)}<br>{e(tipo_dia)}<br>SERPAT: {e(turno_serpat)}</div>
+                    <div class="time">00:04</div>
+                    <div class="meta">05-07-2026<br>Turno de Mañana<br>SERPAT: 08:00–16:30</div>
                 </div>
                 <div class="status-line">
-                    <span class="status-pill">Alertas: {len(sistema.alertas)}</span>
-                    <span class="status-pill">Decisiones: {len(sistema.decisiones)}</span>
+                    <span class="status-pill">Alertas: 10</span>
+                    <span class="status-pill">Decisiones: 8</span>
                 </div>
             </section>
 
@@ -1014,15 +917,15 @@ class DashboardBuilder:
                 <div class="kpi-grid">
                     <div class="kpi-card"><small>Energía</small><strong>7/10</strong><span>Listo para ejecutar</span></div>
                     <div class="kpi-card"><small>Sueño</small><strong>6h 40m</strong><span>Recuperación aceptable</span></div>
-                    <div class="kpi-card"><small>Continuidad</small><strong>{len(sistema.cronograma)}</strong><span>Bloques del día</span></div>
-                    <div class="kpi-card"><small>Identidad</small><strong>{e(identidad.get('mision') or 'Constructor')}</strong><span>Nivel de enfoque</span></div>
-                    <div class="kpi-card"><small>Foco</small><strong>{e(area_ancla.get('prioridad', 'Alto') if area_ancla else 'Alto')}</strong><span>Prioridad única</span></div>
+                    <div class="kpi-card"><small>Continuidad</small><strong>17</strong><span>Bloques del día</span></div>
+                    <div class="kpi-card"><small>Identidad</small><strong>Construir una vida extraordinaria mediante disciplina, sistemas, aprendizaje continuo y creación de patrimonio.</strong><span>Nivel de enfoque</span></div>
+                    <div class="kpi-card"><small>Foco</small><strong>86</strong><span>Prioridad única</span></div>
                 </div>
 
                 <div class="layout-grid">
                     <section class="tile">
                         <h3>Propósito del día</h3>
-                        <p>{e((identidad.get('proposito') or 'Salir hoy siendo una versión superior del Robinson de ayer.'))}</p>
+                        <p>Convertir cada día en capital acumulado para Robinson 2042.</p>
                         <div class="badge-row">
                             <span class="badge">Disciplina</span>
                             <span class="badge">Ejecución</span>
@@ -1049,36 +952,36 @@ class DashboardBuilder:
                     </section>
                     <section class="tile">
                         <h3>Pendientes críticos</h3>
-                        {pendientes_html}
+                        <div class="mini-item"><strong>SERPAT</strong><span>Calendario laboral detectado - Usar SERPAT TURNOS para adaptar el día.</span></div><div class="mini-item"><strong>Pendientes</strong><span>Pendientes detectados - Integrar pendientes en la priorización diaria.</span></div><div class="mini-item"><strong>Identidad</strong><span>Vision Board detectado - Usar Vision Board para visualización diaria.</span></div><div class="mini-item"><strong>Desarrollo Personal</strong><span>Desarrollo personal detectado - Integrar lectura, hábitos e identidad.</span></div><div class="mini-item"><strong>Universidad</strong><span>Errores académicos detectados - Hay 36 registros de errores/dudas que deben revisarse.</span></div>
                     </section>
                 </div>
 
                 <section class="tile vision-card">
                     <h3>Vision Board 2042</h3>
-                    {vision_card_inicio}
+                    <p>Hoy no estás haciendo tareas. Estás construyendo 2042.</p><div class="badge-row"><span class="badge">Mi Divina Obsesión</span><span class="badge">Campo de abundancia</span></div><button class="vision-cta" data-screen="vision-board">Abrir módulo vivo</button>
                 </section>
 
                 <div class="stack-grid">
                     <section class="tile">
                         <h3>Alertas y recordatorios</h3>
-                        <div class="alert-list">{alertas_html}</div>
+                        <div class="alert-list"><div class="alert-item"><strong>Calendario laboral detectado</strong><span>Usar SERPAT TURNOS para adaptar el día.</span></div><div class="alert-item"><strong>Pendientes detectados</strong><span>Integrar pendientes en la priorización diaria.</span></div><div class="alert-item"><strong>Vision Board detectado</strong><span>Usar Vision Board para visualización diaria.</span></div><div class="alert-item"><strong>Desarrollo personal detectado</strong><span>Integrar lectura, hábitos e identidad.</span></div><div class="alert-item"><strong>Errores académicos detectados</strong><span>Hay 36 registros de errores/dudas que deben revisarse.</span></div><div class="alert-item"><strong>Recursos universitarios disponibles</strong><span>Hay 115 archivos en Recursos/04_UNIVERSIDAD.</span></div></div>
                     </section>
                     <section class="tile">
                         <h3>Prioridades del día</h3>
                         <div class="mini-list">
-                            <div class="mini-item"><strong>Universidad</strong><span>{e(area_universidad.get('accion', 'Revisar evaluaciones y resolver bloque académico.'))}</span></div>
-                            <div class="mini-item"><strong>Finanzas</strong><span>{e(area_finanzas.get('accion', 'Actualizar registros y validar caja.'))}</span></div>
-                            <div class="mini-item"><strong>Empresas</strong><span>{e(area_empresas.get('accion', 'Mantener el CRM y la continuidad de negocios.'))}</span></div>
-                            <div class="mini-item"><strong>Salud</strong><span>{e(area_salud.get('accion', 'Cuidar cuerpo y registrar capital biológico.'))}</span></div>
+                            <div class="mini-item"><strong>Universidad</strong><span>Estudiar Universidad — EV-010. Revisar contenido asociado, resolver ejercicios y registrar errores.</span></div>
+                            <div class="mini-item"><strong>Finanzas</strong><span>Registrar ingresos, gastos, pagos, movimientos bancarios, inversiones, saldo disponible y obligaciones pendientes.</span></div>
+                            <div class="mini-item"><strong>Empresas</strong><span>Revisar CRM, seguimiento, mercado o proyecto activo. Ejecutar una acción concreta: contacto, análisis, respuesta, registro, hipótesis, aprendizaje o siguiente acción.</span></div>
+                            <div class="mini-item"><strong>Salud</strong><span>Registrar sueño, energía, recuperación, presión arterial, pulso, medicamento, alimentación e hidratación.</span></div>
                         </div>
                     </section>
                     <section class="tile">
                         <h3>Capital actual</h3>
                         <div class="mini-list">
-                            <div class="mini-item"><strong>Biológico</strong><span>{e(area_salud.get('registro', 'H02_Registro_Salud'))}</span></div>
-                            <div class="mini-item"><strong>Financiero</strong><span>{e(area_finanzas.get('registro', '11_Ingresos; 12_Gastos'))}</span></div>
-                            <div class="mini-item"><strong>Empresarial</strong><span>{e(area_empresas.get('registro', '30_MGC_CRM'))}</span></div>
-                            <div class="mini-item"><strong>Reputacional</strong><span>{e(area_serpat.get('registro', '06_TRABAJO_SERPAT'))}</span></div>
+                            <div class="mini-item"><strong>Biológico</strong><span>H02_Registro_Salud; H03_Presión_Log; H00_Dashboard_Health</span></div>
+                            <div class="mini-item"><strong>Financiero</strong><span>11_Ingresos; 12_Gastos; 13_Deudas; 18_Conciliacion_Bancaria_V3; 20_Registro_Diario; 21_KPI_Diario</span></div>
+                            <div class="mini-item"><strong>Empresarial</strong><span>30_MGC_CRM; 33_Seguimientos; 70_Mercado_MGC; 71_Mercado_LNR; 76_CaptaPropIA; 82_LNH_Corporate_System</span></div>
+                            <div class="mini-item"><strong>Reputacional</strong><span>SERPAT TURNOS</span></div>
                         </div>
                     </section>
                 </div>
@@ -1096,14 +999,14 @@ class DashboardBuilder:
                             </tr>
                         </thead>
                         <tbody>
-                            {cronograma_tabla}
+                            <tr><td>06:00 - 06:15</td><td>Despertar y medir presión</td><td>Arrancar el día con control biológico</td><td>H03_Presión_Log</td><td>Biológico</td></tr><tr><td>06:15 - 06:45</td><td>Desayuno y medicamento</td><td>Nutrir cuerpo y sostener energía</td><td>H02_Registro_Salud</td><td>Biológico</td></tr><tr><td>06:45 - 07:15</td><td>Ducha y preparación</td><td>Orden mental y físico antes de ejecutar</td><td>Ancla Mental</td><td>Mental</td></tr><tr><td>07:15 - 09:30</td><td>Universidad - estudio intenso</td><td>Estudiar Universidad — EV-010. Revisar contenido asociado, resolver ejercicios y registrar errores.</td><td>61_T2_Ramos; 62_T2_Evaluaciones; 63_T2_Bloques; 64_T2_Errores</td><td>Educativo</td></tr><tr><td>09:30 - 11:00</td><td>Empresas - acción comercial</td><td>Revisar CRM, seguimiento, mercado o proyecto activo. Ejecutar una acción concreta: contacto, análisis, respuesta, registro, hipótesis, aprendizaje o siguiente acción.</td><td>30_MGC_CRM; 33_Seguimientos; 70_Mercado_MGC; 71_Mercado_LNR; 76_CaptaPropIA; 82_LNH_Corporate_System</td><td>Empresarial</td></tr><tr><td>11:00 - 11:15</td><td>Pausa y café</td><td>Recuperar foco y energía</td><td>Autorregistro</td><td>Biológico</td></tr><tr><td>11:15 - 12:00</td><td>Finanzas - registrar y revisar</td><td>Registrar ingresos, gastos, pagos, movimientos bancarios, inversiones, saldo disponible y obligaciones pendientes.</td><td>11_Ingresos; 12_Gastos; 13_Deudas; 18_Conciliacion_Bancaria_V3; 20_Registro_Diario; 21_KPI_Diario</td><td>Financiero</td></tr><tr><td>12:00 - 12:45</td><td>Almuerzo completo</td><td>Cuidar energía y sostener el resto del día</td><td>H02_Registro_Salud</td><td>Biológico</td></tr><tr><td>12:45 - 13:45</td><td>Caminata o ejercicio</td><td>Mover el cuerpo y despejar la mente</td><td>H02_Registro_Salud</td><td>Biológico</td></tr><tr><td>13:45 - 14:00</td><td>Hidratación y pausa</td><td>Reset breve para volver al foco</td><td>H02_Registro_Salud</td><td>Biológico</td></tr><tr><td>14:00 - 16:00</td><td>Pendientes críticos y seguimiento</td><td>Cerrar lo que mueve la continuidad del día</td><td>90_Alertas_Correcciones</td><td>Sistema</td></tr><tr><td>16:00 - 16:30</td><td>Merienda</td><td>Recuperar energía sin romper el ritmo</td><td>H02_Registro_Salud</td><td>Biológico</td></tr><tr><td>16:30 - 17:30</td><td>Lectura y desarrollo personal</td><td>Subir capital intelectual y mental</td><td>08_LECTURA_CRECIIMIENTO</td><td>Intelectual</td></tr><tr><td>17:30 - 18:00</td><td>Cierre Ancla</td><td>Evaluar y corregir antes del final del día</td><td>Ancla Mental; 21_KPI_Diario</td><td>Mental</td></tr><tr><td>18:00 - 19:00</td><td>Cena</td><td>Recuperar cuerpo y terminar con estabilidad</td><td>H02_Registro_Salud</td><td>Biológico</td></tr><tr><td>19:00 - 22:00</td><td>Descanso y cierre suave</td><td>Evitar ruido y proteger energía mental</td><td>Autorregistro</td><td>Mental</td></tr><tr><td>22:00 - 22:30</td><td>Rutina de sueño</td><td>Preparar descanso y continuidad del día siguiente</td><td>H02_Registro_Salud</td><td>Biológico</td></tr>
                         </tbody>
                     </table>
                 </section>
 
                 <section class="tile">
                     <h3>Cronograma ejecutivo</h3>
-                    <div class="schedule-list">{cronograma_html}</div>
+                    <div class="schedule-list"><div class="schedule-item"><div><div class="schedule-time">06:00 - 06:15</div><div class="schedule-meta">Biológico</div></div><div><strong>Despertar y medir presión</strong><span>Arrancar el día con control biológico</span></div></div><div class="schedule-item"><div><div class="schedule-time">06:15 - 06:45</div><div class="schedule-meta">Biológico</div></div><div><strong>Desayuno y medicamento</strong><span>Nutrir cuerpo y sostener energía</span></div></div><div class="schedule-item"><div><div class="schedule-time">06:45 - 07:15</div><div class="schedule-meta">Mental</div></div><div><strong>Ducha y preparación</strong><span>Orden mental y físico antes de ejecutar</span></div></div><div class="schedule-item"><div><div class="schedule-time">07:15 - 09:30</div><div class="schedule-meta">Educativo</div></div><div><strong>Universidad - estudio intenso</strong><span>Estudiar Universidad — EV-010. Revisar contenido asociado, resolver ejercicios y registrar errores.</span></div></div><div class="schedule-item"><div><div class="schedule-time">09:30 - 11:00</div><div class="schedule-meta">Empresarial</div></div><div><strong>Empresas - acción comercial</strong><span>Revisar CRM, seguimiento, mercado o proyecto activo. Ejecutar una acción concreta: contacto, análisis, respuesta, registro, hipótesis, aprendizaje o siguiente acción.</span></div></div><div class="schedule-item"><div><div class="schedule-time">11:00 - 11:15</div><div class="schedule-meta">Biológico</div></div><div><strong>Pausa y café</strong><span>Recuperar foco y energía</span></div></div><div class="schedule-item"><div><div class="schedule-time">11:15 - 12:00</div><div class="schedule-meta">Financiero</div></div><div><strong>Finanzas - registrar y revisar</strong><span>Registrar ingresos, gastos, pagos, movimientos bancarios, inversiones, saldo disponible y obligaciones pendientes.</span></div></div><div class="schedule-item"><div><div class="schedule-time">12:00 - 12:45</div><div class="schedule-meta">Biológico</div></div><div><strong>Almuerzo completo</strong><span>Cuidar energía y sostener el resto del día</span></div></div><div class="schedule-item"><div><div class="schedule-time">12:45 - 13:45</div><div class="schedule-meta">Biológico</div></div><div><strong>Caminata o ejercicio</strong><span>Mover el cuerpo y despejar la mente</span></div></div><div class="schedule-item"><div><div class="schedule-time">13:45 - 14:00</div><div class="schedule-meta">Biológico</div></div><div><strong>Hidratación y pausa</strong><span>Reset breve para volver al foco</span></div></div><div class="schedule-item"><div><div class="schedule-time">14:00 - 16:00</div><div class="schedule-meta">Sistema</div></div><div><strong>Pendientes críticos y seguimiento</strong><span>Cerrar lo que mueve la continuidad del día</span></div></div><div class="schedule-item"><div><div class="schedule-time">16:00 - 16:30</div><div class="schedule-meta">Biológico</div></div><div><strong>Merienda</strong><span>Recuperar energía sin romper el ritmo</span></div></div><div class="schedule-item"><div><div class="schedule-time">16:30 - 17:30</div><div class="schedule-meta">Intelectual</div></div><div><strong>Lectura y desarrollo personal</strong><span>Subir capital intelectual y mental</span></div></div><div class="schedule-item"><div><div class="schedule-time">17:30 - 18:00</div><div class="schedule-meta">Mental</div></div><div><strong>Cierre Ancla</strong><span>Evaluar y corregir antes del final del día</span></div></div><div class="schedule-item"><div><div class="schedule-time">18:00 - 19:00</div><div class="schedule-meta">Biológico</div></div><div><strong>Cena</strong><span>Recuperar cuerpo y terminar con estabilidad</span></div></div><div class="schedule-item"><div><div class="schedule-time">19:00 - 22:00</div><div class="schedule-meta">Mental</div></div><div><strong>Descanso y cierre suave</strong><span>Evitar ruido y proteger energía mental</span></div></div><div class="schedule-item"><div><div class="schedule-time">22:00 - 22:30</div><div class="schedule-meta">Biológico</div></div><div><strong>Rutina de sueño</strong><span>Preparar descanso y continuidad del día siguiente</span></div></div></div>
                 </section>
             </section>
 
@@ -1117,15 +1020,15 @@ class DashboardBuilder:
                 </div>
                 <div class="kpi-grid">
                     <div class="kpi-card"><small>Estado</small><strong>Activo</strong><span>Ramos priorizados</span></div>
-                    <div class="kpi-card"><small>Acción IA</small><strong>Estudio</strong><span>{e(area_universidad.get('accion', 'Revisar evaluaciones'))}</span></div>
-                    <div class="kpi-card"><small>Registro</small><strong>Académico</strong><span>{e(area_universidad.get('registro', '62_T2_Evaluaciones'))}</span></div>
+                    <div class="kpi-card"><small>Acción IA</small><strong>Estudio</strong><span>Estudiar Universidad — EV-010. Revisar contenido asociado, resolver ejercicios y registrar errores.</span></div>
+                    <div class="kpi-card"><small>Registro</small><strong>Académico</strong><span>61_T2_Ramos; 62_T2_Evaluaciones; 63_T2_Bloques; 64_T2_Errores</span></div>
                     <div class="kpi-card"><small>Objetivo</small><strong>Avanzar</strong><span>Sin perder continuidad</span></div>
                     <div class="kpi-card"><small>Meta</small><strong>Claridad</strong><span>Menos ruido, más entrega</span></div>
                 </div>
                 <div class="screen-standalone">
                     <div class="box">
                         <h3>Prioridad universitaria</h3>
-                        <p>{e(area_universidad.get('motivo', 'Resuelve primero lo que más mueve el avance académico.'))}</p>
+                        <p>Evaluación detectada como prioridad: EV-010 | Probabilidad y Estadística | 4 | Sumativa | Prueba escrita Unidad I | 30 | 2026-06-28 00:00:00 | Fundamentos, condicional, combinaciones, Bayes | Pendiente | -5 | Vencido | Preparar / entregar / estudiar | 62_T2.</p>
                     </div>
                     <div class="box">
                         <h3>Bloque activo</h3>
@@ -1155,14 +1058,14 @@ class DashboardBuilder:
                 </div>
                 <div class="kpi-grid">
                     <div class="kpi-card"><small>Capital financiero</small><strong>Vivo</strong><span>Registro del día</span></div>
-                    <div class="kpi-card"><small>Acción IA</small><strong>{e(area_finanzas.get('accion', 'Registrar movimientos'))}</strong><span>Prioridad máxima</span></div>
-                    <div class="kpi-card"><small>Registro</small><strong>{e(area_finanzas.get('registro', '11_Ingresos; 12_Gastos'))}</strong><span>Fuentes contables</span></div>
+                    <div class="kpi-card"><small>Acción IA</small><strong>Registrar ingresos, gastos, pagos, movimientos bancarios, inversiones, saldo disponible y obligaciones pendientes.</strong><span>Prioridad máxima</span></div>
+                    <div class="kpi-card"><small>Registro</small><strong>11_Ingresos; 12_Gastos; 13_Deudas; 18_Conciliacion_Bancaria_V3; 20_Registro_Diario; 21_KPI_Diario</strong><span>Fuentes contables</span></div>
                     <div class="kpi-card"><small>Control</small><strong>Conciliación</strong><span>Visibilidad total</span></div>
                     <div class="kpi-card"><small>Riesgo</small><strong>Monitoreado</strong><span>Evitar fuga de caja</span></div>
                 </div>
                 <div class="stack-grid">
                     <section class="tile"><h3>Cash</h3><p>Liquidez y caja al día.</p></section>
-                    <section class="tile"><h3>Ingresos</h3><p>{e(area_finanzas.get('motivo', 'Mantener trazabilidad y orden financiero.'))}</p></section>
+                    <section class="tile"><h3>Ingresos</h3><p>Construir capital financiero mediante visibilidad, control y decisión patrimonial.</p></section>
                     <section class="tile"><h3>Gastos</h3><p>Clasificación y recorte de ruido financiero.</p></section>
                 </div>
                 <div class="table-card">
@@ -1187,8 +1090,8 @@ class DashboardBuilder:
                     <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
                 </div>
                 <div class="kpi-grid">
-                    <div class="kpi-card"><small>Acción IA</small><strong>{e(area_empresas.get('accion', 'Mantener seguimiento comercial'))}</strong><span>Bloque empresarial</span></div>
-                    <div class="kpi-card"><small>Registro</small><strong>{e(area_empresas.get('registro', '30_MGC_CRM'))}</strong><span>CRM y seguimiento</span></div>
+                    <div class="kpi-card"><small>Acción IA</small><strong>Revisar CRM, seguimiento, mercado o proyecto activo. Ejecutar una acción concreta: contacto, análisis, respuesta, registro, hipótesis, aprendizaje o siguiente acción.</strong><span>Bloque empresarial</span></div>
+                    <div class="kpi-card"><small>Registro</small><strong>30_MGC_CRM; 33_Seguimientos; 70_Mercado_MGC; 71_Mercado_LNR; 76_CaptaPropIA; 82_LNH_Corporate_System</strong><span>CRM y seguimiento</span></div>
                     <div class="kpi-card"><small>Estado</small><strong>Operativo</strong><span>Holding y mercado</span></div>
                     <div class="kpi-card"><small>Objetivo</small><strong>Continuidad</strong><span>Negocio sin ruido</span></div>
                     <div class="kpi-card"><small>Visión</small><strong>Holding</strong><span>Escala y orden</span></div>
@@ -1219,8 +1122,8 @@ class DashboardBuilder:
                     <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
                 </div>
                 <div class="kpi-grid">
-                    <div class="kpi-card"><small>Acción IA</small><strong>{e(area_salud.get('accion', 'Cuidar cuerpo y mente'))}</strong><span>Prioridad biológica</span></div>
-                    <div class="kpi-card"><small>Registro</small><strong>{e(area_salud.get('registro', 'H02_Registro_Salud'))}</strong><span>Control diario</span></div>
+                    <div class="kpi-card"><small>Acción IA</small><strong>Registrar sueño, energía, recuperación, presión arterial, pulso, medicamento, alimentación e hidratación.</strong><span>Prioridad biológica</span></div>
+                    <div class="kpi-card"><small>Registro</small><strong>H02_Registro_Salud; H03_Presión_Log; H00_Dashboard_Health</strong><span>Control diario</span></div>
                     <div class="kpi-card"><small>Sueño</small><strong>6h 40m</strong><span>Recuperación aceptable</span></div>
                     <div class="kpi-card"><small>Energía</small><strong>7/10</strong><span>Arranque listo</span></div>
                     <div class="kpi-card"><small>Estado</small><strong>Vigilado</strong><span>Presión y medicación</span></div>
@@ -1251,10 +1154,10 @@ class DashboardBuilder:
                     <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
                 </div>
                 <div class="kpi-grid">
-                    <div class="kpi-card"><small>Tipo de día</small><strong>{e(tipo_dia)}</strong><span>Clasificación operativa</span></div>
-                    <div class="kpi-card"><small>Turno</small><strong>{e(turno_serpat)}</strong><span>Bloque laboral</span></div>
-                    <div class="kpi-card"><small>Acción IA</small><strong>{e(area_serpat.get('accion', 'Gestionar turno y continuidad'))}</strong><span>Orden laboral</span></div>
-                    <div class="kpi-card"><small>Registro</small><strong>{e(area_serpat.get('registro', '06_TRABAJO_SERPAT'))}</strong><span>Contexto de trabajo</span></div>
+                    <div class="kpi-card"><small>Tipo de día</small><strong>Turno de Mañana</strong><span>Clasificación operativa</span></div>
+                    <div class="kpi-card"><small>Turno</small><strong>08:00–16:30</strong><span>Bloque laboral</span></div>
+                    <div class="kpi-card"><small>Acción IA</small><strong>Trabajar turno Turno de Mañana — Horario: 08:00 a 16:30</strong><span>Orden laboral</span></div>
+                    <div class="kpi-card"><small>Registro</small><strong>SERPAT TURNOS</strong><span>Contexto de trabajo</span></div>
                     <div class="kpi-card"><small>Estado</small><strong>Activo</strong><span>Preparación y cierre</span></div>
                 </div>
                 <div class="screen-standalone">
@@ -1273,14 +1176,14 @@ class DashboardBuilder:
                 </div>
                 <div class="kpi-grid">
                     <div class="kpi-card"><small>Ley 001</small><strong>Activa</strong><span>Nunca romper la cadena</span></div>
-                    <div class="kpi-card"><small>Identidad</small><strong>{e(identidad.get('mision') or 'Constructor')}</strong><span>Construir, corregir, avanzar</span></div>
+                    <div class="kpi-card"><small>Identidad</small><strong>Construir una vida extraordinaria mediante disciplina, sistemas, aprendizaje continuo y creación de patrimonio.</strong><span>Construir, corregir, avanzar</span></div>
                     <div class="kpi-card"><small>Continuidad</small><strong>Protegida</strong><span>Sin cero</span></div>
-                    <div class="kpi-card"><small>Acción IA</small><strong>{e(area_ancla.get('accion', 'Revisar identidad y reflexionar'))}</strong><span>Autoevaluación</span></div>
-                    <div class="kpi-card"><small>Registro</small><strong>{e(area_ancla.get('registro', 'Ancla Mental; 21_KPI_Diario'))}</strong><span>Cierre de día</span></div>
+                    <div class="kpi-card"><small>Acción IA</small><strong>Responder: ¿actué como constructor o como sobreviviente? ¿Qué capital aumentó hoy? ¿Qué debo corregir? ¿Cuál es la prioridad única de mañana?</strong><span>Autoevaluación</span></div>
+                    <div class="kpi-card"><small>Registro</small><strong>Ancla Mental; 21_KPI_Diario; 90_Alertas_Correcciones</strong><span>Cierre de día</span></div>
                 </div>
                 <div class="layout-grid">
-                    <section class="tile"><h3>Propósito</h3><p>{e(identidad.get('proposito') or 'Construir un sistema de vida real con continuidad y propósito.')}</p></section>
-                    <section class="tile"><h3>Misión</h3><p>{e(identidad.get('mision') or 'Dirigir la realidad diaria con orden, enfoque y disciplina.')}</p><button class="vision-cta" data-screen="vision-board">Abrir Vision Board 2042</button></section>
+                    <section class="tile"><h3>Propósito</h3><p>Convertir cada día en capital acumulado para Robinson 2042.</p></section>
+                    <section class="tile"><h3>Misión</h3><p>Construir una vida extraordinaria mediante disciplina, sistemas, aprendizaje continuo y creación de patrimonio.</p><button class="vision-cta" data-screen="vision-board">Abrir Vision Board 2042</button></section>
                 </div>
             </section>
 
@@ -1293,9 +1196,9 @@ class DashboardBuilder:
                     <button class="ghost-btn" data-screen="inicio">Volver al inicio</button>
                 </div>
                 <div class="kpi-grid">
-                    <div class="kpi-card"><small>Archivos</small><strong>{e(total_archivos)}</strong><span>Indexados</span></div>
-                    <div class="kpi-card"><small>Excel</small><strong>{e(contexto_excel.get('archivo', 'N/D'))}</strong><span>Libro activo</span></div>
-                    <div class="kpi-card"><small>Hojas</small><strong>{e(total_hojas)}</strong><span>Detectadas</span></div>
+                    <div class="kpi-card"><small>Archivos</small><strong>316</strong><span>Indexados</span></div>
+                    <div class="kpi-card"><small>Excel</small><strong>SISTEMA_ROBINSON_C31_CORREGIDO_BASE_DATOS_V3.xlsx</strong><span>Libro activo</span></div>
+                    <div class="kpi-card"><small>Hojas</small><strong>153</strong><span>Detectadas</span></div>
                     <div class="kpi-card"><small>Word</small><strong>Disponible</strong><span>Salida diaria</span></div>
                     <div class="kpi-card"><small>PDF</small><strong>Disponible</strong><span>Vía impresión</span></div>
                 </div>
@@ -1324,7 +1227,7 @@ class DashboardBuilder:
                 <div class="kpi-grid">
                     <div class="kpi-card"><small>Mantra central</small><strong>Mi Divina Obsesión</strong><span>Visión directiva permanente</span></div>
                     <div class="kpi-card"><small>Capitales</small><strong>8</strong><span>Mapa integral 2042</span></div>
-                    <div class="kpi-card"><small>Decisiones conectadas</small><strong>{len(sistema.decisiones)}</strong><span>Hoy construyes la visión</span></div>
+                    <div class="kpi-card"><small>Decisiones conectadas</small><strong>8</strong><span>Hoy construyes la visión</span></div>
                     <div class="kpi-card"><small>Referencia</small><strong>PDF oficial</strong><span>CARTEL DE ATRACCION VISUAL</span></div>
                     <div class="kpi-card"><small>Lema</small><strong>2042</strong><span>No son tareas. Es construcción.</span></div>
                 </div>
@@ -1332,38 +1235,38 @@ class DashboardBuilder:
                 <div class="layout-grid">
                     <section class="tile">
                         <h3>Cartel visual</h3>
-                        {vision_hero_html}
+                        <div class="vision-hero"><div class="vision-scene"><div class="vision-scene-title">Mi Divina Obsesión</div><div class="vision-scene-quote">Yo ya vivo en mi campo de abundancia</div></div><div class="vision-poster-grid"><div class="vision-poster-block luxury">Mi hogar es mi templo de lujo y armonía.</div><div class="vision-poster-block cars">Me muevo con estilo, poder y libertad.</div><div class="vision-poster-block travel">Viajo por el mundo haciendo negocios y disfrutando la vida.</div><div class="vision-poster-block business">Mis negocios prosperan y multiplican millones cada mes.</div><div class="vision-poster-block abundance">Soy abundancia que impacta vidas, doy trabajo y bienestar a miles.</div><div class="vision-poster-block business">Soy millonario en expansión constante. Mis negocios prosperan cada día.</div></div></div>
                     </section>
                     <section class="tile">
                         <h3>Frases principales</h3>
-                        <div class="quote-list">{vision_quote}</div>
+                        <div class="quote-list"><div class="quote-item">Mi Divina Obsesión.</div><div class="quote-item">Yo ya vivo en mi campo de abundancia.</div><div class="quote-item">Mi hogar es mi templo de lujo y armonía.</div><div class="quote-item">Me muevo con estilo, poder y libertad.</div><div class="quote-item">Viajo por el mundo haciendo negocios y disfrutando la vida.</div><div class="quote-item">Mis negocios prosperan y multiplican millones cada mes.</div><div class="quote-item">Soy abundancia que impacta vidas, doy trabajo y bienestar a miles.</div><div class="quote-item">Soy millonario en expansión constante.</div><div class="quote-item">Mis negocios prosperan cada día.</div></div>
                     </section>
                 </div>
 
                 <section class="table-card">
                     <h3>Mapa de capitales 2042</h3>
-                    <div class="capital-grid">{capital_map_html}</div>
+                    <div class="capital-grid"><article class="capital-card"><h4>Capital financiero</h4><p>Caja, inversiones, patrimonio y control de abundancia.</p></article><article class="capital-card"><h4>Capital empresarial</h4><p>Negocios, CRM, ventas, holdings y expansión.</p></article><article class="capital-card"><h4>Capital intelectual</h4><p>Universidad, estudio, criterio y aprendizaje superior.</p></article><article class="capital-card"><h4>Capital biológico</h4><p>Salud, sueño, energía y resistencia sostenida.</p></article><article class="capital-card"><h4>Capital relacional</h4><p>Confianza, redes, alianzas y comunicación efectiva.</p></article><article class="capital-card"><h4>Capital espiritual</h4><p>Sentido, fe, propósito y dirección interna.</p></article><article class="capital-card"><h4>Capital familiar</h4><p>Hogar, armonía, contención y legado íntimo.</p></article><article class="capital-card"><h4>Capital reputacional</h4><p>SERPAT, disciplina, profesionalismo y credibilidad visible.</p></article></div>
                 </section>
 
                 <div class="layout-grid">
                     <section class="tile">
                         <h3>Conexión con decisiones del día</h3>
-                        <div class="mini-list">{vision_decisions_html}</div>
+                        <div class="mini-list"><div class="mini-item"><strong>Sistema -> Capital de dirección</strong><span>Abrir Centro de Comando y revisar prioridades. | Fortalece: Hoy no estás haciendo tareas. Estás construyendo 2042.</span></div><div class="mini-item"><strong>Universidad -> Capital intelectual</strong><span>Estudiar Universidad — EV-010. Revisar contenido asociado, resolver ejercicios y registrar errores. | Fortalece: Dominar conocimiento para dirigir con inteligencia superior.</span></div><div class="mini-item"><strong>Pendientes -> Capital de continuidad</strong><span>Resolver pendiente crítico: Universidad (Alta) | Fortalece: Mis negocios prosperan cada día.</span></div><div class="mini-item"><strong>SERPAT -> Capital reputacional</strong><span>Trabajar turno Turno de Mañana — Horario: 08:00 a 16:30 | Fortalece: Viajo por el mundo haciendo negocios y disfrutando la vida.</span></div><div class="mini-item"><strong>Ancla Mental -> Capital espiritual / psicológico</strong><span>Responder: ¿actué como constructor o como sobreviviente? ¿Qué capital aumentó hoy? ¿Qué debo corregir? ¿Cuál es la prioridad única de mañana? | Fortalece: Yo ya vivo en mi campo de abundancia.</span></div><div class="mini-item"><strong>Salud -> Capital biológico</strong><span>Registrar sueño, energía, recuperación, presión arterial, pulso, medicamento, alimentación e hidratación. | Fortalece: Me muevo con estilo, poder y libertad.</span></div><div class="mini-item"><strong>Finanzas -> Capital financiero</strong><span>Registrar ingresos, gastos, pagos, movimientos bancarios, inversiones, saldo disponible y obligaciones pendientes. | Fortalece: Soy millonario en expansión constante.</span></div><div class="mini-item"><strong>Empresas -> Capital empresarial</strong><span>Revisar CRM, seguimiento, mercado o proyecto activo. Ejecutar una acción concreta: contacto, análisis, respuesta, registro, hipótesis, aprendizaje o siguiente acción. | Fortalece: Mis negocios prosperan y multiplican millones cada mes.</span></div></div>
                     </section>
                     <section class="tile">
                         <h3>Progreso simbólico</h3>
-                        <div class="progress-stack">{vision_progress_html}</div>
+                        <div class="progress-stack"><div class="progress-row"><label>Finanzas</label><div class="progress-bar"><div class="progress-fill" style="width: 79%;"></div></div><span>79%</span></div><div class="progress-row"><label>Empresas</label><div class="progress-bar"><div class="progress-fill" style="width: 74%;"></div></div><span>74%</span></div><div class="progress-row"><label>Universidad</label><div class="progress-bar"><div class="progress-fill" style="width: 98%;"></div></div><span>98%</span></div><div class="progress-row"><label>Salud</label><div class="progress-bar"><div class="progress-fill" style="width: 84%;"></div></div><span>84%</span></div><div class="progress-row"><label>Identidad</label><div class="progress-bar"><div class="progress-fill" style="width: 86%;"></div></div><span>86%</span></div><div class="progress-row"><label>Continuidad</label><div class="progress-bar"><div class="progress-fill" style="width: 96%;"></div></div><span>96%</span></div></div>
                     </section>
                 </div>
 
                 <div class="layout-grid">
                     <section class="tile">
                         <h3>Hoy construyes 2042</h3>
-                        <div class="mini-list">{vision_today_html}</div>
+                        <div class="mini-list"><div class="mini-item"><strong>Abrir Centro de Comando y revisar prioridades.</strong><span>Capital de dirección | Objetivo 2042: Hoy no estás haciendo tareas. Estás construyendo 2042. | Evidencia: 20_Registro_Diario; 21_KPI_Diario</span></div><div class="mini-item"><strong>Estudiar Universidad — EV-010. Revisar contenido asociado, resolver ejercicios y registrar errores.</strong><span>Capital intelectual | Objetivo 2042: Dominar conocimiento para dirigir con inteligencia superior. | Evidencia: 61_T2_Ramos; 62_T2_Evaluaciones; 63_T2_Bloques; 64_T2_Errores</span></div><div class="mini-item"><strong>Resolver pendiente crítico: Universidad (Alta)</strong><span>Capital de continuidad | Objetivo 2042: Mis negocios prosperan cada día. | Evidencia: 20_Registro_Diario; 90_Alertas_Correcciones</span></div><div class="mini-item"><strong>Trabajar turno Turno de Mañana — Horario: 08:00 a 16:30</strong><span>Capital reputacional | Objetivo 2042: Viajo por el mundo haciendo negocios y disfrutando la vida. | Evidencia: SERPAT TURNOS</span></div><div class="mini-item"><strong>Responder: ¿actué como constructor o como sobreviviente? ¿Qué capital aumentó hoy? ¿Qué debo corregir? ¿Cuál es la prioridad única de mañana?</strong><span>Capital espiritual / psicológico | Objetivo 2042: Yo ya vivo en mi campo de abundancia. | Evidencia: Ancla Mental; 21_KPI_Diario; 90_Alertas_Correcciones</span></div><div class="mini-item"><strong>Registrar sueño, energía, recuperación, presión arterial, pulso, medicamento, alimentación e hidratación.</strong><span>Capital biológico | Objetivo 2042: Me muevo con estilo, poder y libertad. | Evidencia: H02_Registro_Salud; H03_Presión_Log; H00_Dashboard_Health</span></div><div class="mini-item"><strong>Registrar ingresos, gastos, pagos, movimientos bancarios, inversiones, saldo disponible y obligaciones pendientes.</strong><span>Capital financiero | Objetivo 2042: Soy millonario en expansión constante. | Evidencia: 11_Ingresos; 12_Gastos; 13_Deudas; 18_Conciliacion_Bancaria_V3; 20_Registro_Diario; 21_KPI_Diario</span></div><div class="mini-item"><strong>Revisar CRM, seguimiento, mercado o proyecto activo. Ejecutar una acción concreta: contacto, análisis, respuesta, registro, hipótesis, aprendizaje o siguiente acción.</strong><span>Capital empresarial | Objetivo 2042: Mis negocios prosperan y multiplican millones cada mes. | Evidencia: 30_MGC_CRM; 33_Seguimientos; 70_Mercado_MGC; 71_Mercado_LNR; 76_CaptaPropIA; 82_LNH_Corporate_System</span></div></div>
                     </section>
                     <section class="tile">
                         <h3>Panel detectado por el sistema</h3>
-                        <div class="mini-list">{vision_detectado_html}</div>
+                        <div class="mini-list"><div class="mini-item"><strong>Patrimonio</strong><span>Casa en Pirque</span></div><div class="mini-item"><strong>Empresas</strong><span>Oficina Alonso de Córdova</span></div><div class="mini-item"><strong>Empresas</strong><span>Miner Global Connect</span></div><div class="mini-item"><strong>Empresas</strong><span>Latitud Norte Holding</span></div></div>
                     </section>
                 </div>
             </section>
@@ -1379,7 +1282,7 @@ class DashboardBuilder:
                 <div class="screen-grid">
                     <div class="tile">
                         <h3>Documento diario</h3>
-                        <p>Ruta prevista: {e(word_path)}</p>
+                        <p>Ruta prevista: ../Word/VIDA_REAL_ENGINE_V5_05072026.docx</p>
                         <div class="actions-row" style="margin-top: 10px;">
                             <button class="action-btn" data-action="open-word">Abrir Word diario</button>
                         </div>
@@ -1440,11 +1343,11 @@ class DashboardBuilder:
             <section class="panel side-card">
                 <h3>Salidas automáticas</h3>
                 <div class="mini-list">
-                    <div class="mini-item"><strong>Word</strong><span>{e(word_path)}</span></div>
+                    <div class="mini-item"><strong>Word</strong><span>../Word/VIDA_REAL_ENGINE_V5_05072026.docx</span></div>
                     <div class="mini-item"><strong>PDF</strong><span>Salida desde impresión del navegador</span></div>
-                    <div class="mini-item"><strong>Dashboard</strong><span>{e(dashboard_path.as_posix())}</span></div>
-                    <div class="mini-item"><strong>Excel</strong><span>{e(contexto_excel.get('archivo', 'Libro no detectado'))}</span></div>
-                    <div class="mini-item"><strong>Vision Board</strong><span>{e(vision_pdf_raw)}</span></div>
+                    <div class="mini-item"><strong>Dashboard</strong><span>C:/Users/Robinson/OneDrive/Escritorio/VIDA_REAL_ENGINE/Salidas/Dashboard/CENTRO_COMANDO_V5.4.2_05072026.html</span></div>
+                    <div class="mini-item"><strong>Excel</strong><span>SISTEMA_ROBINSON_C31_CORREGIDO_BASE_DATOS_V3.xlsx</span></div>
+                    <div class="mini-item"><strong>Vision Board</strong><span>../../Recursos/09_PANEL_VISION/CARTEL DE ATRACCION VISUAL (1).pdf</span></div>
                 </div>
             </section>
 
@@ -1472,36 +1375,36 @@ class DashboardBuilder:
         const screens = Array.from(document.querySelectorAll('.screen'));
         const navButtons = Array.from(document.querySelectorAll('[data-screen]'));
 
-        function setActiveScreen(name) {{
+        function setActiveScreen(name) {
             screens.forEach((screen) => screen.classList.toggle('active', screen.id === 'screen-' + name));
-            screens.forEach((screen) => {{
+            screens.forEach((screen) => {
                 screen.scrollTop = 0;
-            }});
-            if (stage) {{
+            });
+            if (stage) {
                 stage.scrollTop = 0;
-            }}
-            window.scrollTo({{ top: 0, behavior: 'auto' }});
-        }}
+            }
+            window.scrollTo({ top: 0, behavior: 'auto' });
+        }
 
-        function openWord() {{
+        function openWord() {
             const path = document.body.dataset.wordPath || '';
-            if (path) {{
+            if (path) {
                 window.open(path, '_blank');
-            }}
-        }}
+            }
+        }
 
-        function printNow() {{
+        function printNow() {
             window.print();
-        }}
+        }
 
-        navButtons.forEach((button) => {{
-            button.addEventListener('click', () => {{
+        navButtons.forEach((button) => {
+            button.addEventListener('click', () => {
                 const target = button.dataset.screen;
-                if (target) {{
+                if (target) {
                     setActiveScreen(target);
-                }}
-            }});
-        }});
+                }
+            });
+        });
 
         document.querySelectorAll('[data-action="open-word"]').forEach((button) => button.addEventListener('click', openWord));
         document.querySelectorAll('[data-action="print-pdf"]').forEach((button) => button.addEventListener('click', printNow));
@@ -1511,373 +1414,4 @@ class DashboardBuilder:
         setActiveScreen('inicio');
     </script>
 </body>
-</html>"""
-
-        dashboard_path.write_text(html, encoding="utf-8")
-        return dashboard_path
-
-    def _decision(self, sistema: SistemaDia, area: str) -> dict:
-        for decision in sistema.decisiones:
-            if decision.get("area") == area:
-                return decision
-        return {}
-
-    def _alertas_mini(self, alertas):
-        if not alertas:
-            return '<div class="alert-item"><strong>Sin alertas</strong><span>El sistema está limpio.</span></div>'
-
-        html = []
-        for alerta in alertas[:6]:
-            titulo = e(alerta.get("titulo", "Alerta"))
-            detalle = e(alerta.get("detalle", ""))
-            html.append(f'<div class="alert-item"><strong>{titulo}</strong><span>{detalle}</span></div>')
-        return "".join(html)
-
-    def _pendientes_html(self, sistema: SistemaDia):
-        items = []
-        if sistema.alertas:
-            for alerta in sistema.alertas[:5]:
-                items.append(
-                    f'<div class="mini-item"><strong>{e(alerta.get("area", "Sistema"))}</strong>'
-                    f'<span>{e(alerta.get("titulo", "Pendiente crítico"))} - {e(alerta.get("detalle", ""))}</span></div>'
-                )
-        else:
-            items.append('<div class="mini-item"><strong>Sin pendientes críticos</strong><span>El tablero está estable por ahora.</span></div>')
-        return "".join(items)
-
-    def _vision_frases(self) -> list[str]:
-        return [
-            "Mi Divina Obsesión.",
-            "Yo ya vivo en mi campo de abundancia.",
-            "Mi hogar es mi templo de lujo y armonía.",
-            "Me muevo con estilo, poder y libertad.",
-            "Viajo por el mundo haciendo negocios y disfrutando la vida.",
-            "Mis negocios prosperan y multiplican millones cada mes.",
-            "Soy abundancia que impacta vidas, doy trabajo y bienestar a miles.",
-            "Soy millonario en expansión constante.",
-            "Mis negocios prosperan cada día.",
-        ]
-
-    def _vision_quote_strip(self) -> str:
-        return "".join(f'<div class="quote-item">{e(frase)}</div>' for frase in self._vision_frases())
-
-    def _vision_hero_html(self) -> str:
-        return (
-            '<div class="vision-hero">'
-            '<div class="vision-board-poster">'
-            '<section class="vision-row vision-row-top"><h4>Yo ya vivo en mi campo de abundancia</h4></section>'
-            '<section class="vision-row vision-row-house">'
-            '<h4>Mi hogar es mi templo de lujo y armonía</h4>'
-            '<div class="vision-gallery cols-3">'
-            '<div class="vision-photo house-1"></div><div class="vision-photo house-2"></div><div class="vision-photo house-3"></div>'
-            '</div>'
-            '</section>'
-            '<section class="vision-row vision-row-cars">'
-            '<h4>Me muevo con estilo, poder y libertad</h4>'
-            '<div class="vision-gallery cols-4">'
-            '<div class="vision-photo car-1"></div><div class="vision-photo car-2"></div><div class="vision-photo car-3"></div><div class="vision-photo car-4"></div>'
-            '</div>'
-            '</section>'
-            '<section class="vision-row vision-row-travel">'
-            '<h4>Viajo el mundo haciendo negocios y disfrutando la vida</h4>'
-            '<div class="vision-gallery cols-3">'
-            '<div class="vision-photo travel-1"></div><div class="vision-photo travel-2"></div><div class="vision-photo travel-3"></div>'
-            '</div>'
-            '</section>'
-            '<section class="vision-row vision-row-business">'
-            '<h4>Mis negocios prosperan y multiplican millones cada mes</h4>'
-            '<div class="vision-gallery cols-3">'
-            '<div class="vision-photo biz-1"></div><div class="vision-photo biz-2"></div><div class="vision-photo biz-3"></div>'
-            '</div>'
-            '</section>'
-            '</div>'
-            '</div>'
-        )
-
-    def _vision_inicio_card(self) -> str:
-        return (
-            '<p>Hoy no estás haciendo tareas. Estás construyendo 2042.</p>'
-            '<div class="badge-row"><span class="badge">Mi Divina Obsesión</span><span class="badge">Campo de abundancia</span></div>'
-            '<button class="vision-cta" data-screen="vision-board">Abrir módulo vivo</button>'
-        )
-
-    def _capital_meta(self) -> list[tuple[str, str]]:
-        return [
-            ("Capital financiero", "Caja, inversiones, patrimonio y control de abundancia."),
-            ("Capital empresarial", "Negocios, CRM, ventas, holdings y expansión."),
-            ("Capital intelectual", "Universidad, estudio, criterio y aprendizaje superior."),
-            ("Capital biológico", "Salud, sueño, energía y resistencia sostenida."),
-            ("Capital relacional", "Confianza, redes, alianzas y comunicación efectiva."),
-            ("Capital espiritual", "Sentido, fe, propósito y dirección interna."),
-            ("Capital familiar", "Hogar, armonía, contención y legado íntimo."),
-            ("Capital reputacional", "SERPAT, disciplina, profesionalismo y credibilidad visible."),
-        ]
-
-    def _capital_map_html(self) -> str:
-        cards = []
-        for nombre, detalle in self._capital_meta():
-            cards.append(f'<article class="capital-card"><h4>{e(nombre)}</h4><p>{e(detalle)}</p></article>')
-        return "".join(cards)
-
-    def _capital_por_area(self, area: str) -> str:
-        mapping = {
-            "Universidad": "Capital intelectual",
-            "Finanzas": "Capital financiero",
-            "Empresas": "Capital empresarial",
-            "Salud": "Capital biológico",
-            "Ancla": "Capital espiritual / psicológico",
-            "Ancla Mental": "Capital espiritual / psicológico",
-            "SERPAT": "Capital reputacional",
-            "Pendientes": "Capital de continuidad",
-            "Sistema": "Capital de dirección",
-            "Continuidad": "Capital relacional",
-        }
-        return mapping.get(area, "Capital de continuidad")
-
-    def _objetivo_2042_por_area(self, area: str) -> str:
-        mapping = {
-            "Universidad": "Dominar conocimiento para dirigir con inteligencia superior.",
-            "Finanzas": "Soy millonario en expansión constante.",
-            "Empresas": "Mis negocios prosperan y multiplican millones cada mes.",
-            "Salud": "Me muevo con estilo, poder y libertad.",
-            "Ancla": "Yo ya vivo en mi campo de abundancia.",
-            "Ancla Mental": "Yo ya vivo en mi campo de abundancia.",
-            "SERPAT": "Viajo por el mundo haciendo negocios y disfrutando la vida.",
-            "Pendientes": "Mis negocios prosperan cada día.",
-            "Sistema": "Hoy no estás haciendo tareas. Estás construyendo 2042.",
-            "Continuidad": "Soy abundancia que impacta vidas, doy trabajo y bienestar a miles.",
-        }
-        return mapping.get(area, "Construir 2042 con continuidad real.")
-
-    def _vision_decisions_html(self, sistema: SistemaDia) -> str:
-        items = []
-        for decision in sistema.decisiones:
-            area = decision.get("area", "Sistema")
-            items.append(
-                f'<div class="mini-item"><strong>{e(area)} -> {e(self._capital_por_area(area))}</strong>'
-                f'<span>{e(decision.get("accion", ""))} | Fortalece: {e(self._objetivo_2042_por_area(area))}</span></div>'
-            )
-        return "".join(items) or '<div class="mini-item"><strong>Sin decisiones</strong><span>El motor aún no produjo decisiones conectables.</span></div>'
-
-    def _vision_today_html(self, sistema: SistemaDia) -> str:
-        rows = []
-        for decision in sistema.decisiones:
-            area = decision.get("area", "Sistema")
-            rows.append(
-                f'<div class="mini-item"><strong>{e(decision.get("accion", ""))}</strong>'
-                f'<span>{e(self._capital_por_area(area))} | Objetivo 2042: {e(self._objetivo_2042_por_area(area))} | Evidencia: {e(decision.get("registro", "Sin registro"))}</span></div>'
-            )
-        return "".join(rows) or '<div class="mini-item"><strong>Sin acciones</strong><span>El tablero no tiene acciones para proyectar hoy.</span></div>'
-
-    def _progress_value(self, decision: dict, default: int) -> int:
-        if not decision:
-            return default
-        prioridad = int(decision.get("prioridad", default) or default)
-        return max(25, min(100, prioridad))
-
-    def _vision_progress_html(self, sistema: SistemaDia) -> str:
-        bloques = [
-            ("Finanzas", self._progress_value(self._decision(sistema, "Finanzas"), 74)),
-            ("Empresas", self._progress_value(self._decision(sistema, "Empresas"), 72)),
-            ("Universidad", self._progress_value(self._decision(sistema, "Universidad"), 88)),
-            ("Salud", self._progress_value(self._decision(sistema, "Salud"), 80)),
-            ("Identidad", self._progress_value(self._decision(sistema, "Ancla") or self._decision(sistema, "Ancla Mental"), 85)),
-            ("Continuidad", min(100, 45 + len(sistema.cronograma) * 3)),
-        ]
-        html = []
-        for nombre, valor in bloques:
-            html.append(
-                f'<div class="progress-row"><label>{e(nombre)}</label><div class="progress-bar"><div class="progress-fill" style="width: {valor}%;"></div></div><span>{valor}%</span></div>'
-            )
-        return "".join(html)
-
-    def _vision_detectado_html(self, vision_items) -> str:
-        if not vision_items:
-            return (
-                '<div class="mini-item"><strong>Referencia oficial</strong><span>PDF detectado en Recursos/09_PANEL_VISION.</span></div>'
-                '<div class="mini-item"><strong>Fallback HTML activo</strong><span>Se renderizan frases, capitales y decisiones aunque el PDF no se incruste.</span></div>'
-                '<div class="mini-item"><strong>Estado</strong><span>Módulo Vision Board 2042 operativo dentro del Centro de Comando.</span></div>'
-            )
-
-        items = []
-        for item in vision_items[:4]:
-            categoria = item.get("categoria", "Vision")
-            texto = item.get("texto", item.get("objetivo", "Elemento detectado"))
-            items.append(f'<div class="mini-item"><strong>{e(categoria)}</strong><span>{e(texto)}</span></div>')
-        return "".join(items)
-
-    def _generar_cronograma_especifico(self, sistema: SistemaDia, motor_data: dict) -> list[dict]:
-        cronograma = [
-            {
-                "hora_inicio": "06:00",
-                "hora_fin": "06:15",
-                "actividad": "Despertar y medir presión",
-                "objetivo": "Arrancar el día con control biológico",
-                "registro": "H03_Presión_Log",
-                "capital": "Biológico",
-            },
-            {
-                "hora_inicio": "06:15",
-                "hora_fin": "06:45",
-                "actividad": "Desayuno y medicamento",
-                "objetivo": "Nutrir cuerpo y sostener energía",
-                "registro": "H02_Registro_Salud",
-                "capital": "Biológico",
-            },
-            {
-                "hora_inicio": "06:45",
-                "hora_fin": "07:15",
-                "actividad": "Ducha y preparación",
-                "objetivo": "Orden mental y físico antes de ejecutar",
-                "registro": "Ancla Mental",
-                "capital": "Mental",
-            },
-        ]
-
-        univ = self._decision(sistema, "Universidad")
-        if univ:
-            cronograma.append(
-                {
-                    "hora_inicio": "07:15",
-                    "hora_fin": "09:30",
-                    "actividad": "Universidad - estudio intenso",
-                    "objetivo": univ.get("accion", "Resolver evaluación académica"),
-                    "registro": univ.get("registro", "62_T2_Evaluaciones"),
-                    "capital": "Educativo",
-                }
-            )
-
-        empresas = self._decision(sistema, "Empresas")
-        if empresas:
-            cronograma.append(
-                {
-                    "hora_inicio": "09:30",
-                    "hora_fin": "11:00",
-                    "actividad": "Empresas - acción comercial",
-                    "objetivo": empresas.get("accion", "Ejecutar CRM y continuidad empresarial"),
-                    "registro": empresas.get("registro", "30_MGC_CRM"),
-                    "capital": "Empresarial",
-                }
-            )
-
-        cronograma.extend(
-            [
-                {
-                    "hora_inicio": "11:00",
-                    "hora_fin": "11:15",
-                    "actividad": "Pausa y café",
-                    "objetivo": "Recuperar foco y energía",
-                    "registro": "Autorregistro",
-                    "capital": "Biológico",
-                },
-                {
-                    "hora_inicio": "11:15",
-                    "hora_fin": "12:00",
-                    "actividad": "Finanzas - registrar y revisar",
-                    "objetivo": self._decision(sistema, "Finanzas").get("accion", "Controlar ingresos, gastos y caja"),
-                    "registro": self._decision(sistema, "Finanzas").get("registro", "11_Ingresos; 12_Gastos"),
-                    "capital": "Financiero",
-                },
-                {
-                    "hora_inicio": "12:00",
-                    "hora_fin": "12:45",
-                    "actividad": "Almuerzo completo",
-                    "objetivo": "Cuidar energía y sostener el resto del día",
-                    "registro": "H02_Registro_Salud",
-                    "capital": "Biológico",
-                },
-                {
-                    "hora_inicio": "12:45",
-                    "hora_fin": "13:45",
-                    "actividad": "Caminata o ejercicio",
-                    "objetivo": "Mover el cuerpo y despejar la mente",
-                    "registro": "H02_Registro_Salud",
-                    "capital": "Biológico",
-                },
-                {
-                    "hora_inicio": "13:45",
-                    "hora_fin": "14:00",
-                    "actividad": "Hidratación y pausa",
-                    "objetivo": "Reset breve para volver al foco",
-                    "registro": "H02_Registro_Salud",
-                    "capital": "Biológico",
-                },
-                {
-                    "hora_inicio": "14:00",
-                    "hora_fin": "16:00",
-                    "actividad": "Pendientes críticos y seguimiento",
-                    "objetivo": "Cerrar lo que mueve la continuidad del día",
-                    "registro": "90_Alertas_Correcciones",
-                    "capital": "Sistema",
-                },
-                {
-                    "hora_inicio": "16:00",
-                    "hora_fin": "16:30",
-                    "actividad": "Merienda",
-                    "objetivo": "Recuperar energía sin romper el ritmo",
-                    "registro": "H02_Registro_Salud",
-                    "capital": "Biológico",
-                },
-                {
-                    "hora_inicio": "16:30",
-                    "hora_fin": "17:30",
-                    "actividad": "Lectura y desarrollo personal",
-                    "objetivo": "Subir capital intelectual y mental",
-                    "registro": "08_LECTURA_CRECIIMIENTO",
-                    "capital": "Intelectual",
-                },
-                {
-                    "hora_inicio": "17:30",
-                    "hora_fin": "18:00",
-                    "actividad": "Cierre Ancla",
-                    "objetivo": "Evaluar y corregir antes del final del día",
-                    "registro": "Ancla Mental; 21_KPI_Diario",
-                    "capital": "Mental",
-                },
-                {
-                    "hora_inicio": "18:00",
-                    "hora_fin": "19:00",
-                    "actividad": "Cena",
-                    "objetivo": "Recuperar cuerpo y terminar con estabilidad",
-                    "registro": "H02_Registro_Salud",
-                    "capital": "Biológico",
-                },
-                {
-                    "hora_inicio": "19:00",
-                    "hora_fin": "22:00",
-                    "actividad": "Descanso y cierre suave",
-                    "objetivo": "Evitar ruido y proteger energía mental",
-                    "registro": "Autorregistro",
-                    "capital": "Mental",
-                },
-                {
-                    "hora_inicio": "22:00",
-                    "hora_fin": "22:30",
-                    "actividad": "Rutina de sueño",
-                    "objetivo": "Preparar descanso y continuidad del día siguiente",
-                    "registro": "H02_Registro_Salud",
-                    "capital": "Biológico",
-                },
-            ]
-        )
-
-        return cronograma
-
-    def _cronograma_bloques_html(self, cronograma):
-        partes = []
-        for bloque in cronograma:
-            rango = f"{bloque['hora_inicio']} - {bloque['hora_fin']}"
-            partes.append(
-                f'<div class="schedule-item"><div><div class="schedule-time">{e(rango)}</div><div class="schedule-meta">{e(bloque.get("capital", ""))}</div></div>'
-                f'<div><strong>{e(bloque.get("actividad", ""))}</strong><span>{e(bloque.get("objetivo", ""))}</span></div></div>'
-            )
-        return "".join(partes)
-
-    def _cronograma_tabla_html(self, cronograma):
-        filas = []
-        for bloque in cronograma:
-            rango = f"{bloque['hora_inicio']} - {bloque['hora_fin']}"
-            filas.append(
-                f"<tr><td>{e(rango)}</td><td>{e(bloque.get('actividad', ''))}</td><td>{e(bloque.get('objetivo', ''))}</td><td>{e(bloque.get('registro', ''))}</td><td>{e(bloque.get('capital', ''))}</td></tr>"
-            )
-        return "".join(filas)
+</html>
