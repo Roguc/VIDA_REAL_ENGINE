@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from Models.sistema_dia import SistemaDia
@@ -64,14 +65,14 @@ class DashboardBuilder:
 
         word_path = f"../Word/VIDA_REAL_ENGINE_V5_{fecha_iso}.docx"
         vision_pdf_raw = "../../Recursos/09_PANEL_VISION/CARTEL DE ATRACCION VISUAL (1).pdf"
-        dashboard_path = self.out_dir / f"CENTRO_COMANDO_V5.4.2_{fecha_str.replace('-', '')}.html"
+        dashboard_path = self.out_dir / f"CENTRO_COMANDO_V5.4.3_{fecha_str.replace('-', '')}.html"
 
         html = f"""<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIDA REAL ENGINE V5.4.2 FINAL</title>
+    <title>VIDA REAL ENGINE V5.4.3 FINAL</title>
     <style>
         :root {{
             --bg: #050b14;
@@ -1706,162 +1707,785 @@ class DashboardBuilder:
             items.append(f'<div class="mini-item"><strong>{e(categoria)}</strong><span>{e(texto)}</span></div>')
         return "".join(items)
 
-    def _generar_cronograma_especifico(self, sistema: SistemaDia, motor_data: dict) -> list[dict]:
-        cronograma = [
-            {
-                "hora_inicio": "06:00",
-                "hora_fin": "06:15",
-                "actividad": "Despertar y medir presión",
-                "objetivo": "Arrancar el día con control biológico",
-                "registro": "H03_Presión_Log",
-                "capital": "Biológico",
-            },
-            {
-                "hora_inicio": "06:15",
-                "hora_fin": "06:45",
-                "actividad": "Desayuno y medicamento",
-                "objetivo": "Nutrir cuerpo y sostener energía",
-                "registro": "H02_Registro_Salud",
-                "capital": "Biológico",
-            },
-            {
-                "hora_inicio": "06:45",
-                "hora_fin": "07:15",
-                "actividad": "Ducha y preparación",
-                "objetivo": "Orden mental y físico antes de ejecutar",
-                "registro": "Ancla Mental",
-                "capital": "Mental",
-            },
+    def _to_minutes(self, hhmm: str) -> int:
+        try:
+            hh, mm = (hhmm or "00:00").split(":")
+            return max(0, min(23, int(hh))) * 60 + max(0, min(59, int(mm)))
+        except Exception:
+            return 0
+
+    def _to_hhmm(self, minutes: int) -> str:
+        m = int(minutes) % (24 * 60)
+        return f"{m // 60:02d}:{m % 60:02d}"
+
+    def _duracion_min(self, inicio: str, fin: str) -> int:
+        a = self._to_minutes(inicio)
+        b = self._to_minutes(fin)
+        if b >= a:
+            return b - a
+        return (24 * 60 - a) + b
+
+    def _cronograma_item(
+        self,
+        hora_inicio: str,
+        hora_fin: str,
+        area: str,
+        actividad: str,
+        objetivo: str,
+        registro: str,
+        *,
+        motivo: str = "",
+        prioridad: int = 70,
+        evidencia_requerida: str = "",
+        hoja_excel: str = "",
+        documento_relacionado: str = "",
+        objetivo_2042: str = "",
+    ) -> dict:
+        duracion = self._duracion_min(hora_inicio, hora_fin)
+        capital = self._capital_por_area(area)
+        return {
+            "hora_inicio": hora_inicio,
+            "hora_fin": hora_fin,
+            "duracion": f"{duracion} min",
+            "area": area,
+            "capital": capital,
+            "capital_construido": capital,
+            "titulo": actividad,
+            "actividad": actividad,
+            "actividad_exacta": actividad,
+            "objetivo": objetivo,
+            "motivo": motivo or objetivo,
+            "prioridad": prioridad,
+            "evidencia_requerida": evidencia_requerida or registro,
+            "hoja_excel": hoja_excel or registro,
+            "documento_relacionado": documento_relacionado or "Sin documento explícito",
+            "objetivo_2042_asociado": objetivo_2042 or self._objetivo_2042_por_area(area),
+            "registro": registro,
+        }
+
+    def _detectar_turno_info(self, sistema: SistemaDia) -> dict:
+        tipo = " ".join(
+            str(valor or "")
+            for valor in (
+                sistema.tipo_dia,
+                sistema.contexto.get("tipo_dia") if isinstance(sistema.contexto, dict) else "",
+            )
+        ).lower()
+        turno_txt = " ".join(
+            str(valor or "")
+            for valor in (
+                sistema.turno_serpat,
+                sistema.contexto.get("turno_serpat") if isinstance(sistema.contexto, dict) else "",
+                sistema.serpat.get("turno_serpat") if isinstance(sistema.serpat, dict) else "",
+            )
+        ).lower().replace("—", "-").replace("–", "-")
+
+        ingreso = str(sistema.serpat.get("ingreso") or "").strip() if isinstance(sistema.serpat, dict) else ""
+        salida = str(sistema.serpat.get("salida") or "").strip() if isinstance(sistema.serpat, dict) else ""
+        if not ingreso or not salida:
+            match = re.search(r"(\d{1,2}:\d{2}).*?(\d{1,2}:\d{2})", turno_txt)
+            if match:
+                ingreso = ingreso or match.group(1)
+                salida = salida or match.group(2)
+
+        if "libre" in tipo or "libre" in turno_txt:
+            return {"tipo": "libre", "ingreso": "", "salida": "", "activo": False}
+        if "noche" in tipo:
+            return {"tipo": "noche", "ingreso": ingreso or "21:00", "salida": salida or "08:00", "activo": True}
+        if "tarde" in tipo:
+            return {"tipo": "tarde", "ingreso": ingreso or "12:30", "salida": salida or "21:00", "activo": True}
+        if "mañana" in tipo or "manana" in tipo or ingreso:
+            return {"tipo": "mañana", "ingreso": ingreso or "08:00", "salida": salida or "16:30", "activo": True}
+        return {"tipo": "libre", "ingreso": "", "salida": "", "activo": False}
+
+    def _area_hoja_excel(self, area: str, registro: str) -> str:
+        mapping = {
+            "Universidad": "61_T2_Ramos; 62_T2_Evaluaciones; 63_T2_Bloques; 64_T2_Errores",
+            "Finanzas": "11_Ingresos; 12_Gastos; 13_Deudas; 18_Conciliacion_Bancaria_V3",
+            "Empresas": "30_MGC_CRM; 33_Seguimientos; 70_Mercado_MGC; 76_CaptaPropIA",
+            "Salud": "H02_Registro_Salud; H03_Presion_Log; H00_Dashboard_Health",
+            "SERPAT": "SERPAT TURNOS",
+            "Ancla": "Ancla Mental; 21_KPI_Diario",
+            "Ancla Mental": "Ancla Mental; 21_KPI_Diario",
+            "Desarrollo personal": "DESARROLLO_PERSONAL; 21_KPI_Diario",
+            "Pendientes": "PENDIENTES; 90_Alertas_Correcciones",
+            "Sistema": "00_GENERADOR_DIA; 20_Registro_Diario; 21_KPI_Diario",
+        }
+        return registro or mapping.get(area, "20_Registro_Diario")
+
+    def _documento_relacionado(self, sistema: SistemaDia, area: str) -> str:
+        categorias = (sistema.recursos or {}).get("categorias", {}) if isinstance(sistema.recursos, dict) else {}
+        if not categorias:
+            return "Recursos sin índice"
+
+        claves = {
+            "Universidad": ["04_UNIVERSIDAD"],
+            "Salud": ["02_SALUD"],
+            "Finanzas": ["03_FINANZAS"],
+            "Empresas": ["05_EMPRESAS"],
+            "SERPAT": ["06_TRABAJO_SERPAT"],
+            "Ancla": ["07_ANCLA_MENTAL", "08_LECTURA_CRECIIMIENTO"],
+            "Ancla Mental": ["07_ANCLA_MENTAL", "08_LECTURA_CRECIIMIENTO"],
+            "Sistema": ["09_PANEL_VISION", "99_HISTORIAL_RESPALDOS"],
+            "Pendientes": ["99_HISTORIAL_RESPALDOS"],
+        }.get(area, ["09_PANEL_VISION"])
+
+        for clave in claves:
+            info = categorias.get(clave)
+            if info and info.get("archivos"):
+                return Path(info["archivos"][0]).name
+        return "Sin documento específico"
+
+    def _historial_ref(self) -> str:
+        logs = sorted((self.root_dir / "Salidas" / "Logs").glob("*.log"))
+        dashboards = sorted((self.root_dir / "Salidas" / "Dashboard").glob("CENTRO_COMANDO*.html"))
+        ref_logs = logs[-1].name if logs else "Sin logs previos"
+        ref_dash = dashboards[-1].name if dashboards else "Sin dashboards previos"
+        return f"Historial: {ref_logs} | {ref_dash}"
+
+    def _duracion_objetivo(self, prioridad: int, area: str, carga_alertas: int) -> int:
+        base = 25 + int(prioridad * 0.55)
+        if area in {"Universidad", "Empresas", "Finanzas"}:
+            base += 10
+        if area == "Salud":
+            base = max(30, base)
+        if carga_alertas > 6 and area in {"Pendientes", "Sistema"}:
+            base += 10
+        return max(25, min(120, base))
+
+    def _es_domingo(self, sistema: SistemaDia) -> bool:
+        fecha = getattr(sistema, "fecha", None)
+        try:
+            return bool(fecha) and fecha.weekday() == 6
+        except Exception:
+            return False
+
+    def _extraer_hojas_fuente(self, sistema: SistemaDia) -> dict:
+        contexto = sistema.contexto if isinstance(sistema.contexto, dict) else {}
+        excel = contexto.get("excel", {}) if isinstance(contexto.get("excel", {}), dict) else {}
+        hojas = excel.get("hojas", [])
+        hojas = [str(h).strip() for h in hojas if str(h).strip()]
+
+        kpi = [h for h in hojas if "kpi" in h.lower()]
+        registro = [
+            h for h in hojas
+            if "registro" in h.lower() or h.strip().upper() in {"20_REGISTRO_DIARIO", "21_KPI_DIARIO"}
         ]
+        historial = [h for h in hojas if "historial" in h.lower() or "respaldo" in h.lower()]
+        return {
+            "hojas": hojas,
+            "kpi": kpi,
+            "registro": registro,
+            "historial": historial,
+        }
 
-        univ = self._decision(sistema, "Universidad")
-        if univ:
-            cronograma.append(
-                {
-                    "hora_inicio": "07:15",
-                    "hora_fin": "09:30",
-                    "actividad": "Universidad - estudio intenso",
-                    "objetivo": univ.get("accion", "Resolver evaluación académica"),
-                    "registro": univ.get("registro", "62_T2_Evaluaciones"),
-                    "capital": "Educativo",
-                }
-            )
+    def _es_solapado(self, ini_a: int, fin_a: int, ini_b: int, fin_b: int) -> bool:
+        return max(ini_a, ini_b) < min(fin_a, fin_b)
 
-        empresas = self._decision(sistema, "Empresas")
-        if empresas:
-            cronograma.append(
-                {
-                    "hora_inicio": "09:30",
-                    "hora_fin": "11:00",
-                    "actividad": "Empresas - acción comercial",
-                    "objetivo": empresas.get("accion", "Ejecutar CRM y continuidad empresarial"),
-                    "registro": empresas.get("registro", "30_MGC_CRM"),
-                    "capital": "Empresarial",
-                }
-            )
-
-        cronograma.extend(
-            [
-                {
-                    "hora_inicio": "11:00",
-                    "hora_fin": "11:15",
-                    "actividad": "Pausa y café",
-                    "objetivo": "Recuperar foco y energía",
-                    "registro": "Autorregistro",
-                    "capital": "Biológico",
-                },
-                {
-                    "hora_inicio": "11:15",
-                    "hora_fin": "12:00",
-                    "actividad": "Finanzas - registrar y revisar",
-                    "objetivo": self._decision(sistema, "Finanzas").get("accion", "Controlar ingresos, gastos y caja"),
-                    "registro": self._decision(sistema, "Finanzas").get("registro", "11_Ingresos; 12_Gastos"),
-                    "capital": "Financiero",
-                },
-                {
-                    "hora_inicio": "12:00",
-                    "hora_fin": "12:45",
-                    "actividad": "Almuerzo completo",
-                    "objetivo": "Cuidar energía y sostener el resto del día",
-                    "registro": "H02_Registro_Salud",
-                    "capital": "Biológico",
-                },
-                {
-                    "hora_inicio": "12:45",
-                    "hora_fin": "13:45",
-                    "actividad": "Caminata o ejercicio",
-                    "objetivo": "Mover el cuerpo y despejar la mente",
-                    "registro": "H02_Registro_Salud",
-                    "capital": "Biológico",
-                },
-                {
-                    "hora_inicio": "13:45",
-                    "hora_fin": "14:00",
-                    "actividad": "Hidratación y pausa",
-                    "objetivo": "Reset breve para volver al foco",
-                    "registro": "H02_Registro_Salud",
-                    "capital": "Biológico",
-                },
-                {
-                    "hora_inicio": "14:00",
-                    "hora_fin": "16:00",
-                    "actividad": "Pendientes críticos y seguimiento",
-                    "objetivo": "Cerrar lo que mueve la continuidad del día",
-                    "registro": "90_Alertas_Correcciones",
-                    "capital": "Sistema",
-                },
-                {
-                    "hora_inicio": "16:00",
-                    "hora_fin": "16:30",
-                    "actividad": "Merienda",
-                    "objetivo": "Recuperar energía sin romper el ritmo",
-                    "registro": "H02_Registro_Salud",
-                    "capital": "Biológico",
-                },
-                {
-                    "hora_inicio": "16:30",
-                    "hora_fin": "17:30",
-                    "actividad": "Lectura y desarrollo personal",
-                    "objetivo": "Subir capital intelectual y mental",
-                    "registro": "08_LECTURA_CRECIIMIENTO",
-                    "capital": "Intelectual",
-                },
-                {
-                    "hora_inicio": "17:30",
-                    "hora_fin": "18:00",
-                    "actividad": "Cierre Ancla",
-                    "objetivo": "Evaluar y corregir antes del final del día",
-                    "registro": "Ancla Mental; 21_KPI_Diario",
-                    "capital": "Mental",
-                },
-                {
-                    "hora_inicio": "18:00",
-                    "hora_fin": "19:00",
-                    "actividad": "Cena",
-                    "objetivo": "Recuperar cuerpo y terminar con estabilidad",
-                    "registro": "H02_Registro_Salud",
-                    "capital": "Biológico",
-                },
-                {
-                    "hora_inicio": "19:00",
-                    "hora_fin": "22:00",
-                    "actividad": "Descanso y cierre suave",
-                    "objetivo": "Evitar ruido y proteger energía mental",
-                    "registro": "Autorregistro",
-                    "capital": "Mental",
-                },
-                {
-                    "hora_inicio": "22:00",
-                    "hora_fin": "22:30",
-                    "actividad": "Rutina de sueño",
-                    "objetivo": "Preparar descanso y continuidad del día siguiente",
-                    "registro": "H02_Registro_Salud",
-                    "capital": "Biológico",
-                },
-            ]
+    def _texto_reagendada(self, tarea: dict) -> tuple[str, str]:
+        actividad = tarea.get("actividad", "Actividad")
+        objetivo = tarea.get("objetivo", "Avance diario")
+        return (
+            f"REAGENDADA - {actividad}",
+            f"{objetivo}. Reagendada por falta de tiempo fuera del bloque SERPAT.",
         )
 
-        return cronograma
+    def _agregar_reagendada(self, agenda: list[dict], tarea: dict, hora_ref: str) -> None:
+        actividad, objetivo = self._texto_reagendada(tarea)
+        agenda.append(
+            self._cronograma_item(
+                hora_ref,
+                hora_ref,
+                tarea.get("area", "Sistema"),
+                actividad,
+                objetivo,
+                tarea.get("registro", "20_Registro_Diario"),
+                motivo=f"{tarea.get('motivo', 'Sin motivo')} | Estado: reagendada.",
+                prioridad=int(tarea.get("prioridad", 70) or 70),
+                evidencia_requerida=f"Reagendar en 20_Registro_Diario: {tarea.get('evidencia', tarea.get('registro', 'Registro diario'))}",
+                hoja_excel=tarea.get("hoja_excel", tarea.get("registro", "20_Registro_Diario")),
+                documento_relacionado=tarea.get("documento", "Sin documento específico"),
+                objetivo_2042=tarea.get("objetivo_2042", self._objetivo_2042_por_area(tarea.get("area", "Sistema"))),
+            )
+        )
+
+    def _bloque_desde_tarea(self, sistema: SistemaDia, tarea: dict, ini: str, fin: str, area_default: str, actividad_default: str, objetivo_default: str, registro_default: str) -> dict:
+        area = tarea.get("area", area_default) if tarea else area_default
+        actividad = tarea.get("actividad", actividad_default) if tarea else actividad_default
+        objetivo = tarea.get("objetivo", objetivo_default) if tarea else objetivo_default
+        registro = tarea.get("registro", registro_default) if tarea else registro_default
+        motivo = tarea.get("motivo", objetivo_default) if tarea else objetivo_default
+        prioridad = int(tarea.get("prioridad", 80) or 80) if tarea else 80
+        evidencia = tarea.get("evidencia", registro) if tarea else registro
+        hoja_excel = tarea.get("hoja_excel", registro_default) if tarea else registro_default
+        documento = tarea.get("documento", self._documento_relacionado(sistema, area)) if tarea else self._documento_relacionado(sistema, area)
+        objetivo_2042 = tarea.get("objetivo_2042", self._objetivo_2042_por_area(area)) if tarea else self._objetivo_2042_por_area(area)
+
+        return self._cronograma_item(
+            ini,
+            fin,
+            area,
+            actividad,
+            objetivo,
+            registro,
+            motivo=motivo,
+            prioridad=prioridad,
+            evidencia_requerida=evidencia,
+            hoja_excel=hoja_excel,
+            documento_relacionado=documento,
+            objetivo_2042=objetivo_2042,
+        )
+
+    def _asignar_turno_manana_base(self, sistema: SistemaDia, tareas: list[dict], turno_info: dict, cierre_dia: int) -> tuple[list[dict], list[dict], list[tuple[int, int]], int]:
+        agenda = []
+        restantes = list(tareas)
+
+        def pull_area(area: str):
+            for i, t in enumerate(restantes):
+                if t.get("area") == area:
+                    return restantes.pop(i)
+            return None
+
+        t_salud = pull_area("Salud")
+        t_uni = pull_area("Universidad")
+        t_fin = pull_area("Finanzas")
+        t_emp = pull_area("Empresas")
+        t_dev = pull_area("Desarrollo personal")
+        t_ancla = pull_area("Ancla") or pull_area("Ancla Mental")
+
+        serpat_decision = self._decision(sistema, "SERPAT")
+
+        agenda.append(
+            self._bloque_desde_tarea(
+                sistema,
+                t_salud,
+                "06:00",
+                "06:30",
+                "Salud",
+                "Salud / presion / hidratacion",
+                "Preparar capital biologico antes de SERPAT.",
+                "H02_Registro_Salud; H03_Presion_Log",
+            )
+        )
+        agenda.append(
+            self._cronograma_item(
+                "06:30",
+                "07:00",
+                "Salud",
+                "Desayuno / preparacion",
+                "Asegurar energia estable y alistamiento personal.",
+                "H02_Registro_Salud; 20_Registro_Diario",
+                motivo="Rutina pre-turno para llegar estable a SERPAT.",
+                prioridad=max(82, int((t_salud or {}).get("prioridad", 82) or 82)),
+                evidencia_requerida="Desayuno y preparacion registrados.",
+                hoja_excel="H02_Registro_Salud; 20_Registro_Diario",
+                documento_relacionado=self._documento_relacionado(sistema, "Salud"),
+                objetivo_2042=self._objetivo_2042_por_area("Salud"),
+            )
+        )
+        agenda.append(
+            self._cronograma_item(
+                "07:00",
+                "07:30",
+                "SERPAT",
+                "Traslado / alistamiento SERPAT",
+                "Llegar puntual y operativo al turno.",
+                "SERPAT TURNOS",
+                motivo="Bloque obligatorio de traslado y preparacion pre-turno.",
+                prioridad=max(90, int(serpat_decision.get("prioridad", 92) or 92)),
+                evidencia_requerida="Ingreso puntual y checklist operativo previo.",
+                hoja_excel="SERPAT TURNOS",
+                documento_relacionado=self._documento_relacionado(sistema, "SERPAT"),
+                objetivo_2042=self._objetivo_2042_por_area("SERPAT"),
+            )
+        )
+
+        agenda.append(
+            self._cronograma_item(
+                turno_info.get("ingreso", "08:00"),
+                turno_info.get("salida", "16:30"),
+                "SERPAT",
+                "SERPAT - bloque laboral",
+                serpat_decision.get("accion", "Cumplir turno SERPAT"),
+                serpat_decision.get("registro", "SERPAT TURNOS"),
+                motivo=serpat_decision.get("motivo", "Turno laboral confirmado por SERPAT."),
+                prioridad=int(serpat_decision.get("prioridad", 92) or 92),
+                evidencia_requerida="Turno cumplido, novedades registradas y cierre operativo",
+                hoja_excel="SERPAT TURNOS",
+                documento_relacionado=self._documento_relacionado(sistema, "SERPAT"),
+                objetivo_2042=self._objetivo_2042_por_area("SERPAT"),
+            )
+        )
+
+        agenda.append(
+            self._cronograma_item(
+                "16:30",
+                "17:15",
+                "Salud",
+                "Retorno / recuperacion",
+                "Bajar carga del turno y recuperar energia.",
+                "H02_Registro_Salud; 20_Registro_Diario",
+                motivo="Transicion post-turno para proteger continuidad.",
+                prioridad=84,
+                evidencia_requerida="Recuperacion y estado fisico registrados.",
+                hoja_excel="H02_Registro_Salud; 20_Registro_Diario",
+                documento_relacionado=self._documento_relacionado(sistema, "Salud"),
+                objetivo_2042=self._objetivo_2042_por_area("Salud"),
+            )
+        )
+        agenda.append(
+            self._bloque_desde_tarea(
+                sistema,
+                t_uni,
+                "17:15",
+                "18:30",
+                "Universidad",
+                "Universidad critica",
+                "Resolver evaluacion critica y evitar riesgo academico.",
+                "61_T2_Ramos; 62_T2_Evaluaciones; 64_T2_Errores",
+            )
+        )
+        agenda.append(
+            self._cronograma_item(
+                "18:30",
+                "19:00",
+                "Salud",
+                "Salud / alimentacion / presion",
+                "Reponer energia y registrar estado biologico.",
+                "H02_Registro_Salud; H03_Presion_Log",
+                motivo="Bloque de recuperacion para sostener turno extendido.",
+                prioridad=83,
+                evidencia_requerida="Alimentacion, hidratacion y presion registradas.",
+                hoja_excel="H02_Registro_Salud; H03_Presion_Log",
+                documento_relacionado=self._documento_relacionado(sistema, "Salud"),
+                objetivo_2042=self._objetivo_2042_por_area("Salud"),
+            )
+        )
+        agenda.append(
+            self._bloque_desde_tarea(
+                sistema,
+                t_fin,
+                "19:00",
+                "19:45",
+                "Finanzas",
+                "Finanzas",
+                "Actualizar control financiero diario.",
+                "11_Ingresos; 12_Gastos; 13_Deudas; 18_Conciliacion_Bancaria_V3",
+            )
+        )
+        agenda.append(
+            self._bloque_desde_tarea(
+                sistema,
+                t_emp,
+                "19:45",
+                "20:30",
+                "Empresas",
+                "Empresas",
+                "Ejecutar accion real de continuidad empresarial.",
+                "30_MGC_CRM; 33_Seguimientos; 70_Mercado_MGC; 76_CaptaPropIA",
+            )
+        )
+        agenda.append(
+            self._bloque_desde_tarea(
+                sistema,
+                t_dev,
+                "20:30",
+                "21:00",
+                "Desarrollo personal",
+                "Desarrollo Personal / Vision Board",
+                "Conectar decisiones del dia con Vision Board y crecimiento personal.",
+                "DESARROLLO_PERSONAL; VISION_BOARD; 21_KPI_Diario",
+            )
+        )
+        agenda.append(
+            self._bloque_desde_tarea(
+                sistema,
+                t_ancla,
+                "21:00",
+                "21:30",
+                "Ancla Mental",
+                "Ancla / cierre",
+                "Cerrar identidad y definir continuidad para manana.",
+                "Ancla Mental; 21_KPI_Diario; 90_Alertas_Correcciones",
+            )
+        )
+
+        ventanas_restantes = []
+        final_base = self._to_minutes("21:30")
+        if cierre_dia > final_base:
+            ventanas_restantes.append((final_base, cierre_dia))
+
+        return agenda, restantes, ventanas_restantes, final_base
+
+    def _validar_bloqueo_serpat(self, agenda: list[dict], turno_info: dict, cierre_dia: int) -> tuple[list[dict], list[str]]:
+        if not turno_info.get("activo"):
+            return agenda, []
+
+        t_ini = self._to_minutes(turno_info.get("ingreso", "08:00"))
+        t_fin = self._to_minutes(turno_info.get("salida", "16:30"))
+        if t_fin <= t_ini:
+            return agenda, []
+
+        warnings = []
+        corregida = []
+        cola = []
+        cursor_post = t_fin
+
+        for bloque in sorted(agenda, key=lambda b: self._to_minutes(b.get("hora_inicio", "00:00"))):
+            area = str(bloque.get("area", ""))
+            b_ini = self._to_minutes(bloque.get("hora_inicio", "00:00"))
+            b_fin = self._to_minutes(bloque.get("hora_fin", "00:00"))
+
+            if area == "SERPAT":
+                corregida.append(bloque)
+                continue
+
+            if self._es_solapado(b_ini, b_fin, t_ini, t_fin):
+                warnings.append(
+                    f"Solapamiento detectado y corregido: {bloque.get('actividad', 'Actividad')} ({bloque.get('hora_inicio')}-{bloque.get('hora_fin')}) con SERPAT {turno_info.get('ingreso')}-{turno_info.get('salida')}"
+                )
+                cola.append(bloque)
+            else:
+                corregida.append(bloque)
+
+        for bloque in cola:
+            dur = self._duracion_min(bloque.get("hora_inicio", "00:00"), bloque.get("hora_fin", "00:00"))
+            dur = max(20, dur)
+            nuevo_ini = max(cursor_post, t_fin)
+            nuevo_fin = nuevo_ini + dur
+
+            if nuevo_fin <= cierre_dia:
+                bloque["hora_inicio"] = self._to_hhmm(nuevo_ini)
+                bloque["hora_fin"] = self._to_hhmm(nuevo_fin)
+                bloque["duracion"] = f"{dur} min"
+                bloque["motivo"] = f"{bloque.get('motivo', '')} | Reubicada por bloqueo SERPAT."
+                cursor_post = nuevo_fin
+                corregida.append(bloque)
+            else:
+                bloque["hora_inicio"] = self._to_hhmm(cierre_dia)
+                bloque["hora_fin"] = self._to_hhmm(cierre_dia)
+                bloque["duracion"] = "0 min"
+                bloque["actividad"] = f"REAGENDADA - {bloque.get('actividad', 'Actividad')}"
+                bloque["actividad_exacta"] = bloque["actividad"]
+                bloque["objetivo"] = f"{bloque.get('objetivo', '')}. Reagendada por bloqueo SERPAT y falta de ventana."
+                bloque["motivo"] = f"{bloque.get('motivo', '')} | Estado: reagendada por bloqueo SERPAT."
+                bloque["evidencia_requerida"] = f"Reagendar y ejecutar en siguiente ventana: {bloque.get('evidencia_requerida', bloque.get('registro', 'Registro diario'))}"
+                corregida.append(bloque)
+
+        corregida.sort(key=lambda b: self._to_minutes(b.get("hora_inicio", "00:00")))
+        return corregida, warnings
+
+    def _construir_tareas_dinamicas(self, sistema: SistemaDia, motor_data: dict) -> list[dict]:
+        decisiones = sorted(sistema.decisiones or [], key=lambda x: int(x.get("prioridad", 0)), reverse=True)
+        alertas = sistema.alertas or []
+        pendientes = sistema.pendientes or []
+        vision = getattr(sistema, "vision_board", []) or []
+        desarrollo = getattr(sistema, "desarrollo_personal", {}) or {}
+        universidad = getattr(sistema, "universidad", {}) or {}
+        historial = self._historial_ref()
+        fuentes_excel = self._extraer_hojas_fuente(sistema)
+        es_domingo = self._es_domingo(sistema)
+        serpat_activo = self._detectar_turno_info(sistema).get("activo", False)
+
+        hojas_excel = len(fuentes_excel.get("hojas", []))
+        recursos_total = int((sistema.recursos or {}).get("total_archivos", 0)) if isinstance(sistema.recursos, dict) else 0
+        fuentes_texto = (
+            "Excel Maestro, Recursos, SERPAT, Universidad, Salud, Finanzas, Empresas, Desarrollo Personal, "
+            "Vision Board, Pendientes, Alertas, KPI, Registro Diario, Historial y Objetivos 2026-2042"
+        )
+
+        tareas = [
+            {
+                "area": "Sistema",
+                "prioridad": 100,
+                "duracion": 35 + min(20, len(alertas) * 2),
+                "actividad": "Apertura EDE 360 y agenda ejecutiva",
+                "objetivo": "Sincronizar estado real del dia y establecer orden de ejecucion",
+                "motivo": f"Consolidar {hojas_excel} hojas Excel, {recursos_total} recursos, {len(alertas)} alertas y {len(pendientes)} pendientes.",
+                "registro": "20_Registro_Diario; 21_KPI_Diario; 90_Alertas_Correcciones",
+                "hoja_excel": "00_GENERADOR_DIA; 20_Registro_Diario; 21_KPI_Diario",
+                "documento": historial,
+                "evidencia": "Checklist EDE completo, prioridad unica definida y cronograma confirmado",
+                "objetivo_2042": "Hoy no estas haciendo tareas. Estas construyendo 2042.",
+                "fuentes": fuentes_texto,
+            }
+        ]
+
+        areas_usadas = {"SERPAT"}
+        for d in decisiones:
+            area = d.get("area", "Sistema")
+            if area in areas_usadas:
+                continue
+
+            prioridad = int(d.get("prioridad", 70) or 70)
+            duracion = self._duracion_objetivo(prioridad, area, len(alertas))
+
+            if es_domingo and not serpat_activo:
+                if area == "Universidad":
+                    tiene_critica = bool(universidad.get("critica"))
+                    if not tiene_critica:
+                        prioridad = min(prioridad, 78)
+                        duracion = max(35, duracion - 20)
+                elif area in {"Empresas", "Finanzas", "Pendientes"}:
+                    prioridad = max(60, prioridad - 8)
+                    duracion = max(30, duracion - 18)
+                elif area == "Salud":
+                    prioridad = max(prioridad, 90)
+                    duracion = min(120, duracion + 20)
+
+            registro = d.get("registro", "")
+            tareas.append(
+                {
+                    "area": area,
+                    "prioridad": prioridad,
+                    "duracion": duracion,
+                    "actividad": d.get("accion", f"Ejecutar bloque de {area}"),
+                    "objetivo": d.get("motivo", f"Construir continuidad en {area}"),
+                    "motivo": d.get("motivo", "Decisión priorizada por EDE."),
+                    "registro": registro,
+                    "hoja_excel": self._area_hoja_excel(area, registro),
+                    "documento": self._documento_relacionado(sistema, area),
+                    "evidencia": f"Evidencia operativa en {registro or 'registro diario'}.",
+                    "objetivo_2042": self._objetivo_2042_por_area(area),
+                    "fuentes": fuentes_texto,
+                }
+            )
+            areas_usadas.add(area)
+
+        if "Desarrollo personal" not in areas_usadas:
+            libro = desarrollo.get("libro") if isinstance(desarrollo, dict) else ""
+            capitulo = desarrollo.get("capitulo") if isinstance(desarrollo, dict) else ""
+            ley = desarrollo.get("ley") if isinstance(desarrollo, dict) else ""
+            tareas.append(
+                {
+                    "area": "Desarrollo personal",
+                    "prioridad": 92 if es_domingo and not serpat_activo else 83,
+                    "duracion": 55 if es_domingo and not serpat_activo else 35,
+                    "actividad": "Bloque de desarrollo personal y refuerzo identitario",
+                    "objetivo": "Consolidar criterio directivo y continuidad de la Ley 001.",
+                    "motivo": f"Lectura activa: {libro or 'lectura estratégica'} | Capítulo: {capitulo or 'pendiente'} | Ley: {ley or 'Ley 001 activa'}.",
+                    "registro": "DESARROLLO_PERSONAL; 20_Registro_Diario; 21_KPI_Diario",
+                    "hoja_excel": "DESARROLLO_PERSONAL; 21_KPI_Diario",
+                    "documento": self._documento_relacionado(sistema, "Ancla"),
+                    "evidencia": "Insight aplicado por escrito, ajuste conductual y prioridad de continuidad definida.",
+                    "objetivo_2042": self._objetivo_2042_por_area("Ancla"),
+                    "fuentes": fuentes_texto,
+                }
+            )
+            areas_usadas.add("Desarrollo personal")
+
+        tareas.append(
+            {
+                "area": "Sistema",
+                "prioridad": 89,
+                "duracion": 30,
+                "actividad": "Cierre KPI y Registro Diario",
+                "objetivo": "Dejar trazabilidad cuantitativa y cualitativa del dia.",
+                "motivo": (
+                    f"Hojas KPI detectadas: {', '.join(fuentes_excel.get('kpi', [])[:3]) or 'ninguna'} | "
+                    f"Registro diario: {', '.join(fuentes_excel.get('registro', [])[:3]) or 'ninguno'}"
+                ),
+                "registro": "20_Registro_Diario; 21_KPI_Diario; 90_Alertas_Correcciones",
+                "hoja_excel": "20_Registro_Diario; 21_KPI_Diario",
+                "documento": "Registro Diario y KPI del libro maestro",
+                "evidencia": "KPI del día actualizados, decisión final registrada y correcciones anotadas.",
+                "objetivo_2042": "Medir y corregir cada día para construir capital acumulado.",
+                "fuentes": fuentes_texto,
+            }
+        )
+
+        tareas.append(
+            {
+                "area": "Sistema",
+                "prioridad": 76,
+                "duracion": 25,
+                "actividad": "Revisión de historial operativo",
+                "objetivo": "Aprender del último cierre y evitar repetir errores.",
+                "motivo": f"Referencias activas: {historial}.",
+                "registro": "99_HISTORIAL_RESPALDOS; Salidas/Logs",
+                "hoja_excel": "; ".join(fuentes_excel.get("historial", [])[:3]) or "99_HISTORIAL_RESPALDOS",
+                "documento": historial,
+                "evidencia": "Lección concreta del historial aplicada en el plan de hoy.",
+                "objetivo_2042": "Escalar con memoria operativa, no por improvisación.",
+                "fuentes": fuentes_texto,
+            }
+        )
+
+        if pendientes:
+            top = pendientes[0]
+            tareas.append(
+                {
+                    "area": "Pendientes",
+                    "prioridad": 92,
+                    "duracion": 35,
+                    "actividad": f"Cerrar pendiente critico: {top.get('tarea', 'Pendiente estrategico')}",
+                    "objetivo": f"Resolver riesgo abierto en area {top.get('area', 'General')}",
+                    "motivo": f"Pendiente activo con prioridad {top.get('prioridad', 'alta')} y estado {top.get('estado', 'abierto')}.",
+                    "registro": "PENDIENTES; 90_Alertas_Correcciones",
+                    "hoja_excel": "PENDIENTES; 20_Registro_Diario",
+                    "documento": self._documento_relacionado(sistema, "Pendientes"),
+                    "evidencia": "Pendiente actualizado, comentario de avance y siguiente accion",
+                    "objetivo_2042": self._objetivo_2042_por_area("Pendientes"),
+                    "fuentes": fuentes_texto,
+                }
+            )
+
+        if vision or desarrollo:
+            vision_txt = vision[0].get("objetivo", "objetivo 2042 activo") if vision else "objetivo 2042 activo"
+            lectura = desarrollo.get("libro", "lectura estrategica") if isinstance(desarrollo, dict) else "lectura estrategica"
+            tareas.append(
+                {
+                    "area": "Ancla",
+                    "prioridad": 85,
+                    "duracion": 30,
+                    "actividad": "Ancla, visualizacion y cierre de identidad",
+                    "objetivo": "Conectar decisiones del dia con la vision 2042",
+                    "motivo": f"Vision activa: {vision_txt}. Refuerzo de desarrollo personal: {lectura}.",
+                    "registro": "Ancla Mental; 21_KPI_Diario",
+                    "hoja_excel": "DESARROLLO_PERSONAL; VISION_BOARD; 21_KPI_Diario",
+                    "documento": self._documento_relacionado(sistema, "Ancla"),
+                    "evidencia": "Reflexion escrita, capital construido y prioridad de manana",
+                    "objetivo_2042": self._objetivo_2042_por_area("Ancla"),
+                    "fuentes": fuentes_texto,
+                }
+            )
+
+        tareas.sort(key=lambda t: int(t.get("prioridad", 0)), reverse=True)
+        return tareas
+
+    def _asignar_horario_dinamico(self, sistema: SistemaDia, tareas: list[dict], turno_info: dict) -> list[dict]:
+        agenda = []
+        warnings = []
+        es_domingo = self._es_domingo(sistema)
+        if es_domingo and not turno_info.get("activo"):
+            inicio_dia = self._to_minutes("07:30")
+            cierre_dia = self._to_minutes("21:00")
+        else:
+            inicio_dia = self._to_minutes("06:00")
+            cierre_dia = self._to_minutes("22:30")
+
+        ventanas = [(inicio_dia, cierre_dia)]
+        if turno_info.get("activo"):
+            t_ini = self._to_minutes(turno_info.get("ingreso", "08:00"))
+            t_fin = self._to_minutes(turno_info.get("salida", "16:30"))
+            cruza = t_fin <= t_ini
+
+            if cruza:
+                ventanas = [(max(inicio_dia, t_fin), min(cierre_dia, t_ini))]
+                agenda.append(
+                    self._cronograma_item(
+                        turno_info.get("ingreso", "21:00"),
+                        turno_info.get("salida", "08:00"),
+                        "SERPAT",
+                        "SERPAT - bloque laboral",
+                        self._decision(sistema, "SERPAT").get("accion", "Cumplir turno SERPAT"),
+                        self._decision(sistema, "SERPAT").get("registro", "SERPAT TURNOS"),
+                        motivo=self._decision(sistema, "SERPAT").get("motivo", "Turno laboral confirmado por SERPAT."),
+                        prioridad=int(self._decision(sistema, "SERPAT").get("prioridad", 92) or 92),
+                        evidencia_requerida="Turno cumplido, novedades registradas y cierre operativo",
+                        hoja_excel="SERPAT TURNOS",
+                        documento_relacionado=self._documento_relacionado(sistema, "SERPAT"),
+                        objetivo_2042=self._objetivo_2042_por_area("SERPAT"),
+                    )
+                )
+            else:
+                serpat_ya_insertado = False
+                if turno_info.get("tipo") == "mañana":
+                    agenda, tareas, ventanas, _ = self._asignar_turno_manana_base(sistema, tareas, turno_info, cierre_dia)
+                    serpat_ya_insertado = True
+                else:
+                    ventanas = []
+                    if t_ini > inicio_dia:
+                        ventanas.append((inicio_dia, t_ini))
+                    if t_fin < cierre_dia:
+                        ventanas.append((t_fin, cierre_dia))
+                    ventanas = sorted({v for v in ventanas if v[1] > v[0]})
+                if not serpat_ya_insertado:
+                    agenda.append(
+                        self._cronograma_item(
+                            turno_info.get("ingreso", "08:00"),
+                            turno_info.get("salida", "16:30"),
+                            "SERPAT",
+                            "SERPAT - bloque laboral",
+                            self._decision(sistema, "SERPAT").get("accion", "Cumplir turno SERPAT"),
+                            self._decision(sistema, "SERPAT").get("registro", "SERPAT TURNOS"),
+                            motivo=self._decision(sistema, "SERPAT").get("motivo", "Turno laboral confirmado por SERPAT."),
+                            prioridad=int(self._decision(sistema, "SERPAT").get("prioridad", 92) or 92),
+                            evidencia_requerida="Turno cumplido, novedades registradas y cierre operativo",
+                            hoja_excel="SERPAT TURNOS",
+                            documento_relacionado=self._documento_relacionado(sistema, "SERPAT"),
+                            objetivo_2042=self._objetivo_2042_por_area("SERPAT"),
+                        )
+                    )
+
+        disponibles = sum(v[1] - v[0] for v in ventanas)
+        requeridos = sum(int(t.get("duracion", 30)) for t in tareas)
+        escala = 1.0 if requeridos <= 0 else min(1.0, disponibles / max(requeridos, 1))
+
+        idx = 0
+        for inicio, fin in ventanas:
+            cursor = inicio
+            while idx < len(tareas) and cursor < fin:
+                t = tareas[idx]
+                dur = max(20, int(int(t.get("duracion", 30)) * escala))
+                end = min(fin, cursor + dur)
+                if end - cursor < 20:
+                    break
+
+                agenda.append(
+                    self._cronograma_item(
+                        self._to_hhmm(cursor),
+                        self._to_hhmm(end),
+                        t.get("area", "Sistema"),
+                        t.get("actividad", "Accion ejecutiva"),
+                        t.get("objetivo", "Avance diario"),
+                        t.get("registro", "20_Registro_Diario"),
+                        motivo=t.get("motivo", "Priorizacion EDE"),
+                        prioridad=int(t.get("prioridad", 70) or 70),
+                        evidencia_requerida=t.get("evidencia", t.get("registro", "Registro diario")),
+                        hoja_excel=t.get("hoja_excel", t.get("registro", "20_Registro_Diario")),
+                        documento_relacionado=t.get("documento", "Sin documento específico"),
+                        objetivo_2042=t.get("objetivo_2042", self._objetivo_2042_por_area(t.get("area", "Sistema"))),
+                    )
+                )
+                cursor = end
+                idx += 1
+
+            if idx >= len(tareas):
+                break
+
+        if idx < len(tareas):
+            for t in tareas[idx:]:
+                self._agregar_reagendada(agenda, t, self._to_hhmm(cierre_dia))
+
+        agenda, warnings = self._validar_bloqueo_serpat(agenda, turno_info, cierre_dia)
+        if warnings:
+            for msg in warnings:
+                print(f"[ADVERTENCIA EDE] {msg}")
+
+        agenda.sort(key=lambda b: self._to_minutes(b.get("hora_inicio", "00:00")))
+        return agenda
+
+    def _generar_cronograma_especifico(self, sistema: SistemaDia, motor_data: dict) -> list[dict]:
+        turno_info = self._detectar_turno_info(sistema)
+        tareas = self._construir_tareas_dinamicas(sistema, motor_data)
+        agenda = self._asignar_horario_dinamico(sistema, tareas, turno_info)
+        return agenda or [
+            self._cronograma_item(
+                "06:00",
+                "06:40",
+                "Sistema",
+                "Apertura EDE de contingencia",
+                "No hubo datos suficientes para agenda completa, activar verificacion de fuentes",
+                "20_Registro_Diario; 90_Alertas_Correcciones",
+                motivo="Falta de datos en entradas primarias del sistema.",
+                prioridad=99,
+                evidencia_requerida="Checklist de fuentes ejecutado y alerta registrada",
+                hoja_excel="00_GENERADOR_DIA; 20_Registro_Diario",
+                documento_relacionado=self._historial_ref(),
+                objetivo_2042=self._objetivo_2042_por_area("Sistema"),
+            )
+        ]
 
     def _cronograma_bloques_html(self, cronograma):
         partes = []

@@ -1,0 +1,690 @@
+VIDA_REAL_ENGINE - ESPECIFICACION FUNCIONAL OFICIAL V6.0
+Fecha de registro: 2026-07-05
+Estado: OFICIAL Y OBLIGATORIA
+Aplicacion: BASE DE DESARROLLO POR MODULOS
+
+RESTRICCIONES DE IMPLEMENTACION
+- No programar todo de una vez.
+- No redisenar arquitectura.
+- No cambiar interfaz aprobada.
+- No reconstruir proyecto.
+- Implementar modulo por modulo.
+
+==================================================
+ARQUITECTURA FUNCIONAL OFICIAL
+==================================================
+
+VIDA_REAL_ENGINE se compone de dos capas principales:
+
+1. EDE - Executive Decision Engine
+2. ECC - Executive Control Center
+
+==================================================
+EDE - EXECUTIVE DECISION ENGINE
+==================================================
+
+El EDE es el cerebro del sistema.
+
+Responsabilidad:
+Analizar todas las fuentes de informacion y responder:
+
+Que debe hacer Robinson hoy, en que orden, por que, como, durante cuanto tiempo, con que recursos y donde debe registrarlo.
+
+El EDE debe cruzar:
+
+- Excel Maestro
+- Recursos
+- SERPAT
+- Universidad
+- Salud
+- Finanzas
+- Empresas
+- Desarrollo Personal
+- Vision Board
+- Ancla
+- Pendientes
+- Alertas
+- KPI
+- Registro Diario
+- Historial
+- Objetivos 2026-2042
+
+El EDE genera:
+
+- agenda ejecutiva del dia
+- prioridades
+- decisiones
+- alertas
+- cronograma
+- acciones por area
+- evidencias requeridas
+- capitales construidos
+- conexion con objetivos 2042
+
+==================================================
+ECC - EXECUTIVE CONTROL CENTER
+==================================================
+
+El ECC es la interfaz visual.
+
+Responsabilidad:
+Mostrar las decisiones del EDE en forma clara, ejecutiva y accionable.
+
+El ECC no decide.
+El ECC presenta.
+
+Debe incluir:
+
+- Inicio
+- Cronograma central
+- Panel Universidad
+- Panel Finanzas
+- Panel Empresas
+- Panel Salud
+- Panel SERPAT
+- Panel Desarrollo Personal
+- Panel Ancla
+- Panel Vision Board
+- Panel Recursos
+- Word
+- PDF
+- Imprimir
+
+==================================================
+SALIDA PRINCIPAL
+==================================================
+
+La salida principal del sistema es el Centro de Comando.
+
+No es la consola.
+No es el Excel.
+No es el Word.
+
+El Centro de Comando debe mostrar:
+
+- fecha
+- hora
+- tipo de dia
+- turno SERPAT
+- estado del sistema
+- cronograma completo
+- decisiones del Motor Central
+- alertas
+- prioridades
+- paneles ejecutivos
+- salidas automaticas
+- fuentes de informacion
+- estado de integracion
+- vinculo con objetivos 2042
+
+Word, PDF y Excel son salidas secundarias.
+
+==================================================
+FUENTES DE INFORMACION
+==================================================
+
+El sistema debe leer informacion desde:
+
+1. Excel Maestro
+- 153 hojas
+- registros diarios
+- KPI
+- universidad
+- salud
+- finanzas
+- empresas
+- SERPAT
+- alertas
+- pendientes
+- habitos
+- desarrollo personal
+- vision board
+
+2. Recursos
+- documentos personales
+- salud
+- finanzas
+- universidad
+- empresas
+- SERPAT
+- ancla mental
+- lectura y crecimiento
+- panel vision
+- contratos
+- respaldos
+
+3. Historial
+- logs
+- salidas anteriores
+- decisiones anteriores
+- pendientes anteriores
+- cierres diarios
+
+==================================================
+PANEL UNIVERSIDAD
+==================================================
+
+El Panel Universidad debe funcionar como Centro Academico Ejecutivo.
+
+Debe integrar:
+
+Desde Excel:
+- ramos activos
+- ramos cursados
+- evaluaciones
+- fechas
+- notas
+- rendimiento
+- calendario
+- bloques
+- errores
+- dudas
+- KPI academicos
+- contenidos
+- semana academica
+- avance por ramo
+
+Desde Recursos:
+- malla de carrera
+- trimestres
+- programas oficiales
+- planes de asignatura
+- guias
+- libros maestros
+- cuadernos
+- evaluaciones
+- trabajos
+- PDFs
+- documentos por ramo
+
+Debe responder:
+
+- Que ramo requiere atencion hoy?
+- Que evaluacion vence?
+- Que prueba o trabajo esta pendiente?
+- Que unidad corresponde estudiar?
+- Que contenido exacto debe revisar?
+- Que ejercicios debe resolver?
+- Que error debe corregir?
+- Que recurso debe abrir?
+- Donde debe registrar el avance?
+- Que impacto tiene en la carrera y objetivo 2042?
+
+Subpaneles:
+- Dashboard Universidad
+- Ramos
+- Evaluaciones
+- Notas
+- Calendario
+- Contenidos
+- Errores
+- Recursos
+- Riesgo Academico
+- Proxima Accion
+
+==================================================
+PANEL SALUD
+==================================================
+
+El Panel Salud debe funcionar como Ficha Clinica Inteligente.
+
+Debe integrar:
+
+Desde Excel:
+- presion arterial
+- pulso
+- sueno
+- energia
+- medicamentos
+- sintomas
+- hidratacion
+- alimentacion
+- actividad fisica
+- controles
+- KPI salud
+
+Desde Recursos:
+- recetas medicas
+- examenes
+- radiografias
+- informes
+- historial medico
+- ordenes medicas
+- licencias
+- documentos clinicos
+
+Debe responder:
+
+- Cual es el estado de salud actual?
+- Que medicamento corresponde?
+- Que presion se debe registrar?
+- Que examen falta?
+- Que control medico corresponde?
+- Que documento medico falta subir?
+- Que actividad fisica debe realizar hoy?
+- Que alimentacion corresponde?
+- Que riesgo existe?
+- Donde debe registrarse?
+
+Subpaneles:
+- Dashboard Salud
+- Presion
+- Medicamentos
+- Examenes
+- Controles
+- Historial Medico
+- Nutricion
+- Actividad Fisica
+- Sueno / Energia
+- KPI Salud
+- Proxima Accion
+
+==================================================
+PANEL SERPAT
+==================================================
+
+El Panel SERPAT debe funcionar como Control Laboral Ejecutivo.
+
+Debe integrar:
+
+Desde Excel:
+- calendario SERPAT
+- turno actual
+- turnos proximos
+- horarios
+- descansos
+- horas trabajadas
+- horas extras
+- ingresos asociados
+- impacto en agenda
+
+Debe responder:
+
+- Que turno tiene Robinson hoy?
+- A que hora debe prepararse?
+- A que hora debe salir?
+- Cuanto tiempo bloquea SERPAT?
+- Como afecta Universidad, Empresas, Salud y Finanzas?
+- Que debe preparar?
+- Cual es el proximo turno?
+
+Subpaneles:
+- Dashboard SERPAT
+- Turno Actual
+- Proximos Turnos
+- Descanso
+- Preparacion
+- Traslado
+- Impacto en Cronograma
+- Ingresos Laborales
+
+==================================================
+PANEL DESARROLLO PERSONAL
+==================================================
+
+El Panel Desarrollo Personal debe funcionar como Sistema de Identidad y Crecimiento.
+
+Debe integrar:
+
+Desde Excel:
+- habitos
+- lectura
+- desarrollo personal
+- objetivos
+- seguimiento
+- KPI personales
+- continuidad
+
+Desde Recursos:
+- libros
+- resumenes
+- Ancla Mental
+- Divina Obsesion Tomo I
+- Divina Obsesion Tomo II
+- documentos de crecimiento
+- lecturas estrategicas
+
+Debe responder:
+
+- Que lectura corresponde hoy?
+- Que capitulo o paginas debe leer?
+- Que habito debe ejecutar?
+- Que visualizacion debe realizar?
+- Que reflexion corresponde?
+- Que parte del Robinson 2042 se construye hoy?
+- Que evidencia debe registrar?
+
+Subpaneles:
+- Dashboard Desarrollo Personal
+- Lectura
+- Habitos
+- Identidad
+- Ancla
+- Divina Obsesion
+- Ley 001
+- Continuidad
+- Proxima Accion
+
+==================================================
+PANEL VISION BOARD
+==================================================
+
+El Panel Vision Board debe funcionar como modulo vivo 2042.
+
+No es solo una imagen.
+
+Debe integrar:
+- Cartel de Atraccion Visual
+- Vision Board
+- Divina Obsesion
+- objetivos 2042
+- capitales
+- decisiones del dia
+
+Debe responder:
+
+- Que parte de la vision 2042 se construye hoy?
+- Que capital se fortalece?
+- Que accion diaria conecta con que objetivo?
+- Que imagen, frase o simbolo debe visualizar Robinson?
+- Que evidencia debe registrarse?
+
+Debe incluir:
+- imagen o cartel visual
+- frases principales
+- mapa de capitales
+- conexion con decisiones
+- Hoy no estas haciendo tareas. Estas construyendo 2042.
+
+==================================================
+PANEL EMPRESAS
+==================================================
+
+El Panel Empresas debe funcionar como Sistema Ejecutivo Empresarial.
+
+Debe integrar:
+
+Empresas:
+1. Latitud Norte Holding
+- matriz
+- control estrategico
+- administracion general
+- portafolio
+- direccion del holding
+
+2. Latitud Norte Real Estate - LNRE
+- unidad inmobiliaria operativa
+- clientes
+- compradores
+- vendedores
+- arrendatarios
+- arrendadores
+- inversionistas
+- cierre comercial
+
+3. CaptaPropIA
+- anexo inteligente de LNRE
+- IA para captacion
+- generacion de leads
+- analisis de clientes
+- compradores
+- vendedores
+- arrendatarios
+- arrendadores
+- inversionistas
+- entrega informacion procesada a LNRE
+- LNRE ejecuta contacto, gestion y cierre
+
+4. Miner Global Connect - MGC
+- mineria
+- commodities
+- compradores
+- vendedores
+- contratos
+- NCNDA
+- LOI
+- SCO
+- CRM
+- seguimiento comercial
+
+Desde Excel:
+- CRM
+- seguimientos
+- KPI
+- mercado
+- objetivos
+- metas
+- contactos
+- pipeline
+
+Desde Recursos:
+- contratos
+- SCO
+- LOI
+- NCNDA
+- investigaciones
+- documentacion comercial
+- estudios de mercado
+- documentos empresariales
+- Divina Obsesion Tomo I
+- Divina Obsesion Tomo II
+
+Debe responder:
+
+- Que empresa requiere atencion hoy?
+- Que mercado debe estudiarse?
+- Que empresa competidora debe analizarse?
+- Que contacto debe seguirse?
+- Que documento comercial falta?
+- Que tendencia del mercado importa?
+- Que estrategia puede adaptarse?
+- Que accion comercial debe ejecutarse?
+- Que debe registrarse en CRM?
+- Que evidencia debe quedar en Excel?
+- Que objetivo 2042 esta construyendo?
+
+Subpaneles:
+- Dashboard Empresas
+- Latitud Norte Holding
+- Latitud Norte Real Estate
+- CaptaPropIA
+- Miner Global Connect
+- CRM
+- Estudios de Mercado
+- Competencia
+- Contactos
+- Seguimientos
+- Documentos
+- KPI
+- Proxima Accion
+
+Estudios de Mercado debe estructurar:
+- empresa analizada
+- pais
+- industria
+- sitio web
+- redes sociales
+- seguidores
+- propuesta de valor
+- productos / servicios
+- estrategia comercial
+- estrategia digital
+- embudo detectado
+- canales
+- fortalezas
+- debilidades
+- oportunidad para Robinson
+- adaptacion posible
+- accion recomendada
+- hoja de registro
+
+==================================================
+PANEL FINANZAS
+==================================================
+
+El Panel Finanzas debe funcionar como:
+
+- Oficina contable
+- Oficina de auditoria
+- Sistema de control financiero
+- Sistema de inversiones
+- Comite de inversion
+
+Debe integrar:
+
+Desde Excel:
+- ingresos
+- gastos
+- deudas
+- conciliacion
+- cuentas bancarias
+- balances
+- auditoria
+- inversiones
+- KPI financieros
+- senales de inversion
+- tracker
+- portfolio
+- risk manager
+- investment committee
+
+Desde Recursos:
+- estados bancarios
+- cartolas
+- contratos
+- documentacion tributaria
+- presupuestos
+- documentos financieros
+- reportes de inversiones
+
+Debe responder:
+
+- Cual es la situacion financiera actual?
+- Que pago vence?
+- Que deuda requiere accion?
+- Que gasto debe controlarse?
+- Que cuenta bancaria debe revisarse?
+- Que inversion requiere seguimiento?
+- Que senal debe evaluarse?
+- Que riesgo existe?
+- Que decision financiera debe tomar Robinson hoy?
+- Que evidencia debe registrar?
+- Que objetivo patrimonial 2042 se esta construyendo?
+
+Subpaneles:
+- Dashboard Financiero
+- Contabilidad
+- Auditoria
+- Cuentas Bancarias
+- Ingresos
+- Gastos
+- Deudas
+- Conciliacion
+- Inversiones
+- Portfolio
+- Market Intelligence
+- Risk Manager
+- Investment Committee
+- Tracker
+- KPI
+
+Inversiones debe contemplar:
+- TQQQ
+- SOXX
+- precio actual
+- precio promedio
+- rentabilidad
+- referencia
+- stop
+- TP1
+- R/R actual
+- accion recomendada
+
+Market Intelligence:
+- VIX
+- Fear & Greed
+- QQQ
+- Fed
+- CPI
+- PCE
+- earnings relevantes
+- riesgos geopoliticos
+
+Risk Manager:
+- nivel de riesgo
+- alertas
+- ratio riesgo / beneficio
+- exposicion
+- drawdown
+- condiciones de reduccion
+- condiciones de monitoreo
+
+Investment Committee:
+- decision final
+- justificacion
+- condiciones
+- proxima evaluacion
+- accion recomendada
+
+Tracker:
+- fecha
+- senal
+- precio
+- stop
+- TP
+- confianza
+- resultado
+- rentabilidad
+- drawdown
+- cierre
+- observaciones
+
+Metricas automaticas:
+- senales totales
+- pendientes
+- evaluadas
+- aciertos
+- errores
+- rentabilidad promedio
+- mejor operacion
+- peor operacion
+- drawdown
+
+==================================================
+REGLA TRANSVERSAL 2042
+==================================================
+
+Cada panel debe responder siempre:
+
+1. Cual es la situacion actual?
+2. Que significa esa informacion?
+3. Que debe hacer Robinson hoy?
+4. Que evidencia debe registrar?
+5. Que objetivo de largo plazo esta construyendo?
+6. Que falta para llegar a 2042?
+
+El sistema debe conectar:
+- pasado
+- presente
+- proximas 72 horas
+- semana actual
+- mes actual
+- ano actual
+- vision 2042
+
+==================================================
+APLICACION Y ROADMAP OFICIAL
+==================================================
+
+Registrar esta especificacion como base obligatoria.
+
+Usarla para las proximas versiones:
+
+- V5.4.3 Cronograma Inteligente
+- V5.4.4 Paneles Ejecutivos Base
+- V5.5 Inteligencia Contextual
+- V6.0 Primera Version Estable
+
+No modificar diseno visual aprobado.
+No reconstruir arquitectura.
+Implementar modulo por modulo.

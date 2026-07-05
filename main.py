@@ -107,13 +107,13 @@ def main():
     
     log_buffer.append("")
     log_buffer.append("=" * 70)
-    log_buffer.append(" VIDA REAL ENGINE V5.4 FINAL")
+    log_buffer.append(" VIDA REAL ENGINE V5.4.3 FINAL")
     log_buffer.append(" MOTOR CENTRAL IA + 11 MOTORES + CENTRO DE COMANDO HTML")
     log_buffer.append("=" * 70)
     
     print()
     print("=" * 70)
-    print(" VIDA REAL ENGINE V5.4 FINAL")
+    print(" VIDA REAL ENGINE V5.4.3 FINAL")
     print(" MOTOR CENTRAL IA + 11 MOTORES + CENTRO DE COMANDO HTML")
     print("=" * 70)
     print()
@@ -225,19 +225,19 @@ def main():
     log_buffer.append(resumen)
 
     print("=" * 70)
-    print(" V5.3 FINAL COMPLETADO EXITOSAMENTE")
+    print(" V5.4.3 FINAL COMPLETADO EXITOSAMENTE")
     print(" Decisiones consolidadas | Duplicados eliminados | Salida legible")
     print("=" * 70)
     print()
     
     log_buffer.append("=" * 70)
-    log_buffer.append(" V5.4 FINAL - CENTRO DE COMANDO COMPLETADO")
+    log_buffer.append(" V5.4.3 FINAL - CENTRO DE COMANDO COMPLETADO")
     log_buffer.append(" Decisiones consolidadas | Centro de Comando HTML | Navegable")
     log_buffer.append("=" * 70)
     
     # Guardar log en archivo
     contenido_log = "\n".join(log_buffer)
-    archivo_log = guardar_log(contenido_log, "v5_3_final_ejecucion.log")
+    archivo_log = guardar_log(contenido_log, "v5_4_3_final_ejecucion.log")
     if archivo_log:
         print(f"📄 Log guardado en: {archivo_log}")
     
@@ -271,7 +271,7 @@ def main():
         print(f"[ERROR] Error generando Centro de Comando: {e}")
     
     print("=" * 70)
-    print(" V5.4 FINAL - CENTRO DE COMANDO COMPLETADO")
+    print(" V5.4.3 FINAL - CENTRO DE COMANDO COMPLETADO")
     print("=" * 70)
     print()
 
