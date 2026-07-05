@@ -1,0 +1,812 @@
+VIDA_REAL_ENGINE V5.4.4 - REPORTE LECTOR INTELIGENTE EXCEL
+========================================================================
+Archivo: SISTEMA_ROBINSON_C31_CORREGIDO_BASE_DATOS_V3.xlsx
+Hojas leidas: 153
+
+HOJAS CRITICAS ENCONTRADAS
+- SERPAT TURNOS: SERPAT TURNOS
+- 20_Registro_Diario: 20_Registro_Diario
+- 21_KPI_Diario: 21_KPI_Diario
+- 23_Domingo_CEO: 23_Domingo_CEO
+- 44_Salud: 44_Salud
+- 61_T2_Ramos: 61_T2_Ramos
+- 62_T2_Evaluaciones: 62_T2_Evaluaciones
+- 63_T2_Bloques: 63_T2_Bloques
+- 64_T2_Errores: 64_T2_Errores
+- DESARROLLO_PERSONAL: DESARROLLO_PERSONAL
+- VISION_BOARD: VISION_BOARD
+- PENDIENTES: PENDIENTES
+- 30_MGC_CRM: 30_MGC_CRM
+- 33_Seguimientos: 33_Seguimientos
+- 70_Mercado_MGC: 70_Mercado_MGC
+- 71_Mercado_LNR: 71_Mercado_LNR
+- 76_CaptaPropIA: 76_CaptaPropIA
+- 82_LNH_Corporate_System: 82_LNH_Corporate_System
+
+RESUMEN DE HOJAS
+- VISION_BOARD
+  dimensiones: 14x11
+  filas utiles: 14
+  columnas con datos: 10
+  encabezados detectados: Categoría, Objetivo 2042, Imagen / Referencia, Ruta (09_PANEL_VISION), Fecha incorporación, Estado
+- SERPAT TURNOS
+  dimensiones: 41x17
+  filas utiles: 37
+  columnas con datos: 16
+  encabezados detectados: Fecha, Día, Turno, Tipo, Salida Casa, Ingreso
+- PENDIENTES
+  dimensiones: 54x17
+  filas utiles: 54
+  columnas con datos: 15
+  encabezados detectados: ID, Área, Subárea, Tarea, Prioridad, Estado
+- DESARROLLO_PERSONAL
+  dimensiones: 120x10
+  filas utiles: 29
+  columnas con datos: 10
+  encabezados detectados: Leyendo, Hábitos Atómicos - James Clear, Columna1, Columna2, Columna3, Columna4
+- 00_GENERADOR_DIA
+  dimensiones: 141x6
+  filas utiles: 58
+  columnas con datos: 6
+  encabezados detectados: Fecha del día, 2026-06-27 00:00:00, Fecha, Manual / 20_Registro_Diario, Define día a generar, Editar para probar otra fecha
+- 00_MOTOR_VIDA_REAL
+  dimensiones: 29x10
+  filas utiles: 28
+  columnas con datos: 10
+  encabezados detectados: M-006, Universidad evaluaciones, 62_T2_Evaluaciones / 57_T2_EVALUACIONES, Evaluaciones, ID; ramo; porcentaje; fecha; estado; plazo, Vida Real; Ancla
+- 00_REGLAS_VIDA_REAL
+  dimensiones: 27x12
+  filas utiles: 26
+  columnas con datos: 12
+  encabezados detectados: R-006, Universidad, Evaluación vence en, menor o igual, 7 días, 98
+- 00_PLANTILLAS_BLOQUES
+  dimensiones: 31x19
+  filas utiles: 30
+  columnas con datos: 19
+  encabezados detectados: ID Bloque, Activo, Tipo día permitido, Orden noche, Orden mañana, Orden tarde
+- 03_Objetivos_Metas_V4
+  dimensiones: 13x8
+  filas utiles: 11
+  columnas con datos: 8
+  encabezados detectados: Área, Meta concreta, Cifra / estándar, Fuente / hoja, Resultado actual, % cumplimiento
+- 94_Auditoria_Operativa_C31
+  dimensiones: 220x9
+  filas utiles: 156
+  columnas con datos: 5
+  encabezados detectados: 04_Score_Ejecutivo_Consolidado, Control / Auditoría, Visible, Uso operativo actual, Mantener encendida
+- 00_MAPA_OPERATIVO_FINAL
+  dimensiones: 118x9
+  filas utiles: 117
+  columnas con datos: 9
+  encabezados detectados: 03_VIDA_REAL_SALUD, 20_Registro_Diario, MAESTRA / OPERATIVA, visible, Calidad de vida, energía, cumplimiento, hábitos y Divina Obsesión, Debe permanecer visible dentro del sistema operativo 2026
+- 00_INDICE_OPERATIVO
+  dimensiones: 50x2
+  filas utiles: 44
+  columnas con datos: 2
+  encabezados detectados: N/D
+- 00_Indice_V6
+  dimensiones: 116x8
+  filas utiles: 60
+  columnas con datos: 6
+  encabezados detectados: Área, Hoja principal, Función, Estado V6, Uso, Nota
+- 05_Estructura_Mensual_2026
+  dimensiones: 12x11
+  filas utiles: 11
+  columnas con datos: 11
+  encabezados detectados: Mayo, 10_Apertura, 20_Registro_CEO_V4 / 20_Registro_Diario, 11_Ingresos / 12_Gastos / 13_Deudas / 14_Inversiones, 40→41→32→33→30, 50-58 Universidad
+- SEC_01_CEO_CONTROL
+  dimensiones: 2x1
+  filas utiles: 2
+  columnas con datos: 1
+  encabezados detectados: N/D
+- 20_Registro_Diario
+  dimensiones: 204x15
+  filas utiles: 64
+  columnas con datos: 14
+  encabezados detectados: 2026-05-02 00:00:00, Turno de Noche, Sí, No, No, No
+- 21_KPI_Diario
+  dimensiones: 403x14
+  filas utiles: 63
+  columnas con datos: 14
+  encabezados detectados: Fecha, Dinero, Trabajo, Universidad, Red / MGC, Salud
+- 22_KPI_Semanal_V4
+  dimensiones: 40x16
+  filas utiles: 22
+  columnas con datos: 15
+  encabezados detectados: Semana, Inicio, Fin, Días calendario, KPI Registro (días), KPI Cumplimiento
+- 24_KPI_Mensual_V4
+  dimensiones: 60x16
+  filas utiles: 18
+  columnas con datos: 15
+  encabezados detectados: Continuidad, 20, 29, 1, ⭐ Dominio, 0.2
+- 23_Domingo_CEO
+  dimensiones: 100x8
+  filas utiles: 8
+  columnas con datos: 6
+  encabezados detectados: Semana, Finanzas, Universidad, Red / MGC, Salud, Decisión Semana Siguiente
+- 02_Control_Junio
+  dimensiones: 100x8
+  filas utiles: 11
+  columnas con datos: 8
+  encabezados detectados: Área, Resultado Mayo, Meta Junio, Acción concreta, Fecha límite, Prioridad
+- 90_Alertas_Correcciones
+  dimensiones: 40x12
+  filas utiles: 24
+  columnas con datos: 12
+  encabezados detectados: Universidad, Evaluaciones atrasadas, 0, 0, 0, 🟢 OK
+- 04_Score_Ejecutivo_Consolidado
+  dimensiones: 14x14
+  filas utiles: 11
+  columnas con datos: 14
+  encabezados detectados: Mes, Ingresos, Gastos reales, Saldo teórico, Saldo real banco, Diferencia conciliación
+- SEC_02_FINANZAS
+  dimensiones: 2x1
+  filas utiles: 2
+  columnas con datos: 1
+  encabezados detectados: N/D
+- 10_Patrimonio_Financiero
+  dimensiones: 80x9
+  filas utiles: 13
+  columnas con datos: 9
+  encabezados detectados: Bloque, Cuenta / Activo, Tipo, Moneda, Valor origen, Tipo cambio
+- 11_Ingresos
+  dimensiones: 204x15
+  filas utiles: 31
+  columnas con datos: 13
+  encabezados detectados: 2026-04-08 00:00:00, Turno Extra, 62000, 34100, 12400, 9300
+- 12_Gastos
+  dimensiones: 403x15
+  filas utiles: 144
+  columnas con datos: 12
+  encabezados detectados: Fecha, Categoría, Detalle, Monto, Necesario S/N, Área presupuesto
+- 13_Deudas
+  dimensiones: 220x15
+  filas utiles: 15
+  columnas con datos: 14
+  encabezados detectados: Fecha, Acreedor, Deuda inicial, Movimiento, Monto pagado, Cargo / Interés
+- 14_Inversiones
+  dimensiones: 219x18
+  filas utiles: 23
+  columnas con datos: 18
+  encabezados detectados: Fecha, Activo, Tipo movimiento, Moneda, Monto movimiento, Cantidad/Acciones
+- 09_Posicion_Actual
+  dimensiones: 220x17
+  filas utiles: 9
+  columnas con datos: 17
+  encabezados detectados: Fecha actualización, Activo, Clase, Moneda, Cantidad/Acciones, Precio ETF/Unitario
+- 15_Historial_Diario
+  dimensiones: 200x13
+  filas utiles: 64
+  columnas con datos: 13
+  encabezados detectados: Fecha, Mes, TQQQ % diario, TQQQ Precio USD, SOXX % diario, SOXX Precio USD
+- 16_Posicion_Actual_AUTO
+  dimensiones: 20x15
+  filas utiles: 9
+  columnas con datos: 15
+  encabezados detectados: Activo, Clase, Moneda, Acciones, Capital Neto Moneda, Capital Neto CLP
+- 17_Dashboard_Inversiones
+  dimensiones: 28x8
+  filas utiles: 25
+  columnas con datos: 8
+  encabezados detectados: Ganancia/Pérdida CLP, -4089.074873603975, APV banco estado, APV, 1064, 0.004502769698208707
+- 18_Conciliacion_Bancaria_V3
+  dimensiones: 52x11
+  filas utiles: 43
+  columnas con datos: 10
+  encabezados detectados: + Ingresos del mes, 1930028, Entrada, 11_Ingresos, Sí, Sueldo, bonos, otros ingresos y transferencias recibidas.
+- 18_Conciliacion_Bancaria_V2
+  dimensiones: 30x8
+  filas utiles: 27
+  columnas con datos: 4
+  encabezados detectados: + Ingresos mes, 1930028, Financiero $, 11_Ingresos por mes activo
+- 08_Rentabilidad_Inversiones
+  dimensiones: 220x24
+  filas utiles: 9
+  columnas con datos: 23
+  encabezados detectados: Activo, Clase, Moneda, Broker/Cuenta, Aportes, Retiros
+- 12_Rentabilidad_Mensual
+  dimensiones: 80x9
+  filas utiles: 11
+  columnas con datos: 9
+  encabezados detectados: Mes, ETF %, APV %, Fondos/Cuentas %, Total %, Ganancia/Pérdida CLP
+- 07_Evolucion_Patrimonial
+  dimensiones: 80x11
+  filas utiles: 11
+  columnas con datos: 11
+  encabezados detectados: Mes, Caja/Banco real, Inversiones valor actual, Deuda, Patrimonio Neto, Variación $
+- 16_Balance_8Col_V4
+  dimensiones: 60x9
+  filas utiles: 9
+  columnas con datos: 9
+  encabezados detectados: Cuenta, Suma Debe, Suma Haber, Saldo Deudor, Saldo Acreedor, Activo
+- SEC_03_VIDA_REAL_SALUD
+  dimensiones: 2x8
+  filas utiles: 2
+  columnas con datos: 1
+  encabezados detectados: N/D
+- H00_Dashboard_Health
+  dimensiones: 24x10
+  filas utiles: 14
+  columnas con datos: 6
+  encabezados detectados: Prioridad, Elemento, Próximo control, Estado, Acción, Navegación
+- H01_Maestro_Salud
+  dimensiones: 500x16
+  filas utiles: 56
+  columnas con datos: 16
+  encabezados detectados: ID, Persona, Área, Tipo, Elemento, Motivo / Diagnóstico / Control
+- H02_Registro_Salud
+  dimensiones: 500x16
+  filas utiles: 60
+  columnas con datos: 16
+  encabezados detectados: Fecha, Persona, Momento, Sistólica, Diastólica, Pulso
+- H03_Documentos
+  dimensiones: 500x11
+  filas utiles: 31
+  columnas con datos: 11
+  encabezados detectados: Fecha, Tipo documento, Persona, Área, Descripción, Médico / Centro
+- H04_Seguros_Beneficios
+  dimensiones: 500x12
+  filas utiles: 13
+  columnas con datos: 12
+  encabezados detectados: Plan / Cobertura, Costo mensual, Persona / Beneficiarios, Cobertura, Red Preferente, Red 1
+- SEC_03_UNIVERSIDAD_T2
+  dimensiones: 2x1
+  filas utiles: 2
+  columnas con datos: 1
+  encabezados detectados: N/D
+- _LISTAS_UNIVERSIDAD_T2
+  dimensiones: 9x10
+  filas utiles: 9
+  columnas con datos: 9
+  encabezados detectados: Ramos, Estado, Prioridad, Tipo Registro, Estado Error, Riesgo
+- UNIVERSIDAD_MASTER_T2_2026
+  dimensiones: 19x14
+  filas utiles: 14
+  columnas con datos: 10
+  encabezados detectados: Ramo, Profesor, Día, Horario, Dificultad, Estado
+- 55_T2_CONTENIDOS_Y_AVANCE
+  dimensiones: 204x16
+  filas utiles: 51
+  columnas con datos: 16
+  encabezados detectados: ID, Semana, Ramo, Unidad, Contenido / Materia, Tipo
+- 56_T2_ESTUDIO_Y_ERRORES
+  dimensiones: 304x17
+  filas utiles: 4
+  columnas con datos: 17
+  encabezados detectados: 2026-06-22 00:00:00, 4, Probabilidad y Estadística, Probabilidad, Teorema de Bayes, Estudio, 45
+- 57_T2_EVALUACIONES_NOTAS
+  dimensiones: 204x15
+  filas utiles: 23
+  columnas con datos: 15
+  encabezados detectados: ID, Semana, Ramo, Evaluación, Tipo, Fecha límite
+- 58_DASHBOARD_ACADEMICO_T2
+  dimensiones: 27x14
+  filas utiles: 24
+  columnas con datos: 13
+  encabezados detectados: KPI, Valor, Ramo, Avance %, Comprensión %, Horas
+- 54_Ramos_Activos
+  dimensiones: 7x19
+  filas utiles: 7
+  columnas con datos: 12
+  encabezados detectados: Ramo, Profesor, Horario, Créditos, Dificultad, Evaluaciones totales
+- 57_Matriz_Prioridad
+  dimensiones: 51x14
+  filas utiles: 51
+  columnas con datos: 11
+  encabezados detectados: Semana, Ramo, Dificultad, Evaluación esa semana, Ponderación en riesgo, Horas recomendadas
+- 58_Dashboard_Academico
+  dimensiones: 26x14
+  filas utiles: 17
+  columnas con datos: 6
+  encabezados detectados: Evaluaciones registradas, 21, Total de hitos, No perder fechas
+- 59_Control_Trimestral
+  dimensiones: 15x12
+  filas utiles: 15
+  columnas con datos: 11
+  encabezados detectados: 2, 2026-06-08 00:00:00, 2026-06-14 00:00:00, Ejecución de contenidos + tareas, Física Mecánica: Tarea (0%), 8
+- 61_T2_Ramos
+  dimensiones: 8x12
+  filas utiles: 7
+  columnas con datos: 12
+  encabezados detectados: Ramo, Profesor, Día, Horario, Dificultad, Estado
+- 62_T2_Evaluaciones
+  dimensiones: 24x15
+  filas utiles: 23
+  columnas con datos: 15
+  encabezados detectados: ID, Ramo, Semana, Tipo, Actividad, Ponderación %
+- 63_T2_Bloques
+  dimensiones: 100x14
+  filas utiles: 99
+  columnas con datos: 12
+  encabezados detectados: Semana, Fecha, Día, Horario, Ramo/Sistema, Objetivo
+- 66_T2_Calendario
+  dimensiones: 16x12
+  filas utiles: 15
+  columnas con datos: 11
+  encabezados detectados: Semana, Lunes, Martes, Miércoles, Jueves, Viernes
+- 65_T2_Dashboard
+  dimensiones: 20x12
+  filas utiles: 16
+  columnas con datos: 5
+  encabezados detectados: Evaluaciones registradas, 20, Activo, Revisar fechas, 62_T2_Evaluaciones
+- T2_CONTENIDOS_SEM1_SEM4
+  dimensiones: 51x10
+  filas utiles: 51
+  columnas con datos: 10
+  encabezados detectados: Ramo, Semana, Unidad, Contenido principal, Fuente, Dificultad
+- 64_T2_Errores
+  dimensiones: 38x13
+  filas utiles: 37
+  columnas con datos: 12
+  encabezados detectados: Fecha, Ramo, Semana, Tema, Error detectado, Causa raíz
+- 50_Universidad_Master
+  dimensiones: 18x12
+  filas utiles: 11
+  columnas con datos: 6
+  encabezados detectados: Evaluaciones, Operativo, Ponderaciones y fechas cargadas, Crítico, Validar fechas en Canvas, 62_T2_Evaluaciones
+- 51_Bloques_Estudio
+  dimensiones: 99x14
+  filas utiles: 99
+  columnas con datos: 9
+  encabezados detectados: Semana, Fecha, Día, Horario, Ramo/Sistema, Objetivo
+- 52_Calendario_Academico
+  dimensiones: 15x12
+  filas utiles: 15
+  columnas con datos: 12
+  encabezados detectados: Semana, Fecha inicio, Fecha cierre, Cálculo II, Comunicación, Probabilidad
+- 53_Errores_Aprendizaje
+  dimensiones: 4x14
+  filas utiles: 3
+  columnas con datos: 14
+  encabezados detectados: Fecha, Ramo, Tema, Error, Causa, Corrección
+- 55_Evaluaciones
+  dimensiones: 28x16
+  filas utiles: 28
+  columnas con datos: 12
+  encabezados detectados: ID, Ramo, Semana, Actividad, Ponderación %, Fecha límite
+- 56_Notas
+  dimensiones: 7x12
+  filas utiles: 7
+  columnas con datos: 8
+  encabezados detectados: Ramo, Ponderación total registrada, Nota ponderada actual, Nota objetivo, Brecha, Nota necesaria restante
+- 56_Repaso_Inteligente
+  dimensiones: 204x12
+  filas utiles: 20
+  columnas con datos: 12
+  encabezados detectados: Fecha creación, Ramo, Tema, Origen, Dificultad 1-5, Último repaso
+- SEC_04_MGC_MARKET_INTEL
+  dimensiones: 2x1
+  filas utiles: 2
+  columnas con datos: 1
+  encabezados detectados: N/D
+- 30_MGC_CRM
+  dimensiones: 213x16
+  filas utiles: 9
+  columnas con datos: 16
+  encabezados detectados: ID, Fecha ingreso, Nombre contacto, Cargo, Empresa, País
+- 31_Red_Holding
+  dimensiones: 100x9
+  filas utiles: 9
+  columnas con datos: 9
+  encabezados detectados: Línea, Meta Mayo, Resultado actual, % Cumplimiento, Estado, Contactos A
+- 32_Oportunidades
+  dimensiones: 220x13
+  filas utiles: 3
+  columnas con datos: 13
+  encabezados detectados: Empresa, Tipo, Estado, Valor potencial, Próximo paso, Fecha seguimiento
+- 33_Seguimientos
+  dimensiones: 204x11
+  filas utiles: 3
+  columnas con datos: 11
+  encabezados detectados: Fecha, Contacto/Empresa, Acción, Resultado, Próximo paso, Prioridad
+- 40_Estudio_Empresas
+  dimensiones: 202x24
+  filas utiles: 3
+  columnas con datos: 24
+  encabezados detectados: ID, Fecha, Empresa, Semana, Vertical, País / Zona
+- 41_Clasificacion_Empresas
+  dimensiones: 204x14
+  filas utiles: 4
+  columnas con datos: 14
+  encabezados detectados: ID Estudio, Fecha, Empresa, Vertical, País / Zona, Clasificación
+- 42_Mapa_Mercado
+  dimensiones: 10x10
+  filas utiles: 8
+  columnas con datos: 10
+  encabezados detectados: Vertical, Segmento, Actor, Qué hace, Cómo gana dinero, Cliente objetivo
+- 43_Guia_Oportun
+  dimensiones: 10x5
+  filas utiles: 8
+  columnas con datos: 5
+  encabezados detectados: Tipo, Cliente potencial / Comprador / Vendedor-Proveedor / Alianza / Referidor / Aprendizaje mercado / Networking / Servicio-Proveedor / Inversión-Capital, Cuando una empresa ya tiene potencial claro., Constructora que podría derivar propietarios., No todo contacto es oportunidad.
+- 70_Mercado_MGC
+  dimensiones: 4x18
+  filas utiles: 3
+  columnas con datos: 18
+  encabezados detectados: ID, Fecha, Empresa, País, Rol, Producto
+- SEC_05_LATITUD_NORTE_RE
+  dimensiones: 2x1
+  filas utiles: 2
+  columnas con datos: 1
+  encabezados detectados: N/D
+- 71_Mercado_LNR
+  dimensiones: 4x18
+  filas utiles: 3
+  columnas con datos: 18
+  encabezados detectados: ID, Fecha, Actor / Empresa, Tipo actor, Comuna / Zona, Segmento
+- 72_Competencia
+  dimensiones: 4x20
+  filas utiles: 3
+  columnas con datos: 20
+  encabezados detectados: ID, Fecha, Empresa, Rubro, País/Zona, Web
+- 73_Campañas
+  dimensiones: 104x17
+  filas utiles: 103
+  columnas con datos: 17
+  encabezados detectados: ID, Fecha inicio, Unidad, Canal, Campaña, Objetivo
+- 74_Analisis_Web
+  dimensiones: 4x18
+  filas utiles: 3
+  columnas con datos: 18
+  encabezados detectados: ID, Fecha, Sitio / Empresa, URL, Rubro, Objetivo del sitio
+- 75_Redes_Sociales
+  dimensiones: 4x18
+  filas utiles: 3
+  columnas con datos: 18
+  encabezados detectados: ID, Fecha, Cuenta, Plataforma, Rubro, Seguidores
+- SEC_06_CAPTAPROPIA
+  dimensiones: 2x1
+  filas utiles: 2
+  columnas con datos: 1
+  encabezados detectados: N/D
+- 76_CaptaPropIA
+  dimensiones: 13x17
+  filas utiles: 12
+  columnas con datos: 14
+  encabezados detectados: Fase, Módulo, Elemento, Sprint, Responsable, Dependencia
+- 78_Stack_Tecnologico
+  dimensiones: 72x14
+  filas utiles: 55
+  columnas con datos: 14
+  encabezados detectados: Área, Herramienta principal, Alternativa, Decisión, Prioridad, Complejidad
+- 79_CaptaPropIA_Fase_C3
+  dimensiones: 1x1
+  filas utiles: 0
+  columnas con datos: 0
+  encabezados detectados: N/D
+- 80_CaptaPropIA_Fase_C4
+  dimensiones: 1x1
+  filas utiles: 0
+  columnas con datos: 0
+  encabezados detectados: N/D
+- 81_CaptaPropIA_Fase_C5
+  dimensiones: 1x1
+  filas utiles: 0
+  columnas con datos: 0
+  encabezados detectados: N/D
+- SEC_07_LNH_CORPORATE
+  dimensiones: 2x1
+  filas utiles: 2
+  columnas con datos: 1
+  encabezados detectados: N/D
+- 82_LNH_Corporate_System
+  dimensiones: 18x12
+  filas utiles: 14
+  columnas con datos: 10
+  encabezados detectados: Universidad T2, Operativo, 92, Medio, Evaluaciones y cumplimiento, Aprobar T2 con control
+- 44_Salud
+  dimensiones: 106x10
+  filas utiles: 12
+  columnas con datos: 10
+  encabezados detectados: Fecha, Tipo Salud, Actividad / detalle, Presión sistólica, Presión diastólica, Pulso
+- C3_ARQUITECTURA_FINAL
+  dimensiones: 5x2
+  filas utiles: 3
+  columnas con datos: 2
+  encabezados detectados: Total hojas maestras operativas, 31
+- C2_CONSOLIDACION
+  dimensiones: 6x1
+  filas utiles: 5
+  columnas con datos: 1
+  encabezados detectados: N/D
+- C1_CONSOLIDACION
+  dimensiones: 6x1
+  filas utiles: 5
+  columnas con datos: 1
+  encabezados detectados: N/D
+- CLASIFICACION_MANUAL
+  dimensiones: 9x1
+  filas utiles: 8
+  columnas con datos: 1
+  encabezados detectados: N/D
+- 00_Dashboard_V4
+  dimensiones: 80x8
+  filas utiles: 20
+  columnas con datos: 5
+  encabezados detectados: Ingresos mayo, 1130484, Activo, 11_Ingresos, Flujo entrante de mayo
+- FASE_03_LIMPIEZA
+  dimensiones: 12x1
+  filas utiles: 10
+  columnas con datos: 1
+  encabezados detectados: N/D
+- 01_Score_Mayo
+  dimensiones: 100x10
+  filas utiles: 10
+  columnas con datos: 10
+  encabezados detectados: Área, KPI Cumplimiento, Estado, Fuente, Comentario, Peso
+- 19_Mapa_Sistema
+  dimensiones: 14x6
+  filas utiles: 13
+  columnas con datos: 6
+  encabezados detectados: Oportunidad, 32_Oportunidades, Cuando existe posibilidad real, Pipeline, Debe tener próximo paso, Alianza / comprador / captación.
+- 20_Registro_CEO_V4
+  dimensiones: 34x15
+  filas utiles: 33
+  columnas con datos: 15
+  encabezados detectados: Fecha, Día, Tipo día, Semana, Dinero, Trabajo
+- 98_KPI_Framework_V6_2
+  dimensiones: 15x11
+  filas utiles: 12
+  columnas con datos: 6
+  encabezados detectados: KPI Cumplimiento, 0% - 100%, Mide ejecución contra meta, Porcentaje, Notas / Días / Montos, 75% de bloques cumplidos
+- 39_Flujo_Empresas_V6_4
+  dimensiones: 15x8
+  filas utiles: 13
+  columnas con datos: 6
+  encabezados detectados: 5, 30_MGC_CRM, Registro comercial trazable, Estado, próxima acción, seguimiento, Cierre / continuidad, MGC / LNR / LNH
+- 41_Dossier_Template
+  dimensiones: 18x4
+  filas utiles: 16
+  columnas con datos: 4
+  encabezados detectados: Sección, Pregunta guía, Respuesta / análisis, Evidencia / link
+- 06_Patrimonio_Neto
+  dimensiones: 12x8
+  filas utiles: 9
+  columnas con datos: 8
+  encabezados detectados: Concepto, Valor actual, Fuente, Tipo, Estado, Comentario
+- 10_Apertura
+  dimensiones: 100x7
+  filas utiles: 48
+  columnas con datos: 7
+  encabezados detectados: Banco / Cuenta principal, Banco, 2963, Sí, Banco Estado
+- 11_Evolucion_Patrimonial
+  dimensiones: 80x11
+  filas utiles: 11
+  columnas con datos: 11
+  encabezados detectados: Mes, Caja/Banco real, Inversiones valor actual, Deuda, Patrimonio Neto, Variación $
+- 14_Inversiones_BACKUP_V6_8
+  dimensiones: 204x25
+  filas utiles: 203
+  columnas con datos: 23
+  encabezados detectados: 2026-05-06 00:00:00, APV banco estado, Aporte, 10000, 16000, 26000
+- 15_Conciliacion
+  dimensiones: 204x15
+  filas utiles: 27
+  columnas con datos: 7
+  encabezados detectados: Saldo inicial, 13858, Financiero $, 10_Apertura!C9 — liquidez inicial total, 1. ¿Ingresos del banco están en 11_Ingresos?, Pendiente
+- 97_Conciliacion_Framework_V6_3
+  dimensiones: 16x8
+  filas utiles: 14
+  columnas con datos: 4
+  encabezados detectados: Ingresos, Entradas reales de dinero, 11_Ingresos, Suma por mes
+- 09_GUIA_FINANZAS_V7_1
+  dimensiones: 60x6
+  filas utiles: 7
+  columnas con datos: 5
+  encabezados detectados: 08_Rentabilidad_Inversiones, Rentabilidad acumulada, Normalmente nada; calcula desde 14 y 09., No es rentabilidad diaria ni mensual., Ganancia/pérdida por activo.
+- 17_Cierre_Mayo
+  dimensiones: 204x15
+  filas utiles: 19
+  columnas con datos: 9
+  encabezados detectados: Saldo real cuentas, 90470, 🔴 Diferencia crítica, Oportunidades activas, 0, 🔴 Riesgo
+- 18_Control_Pagos
+  dimensiones: 100x18
+  filas utiles: 18
+  columnas con datos: 17
+  encabezados detectados: ID, Pago / Obligación, Categoría, Monto estimado, Fecha estimada, Prioridad
+- 25_Control_Junio
+  dimensiones: 35x10
+  filas utiles: 27
+  columnas con datos: 10
+  encabezados detectados: Área, Resultado anterior, Meta del mes, Acción concreta, Fecha límite, Prioridad
+- 26_Control_Julio
+  dimensiones: 35x10
+  filas utiles: 27
+  columnas con datos: 10
+  encabezados detectados: Área, Resultado anterior, Meta del mes, Acción concreta, Fecha límite, Prioridad
+- 27_Control_Agosto
+  dimensiones: 35x10
+  filas utiles: 27
+  columnas con datos: 10
+  encabezados detectados: Área, Resultado anterior, Meta del mes, Acción concreta, Fecha límite, Prioridad
+- 99_Listas
+  dimensiones: 100x22
+  filas utiles: 16
+  columnas con datos: 20
+  encabezados detectados: TipoIngreso, CategoriaGasto, AreaPresupuesto, Necesario, Estado, Prioridad
+- 49_Guia_U3_Universidad
+  dimensiones: 12x8
+  filas utiles: 11
+  columnas con datos: 5
+  encabezados detectados: 2, 55_Evaluaciones, Año, trimestre, slot, evaluación, tipo, fecha, peso, nota obtenida, 56 Notas, 57 Prioridad, 58 Dashboard, Cada evaluación
+- 50_Universidad_PLAN
+  dimensiones: 100x12
+  filas utiles: 19
+  columnas con datos: 12
+  encabezados detectados: Ramo, Semana, Objetivo, Obligatorio, Avance, Refuerzo
+- 54_Dashboard_Universidad
+  dimensiones: 39x17
+  filas utiles: 17
+  columnas con datos: 6
+  encabezados detectados: Evaluaciones registradas, 21, Total de hitos, No perder fechas
+- 58_Dashboard_CEO_UNIV_PRO
+  dimensiones: 100x14
+  filas utiles: 31
+  columnas con datos: 14
+  encabezados detectados: Ramo, Bloques, Horas, Errores, Evaluaciones pendientes, Cumplimiento
+- 60_4_DashUniv_T1
+  dimensiones: 100x17
+  filas utiles: 33
+  columnas con datos: 11
+  encabezados detectados: Ramo, Bloques Sí, Horas, Errores, Repasos Riesgo, Evaluaciones Pendientes
+- 60_6_DashCEOUniv_T1
+  dimensiones: 100x14
+  filas utiles: 31
+  columnas con datos: 14
+  encabezados detectados: Ramo, Bloques, Horas, Errores, Evaluaciones pendientes, Cumplimiento
+- 60_T1_Historico
+  dimensiones: 18x8
+  filas utiles: 16
+  columnas con datos: 8
+  encabezados detectados: Evaluaciones T1, 55_Evaluaciones, 60_3_Evaluaciones_T1, pruebas, tareas, fechas, pesos, notas, Congelado, historial notas
+- 99_HISTORICO
+  dimensiones: 11x1
+  filas utiles: 10
+  columnas con datos: 1
+  encabezados detectados: N/D
+- 92_Auditoria_Final_Excel
+  dimensiones: 116x10
+  filas utiles: 110
+  columnas con datos: 10
+  encabezados detectados: Bloque, Estado, Avance, Diagnóstico, Pendiente real, Decisión
+- 77_Auditoria_LNR_Mercado
+  dimensiones: 130x13
+  filas utiles: 41
+  columnas con datos: 13
+  encabezados detectados: Capa de estudio, Pregunta estratégica, Hoja donde registrar, Métrica mínima, Frecuencia, Resultado esperado
+- AUDITORIA_TOTAL_EXCEL_V7_1
+  dimensiones: 123x11
+  filas utiles: 114
+  columnas con datos: 11
+  encabezados detectados: Bloque, Estado, Avance, Diagnóstico, Qué falta realmente, Decisión
+- AUDITORIA_V6_6_MASTER
+  dimensiones: 13x7
+  filas utiles: 12
+  columnas con datos: 7
+  encabezados detectados: Universidad T1, 60_3_Evaluaciones_T1, OK, copiado desde V5, 55_Evaluaciones V5, Bajo
+- 94_AUDITORIA_INTEGRAL_2026
+  dimensiones: 99x7
+  filas utiles: 99
+  columnas con datos: 7
+  encabezados detectados: 20_Registro_Diario, 204, 12, 672, 376, Alta
+- 95_AUDITORIA_HOJAS_UNIV_T2
+  dimensiones: 19x10
+  filas utiles: 19
+  columnas con datos: 6
+  encabezados detectados: 50_Universidad_Master, Carga/actualización operativa T2, Actualizada, Alta, Validar fechas exactas en Canvas, Añadir notas reales y evidencias
+- 96_AUDITORIA_INTEGRAL_CONTINUAC
+  dimensiones: 103x9
+  filas utiles: 103
+  columnas con datos: 9
+  encabezados detectados: 3, 20_Registro_Diario, 204, 12, 672, 376
+- 97_AUDITORIA_MODULOS_PM0
+  dimensiones: 8x7
+  filas utiles: 8
+  columnas con datos: 7
+  encabezados detectados: Universidad, 95-98%, A+, Ramos, evaluaciones, dashboard, Fechas Canvas por validar, Bajo
+- 98_AUDITORIA_FINAL_2026
+  dimensiones: 2x5
+  filas utiles: 2
+  columnas con datos: 5
+  encabezados detectados: Nivel Global, Madurez Sistema, Clasificación, Estado, Observación
+- 99_HISTORICO_DEPURADO
+  dimensiones: 58x3
+  filas utiles: 58
+  columnas con datos: 3
+  encabezados detectados: 54_Ramos_Activos, hidden, Histórica, duplicada, reemplazada o respaldo
+- 44_Historial_Medico_2018_2042
+  dimensiones: 5x5
+  filas utiles: 5
+  columnas con datos: 5
+  encabezados detectados: Fecha, Evento, Diagnóstico, Detalle, Observaciones
+- 45_Control_Presion_Arterial
+  dimensiones: 1x6
+  filas utiles: 1
+  columnas con datos: 6
+  encabezados detectados: Fecha, Presión mañana, Pulso mañana, Presión noche, Pulso noche, Observaciones
+- 46_Examenes_Medicos
+  dimensiones: 1x5
+  filas utiles: 1
+  columnas con datos: 5
+  encabezados detectados: Examen, Fecha, Resultado, Próximo control, Archivo
+- 47_Especialistas_y_Controles
+  dimensiones: 1x5
+  filas utiles: 1
+  columnas con datos: 5
+  encabezados detectados: Especialista, Última visita, Próxima visita, Estado, Observaciones
+- 48_Medicamentos_y_Recetas
+  dimensiones: 2x5
+  filas utiles: 2
+  columnas con datos: 5
+  encabezados detectados: Medicamento, Dosis, Horario, Renovación, Observaciones
+- 49_Checkup_Anual
+  dimensiones: 1x4
+  filas utiles: 1
+  columnas con datos: 4
+  encabezados detectados: Área, Último control, Próximo control, Estado
+- 50_KPI_Longevidad
+  dimensiones: 1x4
+  filas utiles: 1
+  columnas con datos: 4
+  encabezados detectados: Indicador, Valor actual, Meta, Estado
+- 51_Seguros_y_Beneficios
+  dimensiones: 1x4
+  filas utiles: 1
+  columnas con datos: 4
+  encabezados detectados: Plan, Costo, Cobertura, Observaciones
+- 52_Dashboard_Health
+  dimensiones: 1x3
+  filas utiles: 1
+  columnas con datos: 3
+  encabezados detectados: Indicador, Estado, Comentario
+- 53_Historial_Dental
+  dimensiones: 1x4
+  filas utiles: 1
+  columnas con datos: 4
+  encabezados detectados: Fecha, Tratamiento, Costo, Observaciones
+- 54_Historial_Familiar
+  dimensiones: 1x3
+  filas utiles: 1
+  columnas con datos: 3
+  encabezados detectados: Persona, Antecedentes, Observaciones
+- C31_RECONSTRUCCION_MAESTRAS
+  dimensiones: 16x8
+  filas utiles: 15
+  columnas con datos: 4
+  encabezados detectados: UNIVERSIDAD_MASTER_T2_2026, Reconstruida, Formato + tablas + fórmulas + dashboards cuando aplica, Operativa
+- H12_KPI_Longevidad
+  dimensiones: 11x13
+  filas utiles: 10
+  columnas con datos: 13
+  encabezados detectados: Mes, Peso, IMC, Sueño promedio, Energía 1-10, Estrés 1-10
+- 93_Auditoria_Conciliacion
+  dimensiones: 40x8
+  filas utiles: 12
+  columnas con datos: 8
+  encabezados detectados: Registro Diario, Tipo Día tenía opciones incompletas, Se actualizó validación a Libre / Compensado / Permiso Administrativo / Vacaciones / Turno de Mañana / Turno de Tarde / Turno de Noche, 20_Registro_Diario, B5:B403, Corregido
+- 95_Auditoria_Vida_Real
+  dimensiones: 40x9
+  filas utiles: 23
+  columnas con datos: 9
+  encabezados detectados: 20_Registro_Diario, Visible, Tipo Día con lista incompleta / WPS no mostraba opciones, Validación por rango N2:N8 + normalización, Sí, Hoja base de registro diario
+
+HOJAS VACIAS
+- 79_CaptaPropIA_Fase_C3
+- 80_CaptaPropIA_Fase_C4
+- 81_CaptaPropIA_Fase_C5
+
+HOJAS CON PROBLEMAS
+- 00_INDICE_OPERATIVO: sin encabezado detectado
+- SEC_01_CEO_CONTROL: sin encabezado detectado
+- SEC_02_FINANZAS: sin encabezado detectado
+- SEC_03_VIDA_REAL_SALUD: sin encabezado detectado
+- SEC_03_UNIVERSIDAD_T2: sin encabezado detectado
+- SEC_04_MGC_MARKET_INTEL: sin encabezado detectado
+- SEC_05_LATITUD_NORTE_RE: sin encabezado detectado
+- SEC_06_CAPTAPROPIA: sin encabezado detectado
+- SEC_07_LNH_CORPORATE: sin encabezado detectado
+- C2_CONSOLIDACION: sin encabezado detectado
+- C1_CONSOLIDACION: sin encabezado detectado
+- CLASIFICACION_MANUAL: sin encabezado detectado
+- FASE_03_LIMPIEZA: sin encabezado detectado
+- 99_HISTORICO: sin encabezado detectado

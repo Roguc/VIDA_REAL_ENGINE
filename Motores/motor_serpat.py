@@ -1,17 +1,34 @@
 from Config.config import HOJA_SERPAT
 from Scripts.utilidades import limpiar_texto, normalizar_fecha, normalizar_hora, nombre_dia_es
 
+
+def _norm(txt):
+    return limpiar_texto(txt).upper().replace(" ", "_").replace("-", "_")
+
+
+def _resolver_hoja_serpat(wb):
+    if HOJA_SERPAT in wb.sheetnames:
+        return wb[HOJA_SERPAT]
+
+    objetivo = _norm(HOJA_SERPAT)
+    for name in wb.sheetnames:
+        n = _norm(name)
+        if objetivo == n or objetivo in n or n in objetivo:
+            return wb[name]
+    return None
+
 def leer_turnos_serpat(wb):
-    if HOJA_SERPAT not in wb.sheetnames:
+    ws = _resolver_hoja_serpat(wb)
+    if ws is None:
         return []
 
-    ws = wb[HOJA_SERPAT]
     header_row = None
     headers = []
 
-    for idx, row in enumerate(ws.iter_rows(values_only=True), start=1):
+    for idx, row in enumerate(ws.iter_rows(min_row=1, max_row=15, values_only=True), start=1):
         valores = [limpiar_texto(v) for v in row]
-        if "Fecha" in valores and "Turno" in valores:
+        valores_norm = [_norm(v) for v in valores]
+        if "FECHA" in valores_norm and "TURNO" in valores_norm:
             header_row = idx
             headers = valores
             break

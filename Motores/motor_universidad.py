@@ -104,6 +104,16 @@ class MotorUniversidad:
     def _leer_tabla_por_hojas(self, excel, nombres, max_filas=50):
         datos = []
 
+        # Prioriza lector inteligente del ExcelManager (encabezado flexible + normalizacion)
+        if hasattr(excel, "leer_tabla_inteligente"):
+            for nombre in nombres:
+                try:
+                    tabla = excel.leer_tabla_inteligente(nombre)
+                except Exception:
+                    tabla = []
+                if tabla:
+                    return tabla[:max_filas]
+
         for nombre in nombres:
             ws = excel.obtener_hoja(nombre)
             if ws is None:

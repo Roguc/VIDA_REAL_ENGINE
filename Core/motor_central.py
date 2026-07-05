@@ -1,4 +1,5 @@
 from datetime import datetime
+from pathlib import Path
 
 from Models.sistema_dia import SistemaDia
 from Managers.excel_manager import ExcelManager
@@ -30,12 +31,26 @@ class MotorCentral:
             return self.sistema
 
         try:
+            self.excel.escanear_excel_completo()
+            self.excel.generar_reporte_excel("Salidas/Logs/EXCEL_INTELLIGENCE_REPORT.txt")
+        except Exception as e:
+            self.errores.append(f"Error generando reporte Excel: {str(e)}")
+
+        try:
             self.recursos.cargar()
         except Exception as e:
             self.errores.append(f"Error cargando recursos: {str(e)}")
 
         self.sistema.contexto["excel"] = self.excel.resumen()
+        self.sistema.contexto["excel_scan_report"] = str(Path("Salidas/Logs/EXCEL_INTELLIGENCE_REPORT.txt"))
+        self.sistema.contexto["excel_intelligence_report"] = str(Path("Salidas/Logs/EXCEL_INTELLIGENCE_REPORT.txt"))
+        self.sistema.contexto["excel_dominios"] = self.excel.obtener_resumen_dominios()
         self.sistema.recursos = self.recursos.resumen()
+
+        print("EXCEL INTELLIGENCE LAYER ACTIVA")
+        print(f"Total hojas: {self.sistema.contexto['excel'].get('total_hojas', 0)}")
+        print(f"Dominios detectados: {self.sistema.contexto['excel'].get('dominios_detectados', 0)}")
+        print("Reporte generado: Salidas/Logs/EXCEL_INTELLIGENCE_REPORT.txt")
 
         # Agregar decisión inicial del Sistema
         self.sistema.agregar_decision(
@@ -68,7 +83,7 @@ class MotorCentral:
     def _analizar_contexto(self):
         hojas = self.sistema.contexto["excel"]["hojas"]
 
-        if "SERPAT TURNOS" in hojas:
+        if self.excel.existe_alias("SERPAT TURNOS"):
             self.sistema.agregar_alerta(
                 "SERPAT",
                 90,
@@ -76,7 +91,7 @@ class MotorCentral:
                 "Usar SERPAT TURNOS para adaptar el día."
             )
 
-        if "PENDIENTES" in hojas:
+        if self.excel.existe_alias("PENDIENTES"):
             self.sistema.agregar_alerta(
                 "Pendientes",
                 95,
@@ -84,7 +99,7 @@ class MotorCentral:
                 "Integrar pendientes en la priorización diaria."
             )
 
-        if "VISION_BOARD" in hojas:
+        if self.excel.existe_alias("VISION_BOARD"):
             self.sistema.agregar_alerta(
                 "Identidad",
                 70,
@@ -92,7 +107,7 @@ class MotorCentral:
                 "Usar Vision Board para visualización diaria."
             )
 
-        if "DESARROLLO_PERSONAL" in hojas:
+        if self.excel.existe_alias("DESARROLLO_PERSONAL"):
             self.sistema.agregar_alerta(
                 "Desarrollo Personal",
                 75,
@@ -140,7 +155,7 @@ class MotorCentral:
 
     def _analizar_serpat(self):
         try:
-            if self.excel.existe_hoja("SERPAT TURNOS"):
+            if self.excel.existe_alias("SERPAT TURNOS") or self.excel.existe_hoja("SERPAT TURNOS"):
                 turno = motor_serpat.obtener_turno_fecha(self.excel.workbook, self.sistema.fecha)
                 if turno:
                     self.sistema.serpat = turno
@@ -176,8 +191,30 @@ class MotorCentral:
 
     def _analizar_pendientes(self):
         try:
-            if self.excel.existe_hoja("PENDIENTES"):
-                pendientes = motor_fuentes.leer_pendientes(self.excel.workbook, max_items=20)
+            if self.excel.existe_alias("PENDIENTES") or self.excel.existe_hoja("PENDIENTES"):
+                pendientes = []
+                try:
+                    tabla = self.excel.leer_tabla_inteligente("PENDIENTES")
+                    for item in tabla:
+                        estado = limpiar_texto(item.get("Estado", ""))
+                        if estado.lower() in ["completado", "cumplido", "cerrado"]:
+                            continue
+                        pendientes.append({
+                            "id": limpiar_texto(item.get("ID", item.get("Id", ""))),
+                            "area": limpiar_texto(item.get("Área", item.get("Area", ""))),
+                            "subarea": limpiar_texto(item.get("Subárea", item.get("Subarea", ""))),
+                            "tarea": limpiar_texto(item.get("Tarea", "")) or "Pendiente sin descripción",
+                            "prioridad": limpiar_texto(item.get("Prioridad", "")),
+                            "estado": estado,
+                            "avance": limpiar_texto(item.get("Avance %", item.get("Avance", ""))),
+                            "observaciones": limpiar_texto(item.get("Observaciones", "")),
+                        })
+                    pendientes = pendientes[:20]
+                except Exception:
+                    pendientes = []
+
+                if not pendientes:
+                    pendientes = motor_fuentes.leer_pendientes(self.excel.workbook, max_items=20)
                 self.sistema.pendientes = pendientes
                 
                 criticos = [p for p in pendientes if limpiar_texto(p.get("prioridad", "")).lower() in ["crítica", "critica", "alta"]]
@@ -208,8 +245,23 @@ class MotorCentral:
 
     def _analizar_vision_board(self):
         try:
-            if self.excel.existe_hoja("VISION_BOARD"):
-                vision = motor_fuentes.leer_vision_board(self.excel.workbook, max_items=12)
+            if self.excel.existe_alias("VISION_BOARD") or self.excel.existe_hoja("VISION_BOARD"):
+                vision = []
+                try:
+                    tabla = self.excel.leer_tabla_inteligente("VISION_BOARD")
+                    for item in tabla[:12]:
+                        vision.append({
+                            "categoria": limpiar_texto(item.get("Categoría", item.get("Categoria", ""))),
+                            "objetivo": limpiar_texto(item.get("Objetivo 2042", item.get("Objetivo", ""))),
+                            "imagen": limpiar_texto(item.get("Imagen / Referencia", item.get("Imagen", ""))),
+                            "ruta": limpiar_texto(item.get("Ruta (09_PANEL_VISION)", item.get("Ruta", ""))),
+                            "estado": limpiar_texto(item.get("Estado", "")),
+                        })
+                except Exception:
+                    vision = []
+
+                if not vision:
+                    vision = motor_fuentes.leer_vision_board(self.excel.workbook, max_items=12)
                 self.sistema.vision_board = vision
                 if vision:
                     self.sistema.agregar_alerta(
@@ -223,8 +275,39 @@ class MotorCentral:
 
     def _analizar_desarrollo_personal(self):
         try:
-            if self.excel.existe_hoja("DESARROLLO_PERSONAL"):
-                desarrollo = motor_fuentes.leer_desarrollo_personal(self.excel.workbook)
+            if self.excel.existe_alias("DESARROLLO_PERSONAL") or self.excel.existe_hoja("DESARROLLO_PERSONAL"):
+                desarrollo = {}
+                try:
+                    tabla = self.excel.leer_tabla_inteligente("DESARROLLO_PERSONAL")
+                    for item in tabla:
+                        for key, value in item.items():
+                            if key.startswith("_"):
+                                continue
+                            k = limpiar_texto(key).lower()
+                            v = limpiar_texto(value)
+                            if k in ["misión", "mision"]:
+                                desarrollo["mision"] = v
+                            elif k in ["visión 2042", "vision 2042"]:
+                                desarrollo["vision"] = v
+                            elif k in ["propósito", "proposito"]:
+                                desarrollo["proposito"] = v
+                            elif k in ["ley 001", "ley"]:
+                                desarrollo["ley"] = v
+                            elif k in ["valores"]:
+                                desarrollo["valores"] = v
+                            elif k in ["leyendo", "libro"]:
+                                desarrollo["libro"] = v
+                            elif k in ["capítulo actual", "capitulo actual", "capitulo"]:
+                                desarrollo["capitulo"] = v
+                            elif k in ["estado"]:
+                                desarrollo["estado"] = v
+                            elif k in ["próximos libros", "proximos libros", "proximos"]:
+                                desarrollo["proximos"] = v
+                except Exception:
+                    desarrollo = {}
+
+                if not desarrollo:
+                    desarrollo = motor_fuentes.leer_desarrollo_personal(self.excel.workbook)
                 self.sistema.desarrollo_personal = desarrollo
                 
                 if desarrollo.get("ley", ""):
@@ -245,12 +328,14 @@ class MotorCentral:
 
     def _analizar_salud(self):
         try:
+            salud_excel = self._resumen_categoria_excel("salud")
             bloque_salud = motor_salud.construir_bloque_salud({})
             self.sistema.salud = {
                 "titulo": bloque_salud.get("titulo", ""),
                 "objetivo": bloque_salud.get("objetivo", ""),
                 "actividad": bloque_salud.get("actividad", ""),
                 "registro": bloque_salud.get("registro", ""),
+                "datos_excel": salud_excel,
             }
             self.sistema.agregar_decision(
                 "Salud",
@@ -264,12 +349,14 @@ class MotorCentral:
 
     def _analizar_finanzas(self):
         try:
+            finanzas_excel = self._resumen_categoria_excel("finanzas") + self._resumen_categoria_excel("registro")
             bloque_finanzas = motor_finanzas.construir_bloque_finanzas({})
             self.sistema.finanzas = {
                 "titulo": bloque_finanzas.get("titulo", ""),
                 "objetivo": bloque_finanzas.get("objetivo", ""),
                 "actividad": bloque_finanzas.get("actividad", ""),
                 "registro": bloque_finanzas.get("registro", ""),
+                "datos_excel": finanzas_excel[:6],
             }
             self.sistema.agregar_decision(
                 "Finanzas",
@@ -283,12 +370,14 @@ class MotorCentral:
 
     def _analizar_empresas(self):
         try:
+            empresas_excel = self._resumen_categoria_excel("empresas")
             bloque_empresas = motor_empresas.construir_bloque_empresas({})
             self.sistema.empresas = {
                 "titulo": bloque_empresas.get("titulo", ""),
                 "objetivo": bloque_empresas.get("objetivo", ""),
                 "actividad": bloque_empresas.get("actividad", ""),
                 "registro": bloque_empresas.get("registro", ""),
+                "datos_excel": empresas_excel,
             }
             self.sistema.agregar_decision(
                 "Empresas",
@@ -334,4 +423,20 @@ class MotorCentral:
             )
         except Exception as e:
             self.errores.append(f"Error en MotorContinuidad: {str(e)}")
+
+    def _resumen_categoria_excel(self, categoria: str, max_items: int = 3):
+        try:
+            hojas = self.excel.buscar_hojas_por_categoria(categoria)
+            salida = []
+            for hoja in hojas[:3]:
+                registros = self.excel.leer_ultimos_registros(hoja, max_items)
+                salida.append(
+                    {
+                        "hoja": hoja,
+                        "registros": registros,
+                    }
+                )
+            return salida
+        except Exception:
+            return []
 

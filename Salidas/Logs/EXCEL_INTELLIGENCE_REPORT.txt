@@ -1,0 +1,1143 @@
+VIDA_REAL_ENGINE V5.4.4 FINAL - EXCEL INTELLIGENCE LAYER
+==============================================================================
+Archivo: SISTEMA_ROBINSON_C31_CORREGIDO_BASE_DATOS_V3.xlsx
+Total de hojas: 153
+Hojas leidas correctamente: 150
+Hojas vacias: 3
+Hojas con problemas: 14
+Dominios detectados: 15
+
+HOJAS POR DOMINIO
+- Registro Diario: 5 hoja(s) | filas utiles: 280
+- Finanzas: 16 hoja(s) | filas utiles: 402
+- Inversiones: 13 hoja(s) | filas utiles: 402
+- Universidad: 37 hoja(s) | filas utiles: 917
+- Salud: 17 hoja(s) | filas utiles: 203
+- Empresas: 26 hoja(s) | filas utiles: 322
+- SERPAT: 1 hoja(s) | filas utiles: 37
+- Desarrollo Personal: 1 hoja(s) | filas utiles: 29
+- Vision Board: 1 hoja(s) | filas utiles: 14
+- Ancla: 0 hoja(s) | filas utiles: 0
+- Alertas: 13 hoja(s) | filas utiles: 742
+- Pendientes: 1 hoja(s) | filas utiles: 54
+- KPI: 11 hoja(s) | filas utiles: 228
+- Recursos: 2 hoja(s) | filas utiles: 104
+- Historial: 1 hoja(s) | filas utiles: 64
+- Otros: 8 hoja(s) | filas utiles: 46
+
+DOMINIOS CON MAYOR CANTIDAD DE INFORMACION
+- Universidad: 917 filas utiles
+- Alertas: 742 filas utiles
+- Finanzas: 402 filas utiles
+- Inversiones: 402 filas utiles
+- Empresas: 322 filas utiles
+
+CATALOGO COMPLETO DE HOJAS
+- Hoja: VISION_BOARD
+  filas: 20
+  columnas: 11
+  encabezados detectados: Categoría, Objetivo 2042, Imagen / Referencia, Ruta (09_PANEL_VISION), Fecha incorporación, Estado
+  filas utiles: 14
+  categoria funcional: Vision Board
+  estado de lectura: OK
+- Hoja: SERPAT TURNOS
+  filas: 41
+  columnas: 17
+  encabezados detectados: Fecha, Día, Turno, Tipo, Salida Casa, Ingreso
+  filas utiles: 37
+  categoria funcional: SERPAT
+  estado de lectura: OK
+- Hoja: PENDIENTES
+  filas: 54
+  columnas: 17
+  encabezados detectados: ID, Área, Subárea, Tarea, Prioridad, Estado
+  filas utiles: 54
+  categoria funcional: Pendientes
+  estado de lectura: OK
+- Hoja: DESARROLLO_PERSONAL
+  filas: 120
+  columnas: 10
+  encabezados detectados: Leyendo, Hábitos Atómicos - James Clear, Columna1, Columna2, Columna3, Columna4
+  filas utiles: 29
+  categoria funcional: Desarrollo Personal
+  estado de lectura: OK
+- Hoja: 00_GENERADOR_DIA
+  filas: 141
+  columnas: 6
+  encabezados detectados: Fecha del día, 2026-06-27 00:00:00, Fecha, Manual / 20_Registro_Diario, Define día a generar, Editar para probar otra fecha
+  filas utiles: 58
+  categoria funcional: Registro Diario
+  estado de lectura: OK
+- Hoja: 00_MOTOR_VIDA_REAL
+  filas: 29
+  columnas: 10
+  encabezados detectados: M-006, Universidad evaluaciones, 62_T2_Evaluaciones / 57_T2_EVALUACIONES, Evaluaciones, ID; ramo; porcentaje; fecha; estado; plazo, Vida Real; Ancla
+  filas utiles: 28
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 00_REGLAS_VIDA_REAL
+  filas: 27
+  columnas: 12
+  encabezados detectados: R-006, Universidad, Evaluación vence en, menor o igual, 7 días, 98
+  filas utiles: 26
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 00_PLANTILLAS_BLOQUES
+  filas: 31
+  columnas: 19
+  encabezados detectados: ID Bloque, Activo, Tipo día permitido, Orden noche, Orden mañana, Orden tarde
+  filas utiles: 30
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 03_Objetivos_Metas_V4
+  filas: 20
+  columnas: 8
+  encabezados detectados: Área, Meta concreta, Cifra / estándar, Fuente / hoja, Resultado actual, % cumplimiento
+  filas utiles: 11
+  categoria funcional: KPI
+  estado de lectura: OK
+- Hoja: 94_Auditoria_Operativa_C31
+  filas: 220
+  columnas: 9
+  encabezados detectados: 04_Score_Ejecutivo_Consolidado, Control / Auditoría, Visible, Uso operativo actual, Mantener encendida
+  filas utiles: 156
+  categoria funcional: Alertas
+  estado de lectura: OK
+- Hoja: 00_MAPA_OPERATIVO_FINAL
+  filas: 118
+  columnas: 9
+  encabezados detectados: 03_VIDA_REAL_SALUD, 20_Registro_Diario, MAESTRA / OPERATIVA, visible, Calidad de vida, energía, cumplimiento, hábitos y Divina Obsesión, Debe permanecer visible dentro del sistema operativo 2026
+  filas utiles: 117
+  categoria funcional: Registro Diario
+  estado de lectura: OK
+- Hoja: 00_INDICE_OPERATIVO
+  filas: 50
+  columnas: 2
+  encabezados detectados: N/D
+  filas utiles: 44
+  categoria funcional: Recursos
+  estado de lectura: Advertencia
+- Hoja: 00_Indice_V6
+  filas: 116
+  columnas: 8
+  encabezados detectados: Área, Hoja principal, Función, Estado V6, Uso, Nota
+  filas utiles: 60
+  categoria funcional: Recursos
+  estado de lectura: OK
+- Hoja: 05_Estructura_Mensual_2026
+  filas: 20
+  columnas: 11
+  encabezados detectados: Mayo, 10_Apertura, 20_Registro_CEO_V4 / 20_Registro_Diario, 11_Ingresos / 12_Gastos / 13_Deudas / 14_Inversiones, 40→41→32→33→30, 50-58 Universidad
+  filas utiles: 11
+  categoria funcional: Inversiones
+  estado de lectura: OK
+- Hoja: SEC_01_CEO_CONTROL
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 2
+  categoria funcional: Otros
+  estado de lectura: Advertencia
+- Hoja: 20_Registro_Diario
+  filas: 204
+  columnas: 15
+  encabezados detectados: 2026-05-02 00:00:00, Turno de Noche, Sí, No, No, No
+  filas utiles: 64
+  categoria funcional: Registro Diario
+  estado de lectura: OK
+- Hoja: 21_KPI_Diario
+  filas: 403
+  columnas: 14
+  encabezados detectados: Fecha, Dinero, Trabajo, Universidad, Red / MGC, Salud
+  filas utiles: 63
+  categoria funcional: KPI
+  estado de lectura: OK
+- Hoja: 22_KPI_Semanal_V4
+  filas: 40
+  columnas: 16
+  encabezados detectados: Semana, Inicio, Fin, Días calendario, KPI Registro (días), KPI Cumplimiento
+  filas utiles: 22
+  categoria funcional: KPI
+  estado de lectura: OK
+- Hoja: 24_KPI_Mensual_V4
+  filas: 60
+  columnas: 16
+  encabezados detectados: Continuidad, 20, 29, 1, ⭐ Dominio, 0.2
+  filas utiles: 18
+  categoria funcional: KPI
+  estado de lectura: OK
+- Hoja: 23_Domingo_CEO
+  filas: 100
+  columnas: 8
+  encabezados detectados: Semana, Finanzas, Universidad, Red / MGC, Salud, Decisión Semana Siguiente
+  filas utiles: 8
+  categoria funcional: Registro Diario
+  estado de lectura: OK
+- Hoja: 02_Control_Junio
+  filas: 100
+  columnas: 8
+  encabezados detectados: Área, Resultado Mayo, Meta Junio, Acción concreta, Fecha límite, Prioridad
+  filas utiles: 11
+  categoria funcional: Otros
+  estado de lectura: OK
+- Hoja: 90_Alertas_Correcciones
+  filas: 40
+  columnas: 12
+  encabezados detectados: Universidad, Evaluaciones atrasadas, 0, 0, 0, 🟢 OK
+  filas utiles: 24
+  categoria funcional: Alertas
+  estado de lectura: OK
+- Hoja: 04_Score_Ejecutivo_Consolidado
+  filas: 20
+  columnas: 14
+  encabezados detectados: Mes, Ingresos, Gastos reales, Saldo teórico, Saldo real banco, Diferencia conciliación
+  filas utiles: 11
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: SEC_02_FINANZAS
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 2
+  categoria funcional: Finanzas
+  estado de lectura: Advertencia
+- Hoja: 10_Patrimonio_Financiero
+  filas: 80
+  columnas: 9
+  encabezados detectados: Bloque, Cuenta / Activo, Tipo, Moneda, Valor origen, Tipo cambio
+  filas utiles: 13
+  categoria funcional: Inversiones
+  estado de lectura: OK
+- Hoja: 11_Ingresos
+  filas: 204
+  columnas: 15
+  encabezados detectados: 2026-04-08 00:00:00, Turno Extra, 62000, 34100, 12400, 9300
+  filas utiles: 31
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: 12_Gastos
+  filas: 403
+  columnas: 15
+  encabezados detectados: Fecha, Categoría, Detalle, Monto, Necesario S/N, Área presupuesto
+  filas utiles: 144
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: 13_Deudas
+  filas: 220
+  columnas: 15
+  encabezados detectados: Fecha, Acreedor, Deuda inicial, Movimiento, Monto pagado, Cargo / Interés
+  filas utiles: 15
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: 14_Inversiones
+  filas: 219
+  columnas: 18
+  encabezados detectados: Fecha, Activo, Tipo movimiento, Moneda, Monto movimiento, Cantidad/Acciones
+  filas utiles: 23
+  categoria funcional: Inversiones
+  estado de lectura: OK
+- Hoja: 09_Posicion_Actual
+  filas: 220
+  columnas: 17
+  encabezados detectados: Fecha actualización, Activo, Clase, Moneda, Cantidad/Acciones, Precio ETF/Unitario
+  filas utiles: 9
+  categoria funcional: Inversiones
+  estado de lectura: OK
+- Hoja: 15_Historial_Diario
+  filas: 200
+  columnas: 13
+  encabezados detectados: Fecha, Mes, TQQQ % diario, TQQQ Precio USD, SOXX % diario, SOXX Precio USD
+  filas utiles: 64
+  categoria funcional: Historial
+  estado de lectura: OK
+- Hoja: 16_Posicion_Actual_AUTO
+  filas: 20
+  columnas: 15
+  encabezados detectados: Activo, Clase, Moneda, Acciones, Capital Neto Moneda, Capital Neto CLP
+  filas utiles: 9
+  categoria funcional: Inversiones
+  estado de lectura: OK
+- Hoja: 17_Dashboard_Inversiones
+  filas: 28
+  columnas: 8
+  encabezados detectados: Ganancia/Pérdida CLP, -4089.074873603975, APV banco estado, APV, 1064, 0.004502769698208707
+  filas utiles: 25
+  categoria funcional: Inversiones
+  estado de lectura: OK
+- Hoja: 18_Conciliacion_Bancaria_V3
+  filas: 52
+  columnas: 11
+  encabezados detectados: + Ingresos del mes, 1930028, Entrada, 11_Ingresos, Sí, Sueldo, bonos, otros ingresos y transferencias recibidas.
+  filas utiles: 43
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: 18_Conciliacion_Bancaria_V2
+  filas: 30
+  columnas: 8
+  encabezados detectados: + Ingresos mes, 1930028, Financiero $, 11_Ingresos por mes activo
+  filas utiles: 27
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: 08_Rentabilidad_Inversiones
+  filas: 220
+  columnas: 24
+  encabezados detectados: Activo, Clase, Moneda, Broker/Cuenta, Aportes, Retiros
+  filas utiles: 9
+  categoria funcional: Inversiones
+  estado de lectura: OK
+- Hoja: 12_Rentabilidad_Mensual
+  filas: 80
+  columnas: 9
+  encabezados detectados: Mes, ETF %, APV %, Fondos/Cuentas %, Total %, Ganancia/Pérdida CLP
+  filas utiles: 11
+  categoria funcional: Inversiones
+  estado de lectura: OK
+- Hoja: 07_Evolucion_Patrimonial
+  filas: 80
+  columnas: 11
+  encabezados detectados: Mes, Caja/Banco real, Inversiones valor actual, Deuda, Patrimonio Neto, Variación $
+  filas utiles: 11
+  categoria funcional: Inversiones
+  estado de lectura: OK
+- Hoja: 16_Balance_8Col_V4
+  filas: 60
+  columnas: 9
+  encabezados detectados: Cuenta, Suma Debe, Suma Haber, Saldo Deudor, Saldo Acreedor, Activo
+  filas utiles: 9
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: SEC_03_VIDA_REAL_SALUD
+  filas: 20
+  columnas: 8
+  encabezados detectados: N/D
+  filas utiles: 2
+  categoria funcional: Salud
+  estado de lectura: Advertencia
+- Hoja: H00_Dashboard_Health
+  filas: 24
+  columnas: 10
+  encabezados detectados: Prioridad, Elemento, Próximo control, Estado, Acción, Navegación
+  filas utiles: 14
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: H01_Maestro_Salud
+  filas: 500
+  columnas: 16
+  encabezados detectados: ID, Persona, Área, Tipo, Elemento, Motivo / Diagnóstico / Control
+  filas utiles: 56
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: H02_Registro_Salud
+  filas: 500
+  columnas: 16
+  encabezados detectados: Fecha, Persona, Momento, Sistólica, Diastólica, Pulso
+  filas utiles: 60
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: H03_Documentos
+  filas: 500
+  columnas: 11
+  encabezados detectados: Fecha, Tipo documento, Persona, Área, Descripción, Médico / Centro
+  filas utiles: 31
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: H04_Seguros_Beneficios
+  filas: 500
+  columnas: 12
+  encabezados detectados: Plan / Cobertura, Costo mensual, Persona / Beneficiarios, Cobertura, Red Preferente, Red 1
+  filas utiles: 13
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: SEC_03_UNIVERSIDAD_T2
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 2
+  categoria funcional: Universidad
+  estado de lectura: Advertencia
+- Hoja: _LISTAS_UNIVERSIDAD_T2
+  filas: 20
+  columnas: 10
+  encabezados detectados: Ramos, Estado, Prioridad, Tipo Registro, Estado Error, Riesgo
+  filas utiles: 9
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: UNIVERSIDAD_MASTER_T2_2026
+  filas: 20
+  columnas: 14
+  encabezados detectados: Ramo, Profesor, Día, Horario, Dificultad, Estado
+  filas utiles: 14
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 55_T2_CONTENIDOS_Y_AVANCE
+  filas: 204
+  columnas: 16
+  encabezados detectados: ID, Semana, Ramo, Unidad, Contenido / Materia, Tipo
+  filas utiles: 51
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 56_T2_ESTUDIO_Y_ERRORES
+  filas: 304
+  columnas: 17
+  encabezados detectados: 2026-06-22 00:00:00, 4, Probabilidad y Estadística, Probabilidad, Teorema de Bayes, Estudio, 45
+  filas utiles: 4
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 57_T2_EVALUACIONES_NOTAS
+  filas: 204
+  columnas: 15
+  encabezados detectados: ID, Semana, Ramo, Evaluación, Tipo, Fecha límite
+  filas utiles: 23
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 58_DASHBOARD_ACADEMICO_T2
+  filas: 27
+  columnas: 14
+  encabezados detectados: KPI, Valor, Ramo, Avance %, Comprensión %, Horas
+  filas utiles: 24
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 54_Ramos_Activos
+  filas: 20
+  columnas: 19
+  encabezados detectados: Ramo, Profesor, Horario, Créditos, Dificultad, Evaluaciones totales
+  filas utiles: 7
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 57_Matriz_Prioridad
+  filas: 51
+  columnas: 14
+  encabezados detectados: Semana, Ramo, Dificultad, Evaluación esa semana, Ponderación en riesgo, Horas recomendadas
+  filas utiles: 51
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 58_Dashboard_Academico
+  filas: 26
+  columnas: 14
+  encabezados detectados: Ramo, Evaluaciones, Ponderación, Nota actual, Riesgo, Acción
+  filas utiles: 17
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 59_Control_Trimestral
+  filas: 20
+  columnas: 12
+  encabezados detectados: 2, 2026-06-08 00:00:00, 2026-06-14 00:00:00, Ejecución de contenidos + tareas, Física Mecánica: Tarea (0%), 8
+  filas utiles: 15
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 61_T2_Ramos
+  filas: 20
+  columnas: 12
+  encabezados detectados: Ramo, Profesor, Día, Horario, Dificultad, Estado
+  filas utiles: 7
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 62_T2_Evaluaciones
+  filas: 24
+  columnas: 15
+  encabezados detectados: ID, Ramo, Semana, Tipo, Actividad, Ponderación %
+  filas utiles: 23
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 63_T2_Bloques
+  filas: 100
+  columnas: 14
+  encabezados detectados: Semana, Fecha, Día, Horario, Ramo/Sistema, Objetivo
+  filas utiles: 99
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 66_T2_Calendario
+  filas: 20
+  columnas: 12
+  encabezados detectados: Semana, Lunes, Martes, Miércoles, Jueves, Viernes
+  filas utiles: 15
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 65_T2_Dashboard
+  filas: 20
+  columnas: 12
+  encabezados detectados: Evaluaciones registradas, 20, Activo, Revisar fechas, 62_T2_Evaluaciones
+  filas utiles: 16
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: T2_CONTENIDOS_SEM1_SEM4
+  filas: 51
+  columnas: 10
+  encabezados detectados: Ramo, Semana, Unidad, Contenido principal, Fuente, Dificultad
+  filas utiles: 51
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 64_T2_Errores
+  filas: 38
+  columnas: 13
+  encabezados detectados: Fecha, Ramo, Semana, Tema, Error detectado, Causa raíz
+  filas utiles: 37
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 50_Universidad_Master
+  filas: 20
+  columnas: 12
+  encabezados detectados: Evaluaciones, Operativo, Ponderaciones y fechas cargadas, Crítico, Validar fechas en Canvas, 62_T2_Evaluaciones
+  filas utiles: 11
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 51_Bloques_Estudio
+  filas: 99
+  columnas: 14
+  encabezados detectados: Semana, Fecha, Día, Horario, Ramo/Sistema, Objetivo
+  filas utiles: 99
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 52_Calendario_Academico
+  filas: 20
+  columnas: 12
+  encabezados detectados: Semana, Fecha inicio, Fecha cierre, Cálculo II, Comunicación, Probabilidad
+  filas utiles: 15
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 53_Errores_Aprendizaje
+  filas: 20
+  columnas: 14
+  encabezados detectados: Fecha, Ramo, Tema, Error, Causa, Corrección
+  filas utiles: 3
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 55_Evaluaciones
+  filas: 28
+  columnas: 16
+  encabezados detectados: ID, Ramo, Semana, Actividad, Ponderación %, Fecha límite
+  filas utiles: 28
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 56_Notas
+  filas: 20
+  columnas: 12
+  encabezados detectados: Ramo, Ponderación total registrada, Nota ponderada actual, Nota objetivo, Brecha, Nota necesaria restante
+  filas utiles: 7
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 56_Repaso_Inteligente
+  filas: 204
+  columnas: 12
+  encabezados detectados: Fecha creación, Ramo, Tema, Origen, Dificultad 1-5, Último repaso
+  filas utiles: 20
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: SEC_04_MGC_MARKET_INTEL
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 2
+  categoria funcional: Empresas
+  estado de lectura: Advertencia
+- Hoja: 30_MGC_CRM
+  filas: 213
+  columnas: 16
+  encabezados detectados: ID, Fecha ingreso, Nombre contacto, Cargo, Empresa, País
+  filas utiles: 9
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 31_Red_Holding
+  filas: 100
+  columnas: 9
+  encabezados detectados: Línea, Meta Mayo, Resultado actual, % Cumplimiento, Estado, Contactos A
+  filas utiles: 9
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 32_Oportunidades
+  filas: 220
+  columnas: 13
+  encabezados detectados: Empresa, Tipo, Estado, Valor potencial, Próximo paso, Fecha seguimiento
+  filas utiles: 3
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 33_Seguimientos
+  filas: 204
+  columnas: 11
+  encabezados detectados: Fecha, Contacto/Empresa, Acción, Resultado, Próximo paso, Prioridad
+  filas utiles: 3
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 40_Estudio_Empresas
+  filas: 202
+  columnas: 24
+  encabezados detectados: ID, Fecha, Empresa, Semana, Vertical, País / Zona
+  filas utiles: 3
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 41_Clasificacion_Empresas
+  filas: 204
+  columnas: 14
+  encabezados detectados: ID Estudio, Fecha, Empresa, Vertical, País / Zona, Clasificación
+  filas utiles: 4
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 42_Mapa_Mercado
+  filas: 20
+  columnas: 10
+  encabezados detectados: Vertical, Segmento, Actor, Qué hace, Cómo gana dinero, Cliente objetivo
+  filas utiles: 8
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 43_Guia_Oportun
+  filas: 20
+  columnas: 5
+  encabezados detectados: Tipo, Cliente potencial / Comprador / Vendedor-Proveedor / Alianza / Referidor / Aprendizaje mercado / Networking / Servicio-Proveedor / Inversión-Capital, Cuando una empresa ya tiene potencial claro., Constructora que podría derivar propietarios., No todo contacto es oportunidad.
+  filas utiles: 8
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 70_Mercado_MGC
+  filas: 20
+  columnas: 18
+  encabezados detectados: ID, Fecha, Empresa, País, Rol, Producto
+  filas utiles: 3
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: SEC_05_LATITUD_NORTE_RE
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 2
+  categoria funcional: Otros
+  estado de lectura: Advertencia
+- Hoja: 71_Mercado_LNR
+  filas: 20
+  columnas: 18
+  encabezados detectados: ID, Fecha, Actor / Empresa, Tipo actor, Comuna / Zona, Segmento
+  filas utiles: 3
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 72_Competencia
+  filas: 20
+  columnas: 20
+  encabezados detectados: ID, Fecha, Empresa, Rubro, País/Zona, Web
+  filas utiles: 3
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 73_Campañas
+  filas: 104
+  columnas: 17
+  encabezados detectados: ID, Fecha inicio, Unidad, Canal, Campaña, Objetivo
+  filas utiles: 103
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 74_Analisis_Web
+  filas: 20
+  columnas: 18
+  encabezados detectados: ID, Fecha, Sitio / Empresa, URL, Rubro, Objetivo del sitio
+  filas utiles: 3
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 75_Redes_Sociales
+  filas: 20
+  columnas: 18
+  encabezados detectados: ID, Fecha, Cuenta, Plataforma, Rubro, Seguidores
+  filas utiles: 3
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: SEC_06_CAPTAPROPIA
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 2
+  categoria funcional: Empresas
+  estado de lectura: Advertencia
+- Hoja: 76_CaptaPropIA
+  filas: 20
+  columnas: 17
+  encabezados detectados: Fase, Módulo, Elemento, Sprint, Responsable, Dependencia
+  filas utiles: 12
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 78_Stack_Tecnologico
+  filas: 72
+  columnas: 14
+  encabezados detectados: Bloque, Herramienta, Alternativa, Uso técnico, Uso negocio, Prioridad
+  filas utiles: 55
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 79_CaptaPropIA_Fase_C3
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 0
+  categoria funcional: Empresas
+  estado de lectura: Vacia
+- Hoja: 80_CaptaPropIA_Fase_C4
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 0
+  categoria funcional: Empresas
+  estado de lectura: Vacia
+- Hoja: 81_CaptaPropIA_Fase_C5
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 0
+  categoria funcional: Empresas
+  estado de lectura: Vacia
+- Hoja: SEC_07_LNH_CORPORATE
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 2
+  categoria funcional: Empresas
+  estado de lectura: Advertencia
+- Hoja: 82_LNH_Corporate_System
+  filas: 20
+  columnas: 12
+  encabezados detectados: Universidad T2, Operativo, 92, Medio, Evaluaciones y cumplimiento, Aprobar T2 con control
+  filas utiles: 14
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 44_Salud
+  filas: 106
+  columnas: 10
+  encabezados detectados: Fecha, Tipo Salud, Actividad / detalle, Presión sistólica, Presión diastólica, Pulso
+  filas utiles: 12
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: C3_ARQUITECTURA_FINAL
+  filas: 20
+  columnas: 2
+  encabezados detectados: Total hojas maestras operativas, 31
+  filas utiles: 3
+  categoria funcional: Otros
+  estado de lectura: OK
+- Hoja: C2_CONSOLIDACION
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 5
+  categoria funcional: Otros
+  estado de lectura: Advertencia
+- Hoja: C1_CONSOLIDACION
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 5
+  categoria funcional: Otros
+  estado de lectura: Advertencia
+- Hoja: CLASIFICACION_MANUAL
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 8
+  categoria funcional: Otros
+  estado de lectura: Advertencia
+- Hoja: 00_Dashboard_V4
+  filas: 80
+  columnas: 8
+  encabezados detectados: Ingresos mayo, 1130484, Activo, 11_Ingresos, Flujo entrante de mayo
+  filas utiles: 20
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: FASE_03_LIMPIEZA
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 10
+  categoria funcional: Otros
+  estado de lectura: Advertencia
+- Hoja: 01_Score_Mayo
+  filas: 100
+  columnas: 10
+  encabezados detectados: Área, KPI Cumplimiento, Estado, Fuente, Comentario, Peso
+  filas utiles: 10
+  categoria funcional: KPI
+  estado de lectura: OK
+- Hoja: 19_Mapa_Sistema
+  filas: 20
+  columnas: 6
+  encabezados detectados: Oportunidad, 32_Oportunidades, Cuando existe posibilidad real, Pipeline, Debe tener próximo paso, Alianza / comprador / captación.
+  filas utiles: 13
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: 20_Registro_CEO_V4
+  filas: 34
+  columnas: 15
+  encabezados detectados: Fecha, Día, Tipo día, Semana, Dinero, Trabajo
+  filas utiles: 33
+  categoria funcional: Registro Diario
+  estado de lectura: OK
+- Hoja: 98_KPI_Framework_V6_2
+  filas: 20
+  columnas: 11
+  encabezados detectados: KPI Cumplimiento, 0% - 100%, Mide ejecución contra meta, Porcentaje, Notas / Días / Montos, 75% de bloques cumplidos
+  filas utiles: 12
+  categoria funcional: KPI
+  estado de lectura: OK
+- Hoja: 39_Flujo_Empresas_V6_4
+  filas: 20
+  columnas: 8
+  encabezados detectados: 5, 30_MGC_CRM, Registro comercial trazable, Estado, próxima acción, seguimiento, Cierre / continuidad, MGC / LNR / LNH
+  filas utiles: 13
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 41_Dossier_Template
+  filas: 20
+  columnas: 4
+  encabezados detectados: Sección, Pregunta guía, Respuesta / análisis, Evidencia / link
+  filas utiles: 16
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: 06_Patrimonio_Neto
+  filas: 20
+  columnas: 8
+  encabezados detectados: Concepto, Valor actual, Fuente, Tipo, Estado, Comentario
+  filas utiles: 9
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: 10_Apertura
+  filas: 100
+  columnas: 7
+  encabezados detectados: Banco / Cuenta principal, Banco, 2963, Sí, Banco Estado
+  filas utiles: 48
+  categoria funcional: Inversiones
+  estado de lectura: OK
+- Hoja: 11_Evolucion_Patrimonial
+  filas: 80
+  columnas: 11
+  encabezados detectados: Mes, Caja/Banco real, Inversiones valor actual, Deuda, Patrimonio Neto, Variación $
+  filas utiles: 11
+  categoria funcional: Inversiones
+  estado de lectura: OK
+- Hoja: 14_Inversiones_BACKUP_V6_8
+  filas: 204
+  columnas: 25
+  encabezados detectados: 2026-05-06 00:00:00, APV banco estado, Aporte, 10000, 16000, 26000
+  filas utiles: 203
+  categoria funcional: Inversiones
+  estado de lectura: OK
+- Hoja: 15_Conciliacion
+  filas: 204
+  columnas: 15
+  encabezados detectados: Saldo inicial, 13858, Financiero $, 10_Apertura!C9 — liquidez inicial total, 1. ¿Ingresos del banco están en 11_Ingresos?, Pendiente
+  filas utiles: 27
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: 97_Conciliacion_Framework_V6_3
+  filas: 20
+  columnas: 8
+  encabezados detectados: Ingresos, Entradas reales de dinero, 11_Ingresos, Suma por mes
+  filas utiles: 14
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: 09_GUIA_FINANZAS_V7_1
+  filas: 60
+  columnas: 6
+  encabezados detectados: 08_Rentabilidad_Inversiones, Rentabilidad acumulada, Normalmente nada; calcula desde 14 y 09., No es rentabilidad diaria ni mensual., Ganancia/pérdida por activo.
+  filas utiles: 7
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: 17_Cierre_Mayo
+  filas: 204
+  columnas: 15
+  encabezados detectados: Saldo real cuentas, 90470, 🔴 Diferencia crítica, Oportunidades activas, 0, 🔴 Riesgo
+  filas utiles: 19
+  categoria funcional: Inversiones
+  estado de lectura: OK
+- Hoja: 18_Control_Pagos
+  filas: 100
+  columnas: 18
+  encabezados detectados: ID, Pago / Obligación, Categoría, Monto estimado, Fecha estimada, Prioridad
+  filas utiles: 18
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: 25_Control_Junio
+  filas: 35
+  columnas: 10
+  encabezados detectados: Área, Resultado anterior, Meta del mes, Acción concreta, Fecha límite, Prioridad
+  filas utiles: 27
+  categoria funcional: KPI
+  estado de lectura: OK
+- Hoja: 26_Control_Julio
+  filas: 35
+  columnas: 10
+  encabezados detectados: Área, Resultado anterior, Meta del mes, Acción concreta, Fecha límite, Prioridad
+  filas utiles: 27
+  categoria funcional: KPI
+  estado de lectura: OK
+- Hoja: 27_Control_Agosto
+  filas: 35
+  columnas: 10
+  encabezados detectados: Área, Resultado anterior, Meta del mes, Acción concreta, Fecha límite, Prioridad
+  filas utiles: 27
+  categoria funcional: KPI
+  estado de lectura: OK
+- Hoja: 99_Listas
+  filas: 100
+  columnas: 22
+  encabezados detectados: TipoIngreso, CategoriaGasto, AreaPresupuesto, Necesario, Estado, Prioridad
+  filas utiles: 16
+  categoria funcional: Alertas
+  estado de lectura: OK
+- Hoja: 49_Guia_U3_Universidad
+  filas: 20
+  columnas: 8
+  encabezados detectados: 2, 55_Evaluaciones, Año, trimestre, slot, evaluación, tipo, fecha, peso, nota obtenida, 56 Notas, 57 Prioridad, 58 Dashboard, Cada evaluación
+  filas utiles: 11
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 50_Universidad_PLAN
+  filas: 100
+  columnas: 12
+  encabezados detectados: Ramo, Semana, Objetivo, Obligatorio, Avance, Refuerzo
+  filas utiles: 19
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 54_Dashboard_Universidad
+  filas: 39
+  columnas: 17
+  encabezados detectados: Ramo, Evaluaciones, Ponderación, Nota actual, Riesgo, Acción
+  filas utiles: 17
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 58_Dashboard_CEO_UNIV_PRO
+  filas: 100
+  columnas: 14
+  encabezados detectados: Ramo, Bloques, Horas, Errores, Evaluaciones pendientes, Cumplimiento
+  filas utiles: 31
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 60_4_DashUniv_T1
+  filas: 100
+  columnas: 17
+  encabezados detectados: Ramo, Bloques Sí, Horas, Errores, Repasos Riesgo, Evaluaciones Pendientes
+  filas utiles: 33
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 60_6_DashCEOUniv_T1
+  filas: 100
+  columnas: 14
+  encabezados detectados: Ramo, Bloques, Horas, Errores, Evaluaciones pendientes, Cumplimiento
+  filas utiles: 31
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 60_T1_Historico
+  filas: 20
+  columnas: 8
+  encabezados detectados: Evaluaciones T1, 55_Evaluaciones, 60_3_Evaluaciones_T1, pruebas, tareas, fechas, pesos, notas, Congelado, historial notas
+  filas utiles: 16
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 99_HISTORICO
+  filas: 20
+  columnas: 1
+  encabezados detectados: N/D
+  filas utiles: 10
+  categoria funcional: Alertas
+  estado de lectura: Advertencia
+- Hoja: 92_Auditoria_Final_Excel
+  filas: 116
+  columnas: 10
+  encabezados detectados: Bloque, Estado, Avance, Diagnóstico, Pendiente real, Decisión
+  filas utiles: 110
+  categoria funcional: Alertas
+  estado de lectura: OK
+- Hoja: 77_Auditoria_LNR_Mercado
+  filas: 130
+  columnas: 13
+  encabezados detectados: Capa de estudio, Pregunta estratégica, Hoja donde registrar, Métrica mínima, Frecuencia, Resultado esperado
+  filas utiles: 41
+  categoria funcional: Empresas
+  estado de lectura: OK
+- Hoja: AUDITORIA_TOTAL_EXCEL_V7_1
+  filas: 123
+  columnas: 11
+  encabezados detectados: Bloque, Estado, Avance, Diagnóstico, Qué falta realmente, Decisión
+  filas utiles: 114
+  categoria funcional: Alertas
+  estado de lectura: OK
+- Hoja: AUDITORIA_V6_6_MASTER
+  filas: 20
+  columnas: 7
+  encabezados detectados: Universidad T1, 60_3_Evaluaciones_T1, OK, copiado desde V5, 55_Evaluaciones V5, Bajo
+  filas utiles: 12
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: 94_AUDITORIA_INTEGRAL_2026
+  filas: 99
+  columnas: 7
+  encabezados detectados: 20_Registro_Diario, 204, 12, 672, 376, Alta
+  filas utiles: 99
+  categoria funcional: Alertas
+  estado de lectura: OK
+- Hoja: 95_AUDITORIA_HOJAS_UNIV_T2
+  filas: 20
+  columnas: 10
+  encabezados detectados: 50_Universidad_Master, Carga/actualización operativa T2, Actualizada, Alta, Validar fechas exactas en Canvas, Añadir notas reales y evidencias
+  filas utiles: 19
+  categoria funcional: Alertas
+  estado de lectura: OK
+- Hoja: 96_AUDITORIA_INTEGRAL_CONTINUAC
+  filas: 103
+  columnas: 9
+  encabezados detectados: 3, 20_Registro_Diario, 204, 12, 672, 376
+  filas utiles: 103
+  categoria funcional: Alertas
+  estado de lectura: OK
+- Hoja: 97_AUDITORIA_MODULOS_PM0
+  filas: 20
+  columnas: 7
+  encabezados detectados: Universidad, 95-98%, A+, Ramos, evaluaciones, dashboard, Fechas Canvas por validar, Bajo
+  filas utiles: 8
+  categoria funcional: Alertas
+  estado de lectura: OK
+- Hoja: 98_AUDITORIA_FINAL_2026
+  filas: 20
+  columnas: 5
+  encabezados detectados: Nivel Global, Madurez Sistema, Clasificación, Estado, Observación
+  filas utiles: 2
+  categoria funcional: Alertas
+  estado de lectura: OK
+- Hoja: 99_HISTORICO_DEPURADO
+  filas: 58
+  columnas: 3
+  encabezados detectados: 54_Ramos_Activos, hidden, Histórica, duplicada, reemplazada o respaldo
+  filas utiles: 58
+  categoria funcional: Alertas
+  estado de lectura: OK
+- Hoja: 44_Historial_Medico_2018_2042
+  filas: 20
+  columnas: 5
+  encabezados detectados: Fecha, Evento, Diagnóstico, Detalle, Observaciones
+  filas utiles: 5
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: 45_Control_Presion_Arterial
+  filas: 20
+  columnas: 6
+  encabezados detectados: Fecha, Presión mañana, Pulso mañana, Presión noche, Pulso noche, Observaciones
+  filas utiles: 1
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: 46_Examenes_Medicos
+  filas: 20
+  columnas: 5
+  encabezados detectados: Examen, Fecha, Resultado, Próximo control, Archivo
+  filas utiles: 1
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: 47_Especialistas_y_Controles
+  filas: 20
+  columnas: 5
+  encabezados detectados: Especialista, Última visita, Próxima visita, Estado, Observaciones
+  filas utiles: 1
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: 48_Medicamentos_y_Recetas
+  filas: 20
+  columnas: 5
+  encabezados detectados: Medicamento, Dosis, Horario, Renovación, Observaciones
+  filas utiles: 2
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: 49_Checkup_Anual
+  filas: 20
+  columnas: 4
+  encabezados detectados: Área, Último control, Próximo control, Estado
+  filas utiles: 1
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: 50_KPI_Longevidad
+  filas: 20
+  columnas: 4
+  encabezados detectados: Indicador, Valor actual, Meta, Estado
+  filas utiles: 1
+  categoria funcional: KPI
+  estado de lectura: OK
+- Hoja: 51_Seguros_y_Beneficios
+  filas: 20
+  columnas: 4
+  encabezados detectados: Plan, Costo, Cobertura, Observaciones
+  filas utiles: 1
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: 52_Dashboard_Health
+  filas: 20
+  columnas: 3
+  encabezados detectados: Indicador, Estado, Comentario
+  filas utiles: 1
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: 53_Historial_Dental
+  filas: 20
+  columnas: 4
+  encabezados detectados: Fecha, Tratamiento, Costo, Observaciones
+  filas utiles: 1
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: 54_Historial_Familiar
+  filas: 20
+  columnas: 3
+  encabezados detectados: Persona, Antecedentes, Observaciones
+  filas utiles: 1
+  categoria funcional: Salud
+  estado de lectura: OK
+- Hoja: C31_RECONSTRUCCION_MAESTRAS
+  filas: 20
+  columnas: 8
+  encabezados detectados: UNIVERSIDAD_MASTER_T2_2026, Reconstruida, Formato + tablas + fórmulas + dashboards cuando aplica, Operativa
+  filas utiles: 15
+  categoria funcional: Universidad
+  estado de lectura: OK
+- Hoja: H12_KPI_Longevidad
+  filas: 20
+  columnas: 13
+  encabezados detectados: Mes, Peso, IMC, Sueño promedio, Energía 1-10, Estrés 1-10
+  filas utiles: 10
+  categoria funcional: KPI
+  estado de lectura: OK
+- Hoja: 93_Auditoria_Conciliacion
+  filas: 40
+  columnas: 8
+  encabezados detectados: Registro Diario, Tipo Día tenía opciones incompletas, Se actualizó validación a Libre / Compensado / Permiso Administrativo / Vacaciones / Turno de Mañana / Turno de Tarde / Turno de Noche, 20_Registro_Diario, B5:B403, Corregido
+  filas utiles: 12
+  categoria funcional: Finanzas
+  estado de lectura: OK
+- Hoja: 95_Auditoria_Vida_Real
+  filas: 40
+  columnas: 9
+  encabezados detectados: 20_Registro_Diario, Visible, Tipo Día con lista incompleta / WPS no mostraba opciones, Validación por rango N2:N8 + normalización, Sí, Hoja base de registro diario
+  filas utiles: 23
+  categoria funcional: Alertas
+  estado de lectura: OK
+
+HOJAS VACIAS
+- 79_CaptaPropIA_Fase_C3
+- 80_CaptaPropIA_Fase_C4
+- 81_CaptaPropIA_Fase_C5
+
+HOJAS CON PROBLEMAS
+- 00_INDICE_OPERATIVO: sin encabezado detectado
+- SEC_01_CEO_CONTROL: sin encabezado detectado
+- SEC_02_FINANZAS: sin encabezado detectado
+- SEC_03_VIDA_REAL_SALUD: sin encabezado detectado
+- SEC_03_UNIVERSIDAD_T2: sin encabezado detectado
+- SEC_04_MGC_MARKET_INTEL: sin encabezado detectado
+- SEC_05_LATITUD_NORTE_RE: sin encabezado detectado
+- SEC_06_CAPTAPROPIA: sin encabezado detectado
+- SEC_07_LNH_CORPORATE: sin encabezado detectado
+- C2_CONSOLIDACION: sin encabezado detectado
+- C1_CONSOLIDACION: sin encabezado detectado
+- CLASIFICACION_MANUAL: sin encabezado detectado
+- FASE_03_LIMPIEZA: sin encabezado detectado
+- 99_HISTORICO: sin encabezado detectado
+
+ADVERTENCIAS
+- Encabezado no detectado en hoja 00_INDICE_OPERATIVO
+- Encabezado no detectado en hoja SEC_01_CEO_CONTROL
+- Encabezado no detectado en hoja SEC_02_FINANZAS
+- Encabezado no detectado en hoja SEC_03_VIDA_REAL_SALUD
+- Encabezado no detectado en hoja SEC_03_UNIVERSIDAD_T2
+- Encabezado no detectado en hoja SEC_04_MGC_MARKET_INTEL
+- Encabezado no detectado en hoja SEC_05_LATITUD_NORTE_RE
+- Encabezado no detectado en hoja SEC_06_CAPTAPROPIA
+- Encabezado no detectado en hoja SEC_07_LNH_CORPORATE
+- Encabezado no detectado en hoja C2_CONSOLIDACION
+- Encabezado no detectado en hoja C1_CONSOLIDACION
+- Encabezado no detectado en hoja CLASIFICACION_MANUAL
+- Encabezado no detectado en hoja FASE_03_LIMPIEZA
+- Encabezado no detectado en hoja 99_HISTORICO
